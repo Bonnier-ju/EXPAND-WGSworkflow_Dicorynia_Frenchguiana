@@ -1,0 +1,18 @@
+# Ignore everything
+*
+
+# Re-include folders
+!*/
+
+# Keep only workflow scripts
+!full_workflow_nuclear/00-Scripts/**
+!full_workflow_chloroplastic/00-Scripts/**
+
+# Keep common script extensions (optional)
+!**/*.slurm
+!**/*.sh
+!**/*.py
+!**/*.R
+
+!.gitignore
+
