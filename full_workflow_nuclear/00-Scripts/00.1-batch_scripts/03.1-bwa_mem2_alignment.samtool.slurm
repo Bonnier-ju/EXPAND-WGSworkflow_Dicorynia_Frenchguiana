@@ -25,7 +25,8 @@ LOG_DIR="${ALIGN_DIR}/logs"
 mkdir -p "$ALIGN_DIR" "$LOG_DIR"
 
 FILES_LIST="${ALIGN_DIR}/alignment_files.list"
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-2) "\t" $(NF-1) "\t" $NF}' > "$FILES_LIST"
+# Columns: sample_id (1), reference_genome (7), read_group (9), read1 (10), read2 (11)
+tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $7 "\t" $9 "\t" $10 "\t" $11}' > "$FILES_LIST"
 
 SAMPLES_PER_TASK=3
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
@@ -34,7 +35,7 @@ END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
 # Loop over sample sheet (skip header)
 # Expect read1/read2 as the last two columns in the CSV, and reference genome as the last column
-sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r sample_id reference read1 read2; do
+sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r sample_id reference read_group read1 read2; do
     echo "Aligning sample: $sample_id"
 
     # Define input files
@@ -57,16 +58,18 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
         continue
     fi
 
-    # Extract library (LB) and platform unit (PU) from FASTQ filename
-    filename=$(basename "$read1")
-    LB=$(echo "$filename" | cut -d'_' -f1,2)
-    LANE=$(echo "$filename" | cut -d'_' -f3)
-    FLOWCELL=$(echo "$filename" | cut -d'_' -f5 | cut -d'.' -f1)
-    PU="${FLOWCELL}.${LANE}"
-    PLATFORM="ILLUMINA"
-
-    # Construct read group header
-    RG="@RG\tID:${sample_id}\tSM:${sample_id}\tLB:${LB}\tPU:${PU}\tPL:${PLATFORM}"
+    # Use read group from sample sheet if provided, otherwise build one
+    if [ -n "$read_group" ]; then
+        RG="$read_group"
+    else
+        filename=$(basename "$read1")
+        LB=$(echo "$filename" | cut -d'_' -f1,2)
+        LANE=$(echo "$filename" | cut -d'_' -f3)
+        FLOWCELL=$(echo "$filename" | cut -d'_' -f5 | cut -d'.' -f1)
+        PU="${FLOWCELL}.${LANE}"
+        PLATFORM="ILLUMINA"
+        RG="@RG\tID:${sample_id}\tSM:${sample_id}\tLB:${LB}\tPU:${PU}\tPL:${PLATFORM}"
+    fi
 
     #Align reads and convert to sorted BAM
     bwa-mem2 mem -M -R "$RG" -t "${SLURM_CPUS_PER_TASK:-8}" "$reference" "$R1" "$R2" |
