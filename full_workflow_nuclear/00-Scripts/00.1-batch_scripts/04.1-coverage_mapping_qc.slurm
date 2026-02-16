@@ -26,6 +26,7 @@ module load bioinfo/Qualimap/31-08-20
 SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
 ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_test/alignments"
 OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_test"
+R_SLURM_SCRIPT="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/04.2-coverage_summary_plot.slurm"
 
 FLAGSTAT_DIR="${OUTPUT_DIR}/flagstat"
 DEPTH_DIR="${OUTPUT_DIR}/depth"
@@ -45,7 +46,10 @@ if [ ! -f "$SAMPLE_SHEET" ]; then
     exit 1
 fi
 
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1}' > "$SAMPLES_LIST"
+# Build sample list once; reuse it across array tasks.
+if [ ! -s "$SAMPLES_LIST" ]; then
+    tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1}' > "$SAMPLES_LIST"
+fi
 
 # -------------------------------------------------------------------
 # STEP 2: Per-sample mapping and coverage QC
@@ -126,6 +130,13 @@ else
     echo "After all array tasks, merge rows with:"
     echo "echo -e \"sample_id\\ttotal_reads\\tmapped_reads\\tmapped_percent\\tavg_depth_q20\" > ${SUMMARY_TSV}"
     echo "cat ${SUMMARY_ROWS_DIR}/*.tsv >> ${SUMMARY_TSV}"
+
+    # Submit summary merge + R plotting once (from array task 1)
+    if [ "${SLURM_ARRAY_TASK_ID}" -eq 1 ] && [ -f "$R_SLURM_SCRIPT" ]; then
+        MERGE_JOB_ID="$(sbatch --dependency=afterok:${SLURM_ARRAY_JOB_ID} --wrap "echo -e 'sample_id\ttotal_reads\tmapped_reads\tmapped_percent\tavg_depth_q20' > '${SUMMARY_TSV}'; cat '${SUMMARY_ROWS_DIR}'/*.tsv >> '${SUMMARY_TSV}'" | awk '{print $4}')"
+        sbatch --dependency=afterok:${MERGE_JOB_ID} "$R_SLURM_SCRIPT"
+        echo "Submitted merge job ${MERGE_JOB_ID} and dependent R plotting job."
+    fi
 fi
 
 # Step 1: Load sample IDs from sample sheet

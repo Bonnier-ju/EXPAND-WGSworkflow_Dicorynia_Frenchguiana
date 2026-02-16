@@ -4,10 +4,10 @@
 #SBATCH -J 02-fastp_cleaning
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=1-3
 #SBATCH --mem=32G 
 #SBATCH --cpus-per-task=4  
-#SBATCH --mail-user=julien.bonnier@ecofog.gf
+#SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
 # Clean environment
@@ -32,7 +32,7 @@ echo "Starting fastp read filtering based on sample sheet: $SAMPLE_SHEET"
 FILES_LIST="${OUTPUT_DIR}/fastp_files.list"
 tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' > "$FILES_LIST"
 
-SAMPLES_PER_TASK=3
+SAMPLES_PER_TASK=2
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
