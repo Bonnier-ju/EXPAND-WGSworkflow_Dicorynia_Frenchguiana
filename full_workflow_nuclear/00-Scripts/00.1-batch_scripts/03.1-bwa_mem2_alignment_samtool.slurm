@@ -5,9 +5,9 @@
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
 #SBATCH --array=1-2
-#SBATCH --mem=32G
+#SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
-#SBATCH --mail-user=julien.bonnier@ecofog.gf
+#SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
 # Clean environment
@@ -17,12 +17,26 @@ module purge
 module load bioinfo/bwa-mem2/2.2.1
 module load bioinfo/samtools/1.21
 
+set -o pipefail
+
+# -------------------------------------------------------------------
+# STEP 0.1: Thread/memory tuning for alignment pipeline
+# -------------------------------------------------------------------
+TOTAL_THREADS="${SLURM_CPUS_PER_TASK:-4}"
+SORT_THREADS=$((TOTAL_THREADS / 3))
+[ "$SORT_THREADS" -lt 1 ] && SORT_THREADS=1
+VIEW_THREADS=1
+BWA_THREADS=$((TOTAL_THREADS - SORT_THREADS - VIEW_THREADS))
+[ "$BWA_THREADS" -lt 1 ] && BWA_THREADS=1
+SORT_MEM_PER_THREAD="1G"
+
 # File paths
 SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
 READS_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_test/cleaned_reads"
 ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_test/alignments"
 LOG_DIR="${ALIGN_DIR}/logs"
-mkdir -p "$ALIGN_DIR" "$LOG_DIR"
+TMP_DIR="${ALIGN_DIR}/tmp"
+mkdir -p "$ALIGN_DIR" "$LOG_DIR" "$TMP_DIR"
 
 FILES_LIST="${ALIGN_DIR}/alignment_files.list"
 # Columns: sample_id (1), reference_genome (7), read_group (9), read1 (10), read2 (11)
@@ -71,16 +85,21 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
         RG="@RG\tID:${sample_id}\tSM:${sample_id}\tLB:${LB}\tPU:${PU}\tPL:${PLATFORM}"
     fi
 
-    #Align reads and convert to sorted BAM
-    bwa-mem2 mem -M -R "$RG" -t "${SLURM_CPUS_PER_TASK:-8}" "$reference" "$R1" "$R2" |
-    samtools view -b -@ "${SLURM_CPUS_PER_TASK:-8}" - |
-    samtools sort -@ "${SLURM_CPUS_PER_TASK:-8}" -o "$BAM" - &&
-    samtools index "$BAM"
+    echo "START $(date -Iseconds) sample=$sample_id" >> "$LOG"
 
-    if [ -s "$BAM" ]; then
-        echo "Alignment completed for $sample_id" &>> "$LOG"
+    echo "THREADS sample=${sample_id} bwa=${BWA_THREADS} view=${VIEW_THREADS} sort=${SORT_THREADS} sort_mem=${SORT_MEM_PER_THREAD}" >> "$LOG"
+
+    if { bwa-mem2 mem -M -R "$RG" -t "$BWA_THREADS" "$reference" "$R1" "$R2" |
+         samtools view -b -@ "$VIEW_THREADS" - |
+         samtools sort -@ "$SORT_THREADS" -m "$SORT_MEM_PER_THREAD" -T "${TMP_DIR}/${sample_id}" -o "$BAM" - &&
+         samtools index "$BAM"; } >> "$LOG" 2>&1; then
+        if [ -s "$BAM" ]; then
+            echo "DONE $(date -Iseconds) sample=$sample_id bam=$BAM" >> "$LOG"
+        else
+            echo "ERROR: BAM not created for $sample_id" | tee -a "$LOG"
+        fi
     else
-        echo "ERROR: BAM not created for $sample_id" | tee -a "$LOG"
+        echo "ERROR: alignment pipeline failed for $sample_id" | tee -a "$LOG"
     fi
 done
 
