@@ -1,0 +1,22 @@
+# Ignore everything
+*
+
+# Re-include folders
+!*/
+
+# Keep only workflow scripts
+!full_workflow_nuclear/00-Scripts/**
+!full_workflow_chloroplastic/00-Scripts/**
+
+# Keep common script extensions (optional)
+!**/*.slurm
+!**/*.sh
+!**/*.py
+!**/*.R
+
+!.gitignore
+full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/
+full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/
+full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/
+full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/
+
