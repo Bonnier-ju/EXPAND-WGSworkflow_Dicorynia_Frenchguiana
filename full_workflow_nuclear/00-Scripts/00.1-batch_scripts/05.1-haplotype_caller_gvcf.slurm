@@ -17,6 +17,7 @@ set -o pipefail
 # STEP 0: Environment setup
 # -------------------------------------------------------------------
 module purge
+module load devel/python/Python-3.11.1
 module load devel/java/17.0.6
 module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
