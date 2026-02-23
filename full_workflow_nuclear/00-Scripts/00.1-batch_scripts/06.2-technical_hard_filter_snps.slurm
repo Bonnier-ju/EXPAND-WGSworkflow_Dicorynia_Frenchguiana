@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH -J 06.2-hard_filter_snps
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out
