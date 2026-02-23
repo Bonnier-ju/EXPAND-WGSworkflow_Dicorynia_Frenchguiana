@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -p workq                             
-#SBATCH --time=04:00:00                      # Maximum wall time (hh:mm:ss)
+#SBATCH --time=24:00:00                      # Maximum wall time (hh:mm:ss)
 #SBATCH -J 01-fastqc_multiqc_raw             # Job name
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out   # Standard output log
-#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out   # Standard error log
-#SBATCH --mem=16G                            
-#SBATCH --cpus-per-task=4                    # Number of CPUs to use
+#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err   # Standard error log
+#SBATCH --mem=24G                            
+#SBATCH --cpus-per-task=16                  # Number of CPUs to use
 #SBATCH --mail-user=julien.bonnier@inrae.fr # Email address for notifications
-#SBATCH --mail-type=END,FAIL                 # When to send email notifications
+#SBATCH --mail-type=END,FAIL                # When to send email notifications
 
 # -------------------------------------------------------------------
 #  DESCRIPTION
@@ -29,12 +29,18 @@ module load bioinfo/MultiQC/1.14
 # -------------------------------------------------------------------
 #  STEP 1: Define inputs and output directories
 # -------------------------------------------------------------------
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
-FASTQC_OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_test/fastqc_results"
-MULTIQC_OUTPUT_DIR="${FASTQC_OUTPUT_DIR}/multiqc"
+FASTQC_OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_full/fastqc"
+MULTIQC_OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_full/multiqc"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.csv"
+FASTQC_THREADS_PER_FILE=1
 
 # Create output directories if they do not exist
-mkdir -p "$MULTIQC_OUTPUT_DIR"
+mkdir -p "$FASTQC_OUTPUT_DIR" "$MULTIQC_OUTPUT_DIR"
+
+if [ ! -s "$SAMPLE_SHEET" ]; then
+    echo "ERROR: sample sheet not found or empty: $SAMPLE_SHEET" >&2
+    exit 1
+fi
 
 echo "Starting FastQC using sample sheet: $SAMPLE_SHEET"
 echo "Results will be saved to: $FASTQC_OUTPUT_DIR"
@@ -49,17 +55,17 @@ echo "Results will be saved to: $FASTQC_OUTPUT_DIR"
 FILES_LIST="${FASTQC_OUTPUT_DIR}/fastqc_files.list"
 tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $(NF-1); print $NF}' | sort -u > "$FILES_LIST"
 
-while read fq_file; do
-    if [ -z "$fq_file" ]; then
-        continue
-    fi
+PARALLEL_JOBS=$(( ${SLURM_CPUS_PER_TASK:-8} / FASTQC_THREADS_PER_FILE ))
+[ "$PARALLEL_JOBS" -lt 1 ] && PARALLEL_JOBS=1
+
+while read -r fq_file; do
+    [ -z "$fq_file" ] && continue
     if [ ! -f "$fq_file" ]; then
         echo "WARNING: missing file: $fq_file" >&2
         continue
     fi
-    echo "Processing file: $fq_file"
-    fastqc -t "${SLURM_CPUS_PER_TASK:-4}" -o "$FASTQC_OUTPUT_DIR" "$fq_file"
-done < "$FILES_LIST"
+    echo "$fq_file"
+done < "$FILES_LIST" | xargs -r -P "$PARALLEL_JOBS" -I {} bash -c 'echo "Processing file: {}"; fastqc -t '"$FASTQC_THREADS_PER_FILE"' -o "'"$FASTQC_OUTPUT_DIR"'" "{}"'
 
 echo "FastQC completed on all samples."
 
