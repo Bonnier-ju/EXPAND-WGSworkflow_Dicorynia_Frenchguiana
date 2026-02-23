@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=10:00:00
+#SBATCH --time=72:00:00
 #SBATCH -J 00-fastq_integrity_check
-#SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
-#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out
+#SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
+#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
+#SBATCH --array=1-18
 #SBATCH --mem=16G
 #SBATCH --cpus-per-task=2
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -15,8 +16,9 @@ set -u
 # Expected CSV format: sample_id in column 1, read1/read2 in last 2 columns.
 
 # Defaults allow running directly with sbatch without extra arguments.
-DEFAULT_SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
-DEFAULT_OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_test/fastq_integrity_report/"
+DEFAULT_SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.csv"
+DEFAULT_OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_full/fastq_integrity_report"
+SAMPLES_PER_TASK=10
 
 if [ "$#" -gt 2 ]; then
     echo "Usage: $0 [sample_sheet.csv] [output_dir]" >&2
@@ -28,8 +30,11 @@ OUT_DIR="${2:-$DEFAULT_OUT_DIR}"
 mkdir -p "$OUT_DIR"
 
 TS="$(date +%Y%m%d_%H%M%S)"
+TASK_TAG="${SLURM_ARRAY_TASK_ID:-1}"
 REPORT="${OUT_DIR}/preflight_report_${TS}.tsv"
 SUMMARY="${OUT_DIR}/preflight_summary_${TS}.txt"
+REPORT="${OUT_DIR}/preflight_report_${TS}_task${TASK_TAG}.tsv"
+SUMMARY="${OUT_DIR}/preflight_summary_${TS}_task${TASK_TAG}.txt"
 
 if [ ! -f "$SAMPLE_SHEET" ]; then
     echo "ERROR: sample sheet not found: $SAMPLE_SHEET" >&2
@@ -63,7 +68,11 @@ check_pair_names() {
     fi
 }
 
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' | while IFS=$'\t' read -r sample_id read1 read2; do
+TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
+START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
+END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
+
+tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' | sed -n "${START_LINE},${END_LINE}p" | while IFS=$'\t' read -r sample_id read1 read2; do
     TOTAL=$((TOTAL + 1))
     notes=""
 
