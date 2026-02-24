@@ -4,7 +4,7 @@
 #SBATCH -J 04-coverage_mapping_qc
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
-#SBATCH --array=1-3
+#SBATCH --array=1-36
 #SBATCH --mem=32G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -23,10 +23,9 @@ module load bioinfo/Qualimap/31-08-20
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs and initialize directories
 # -------------------------------------------------------------------
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
-ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_test/alignments"
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_test"
-R_SLURM_SCRIPT="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/04.2-coverage_summary_plot.slurm"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.csv"
+ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_full/alignments"
+OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_full"
 
 FLAGSTAT_DIR="${OUTPUT_DIR}/flagstat"
 DEPTH_DIR="${OUTPUT_DIR}/depth"
@@ -35,13 +34,13 @@ LOG_DIR="${OUTPUT_DIR}/logs"
 SUMMARY_TSV="${OUTPUT_DIR}/mapping_coverage_summary.tsv"
 SUMMARY_ROWS_DIR="${OUTPUT_DIR}/summary_rows"
 SAMPLES_LIST="${OUTPUT_DIR}/samples.list"
-SAMPLES_PER_TASK=2
+SAMPLES_PER_TASK=5
 SAMTOOLS_THREADS="${SLURM_CPUS_PER_TASK:-4}"
 QUALIMAP_THREADS="${SLURM_CPUS_PER_TASK:-4}"
 
 mkdir -p "$FLAGSTAT_DIR" "$DEPTH_DIR" "$QUALIMAP_DIR" "$LOG_DIR" "$SUMMARY_ROWS_DIR"
 
-if [ ! -f "$SAMPLE_SHEET" ]; then
+if [ ! -s "$SAMPLE_SHEET" ]; then
     echo "ERROR: sample sheet not found: $SAMPLE_SHEET" >&2
     exit 1
 fi
@@ -131,11 +130,10 @@ else
     echo "echo -e \"sample_id\\ttotal_reads\\tmapped_reads\\tmapped_percent\\tavg_depth_q20\" > ${SUMMARY_TSV}"
     echo "cat ${SUMMARY_ROWS_DIR}/*.tsv >> ${SUMMARY_TSV}"
 
-    # Submit summary merge + R plotting once (from array task 1)
-    if [ "${SLURM_ARRAY_TASK_ID}" -eq 1 ] && [ -f "$R_SLURM_SCRIPT" ]; then
+    # Submit summary merge once (from array task 1)
+    if [ "${SLURM_ARRAY_TASK_ID}" -eq 1 ]; then
         MERGE_JOB_ID="$(sbatch --dependency=afterok:${SLURM_ARRAY_JOB_ID} --wrap "echo -e 'sample_id\ttotal_reads\tmapped_reads\tmapped_percent\tavg_depth_q20' > '${SUMMARY_TSV}'; cat '${SUMMARY_ROWS_DIR}'/*.tsv >> '${SUMMARY_TSV}'" | awk '{print $4}')"
-        sbatch --dependency=afterok:${MERGE_JOB_ID} "$R_SLURM_SCRIPT"
-        echo "Submitted merge job ${MERGE_JOB_ID} and dependent R plotting job."
+        echo "Submitted merge job ${MERGE_JOB_ID}."
     fi
 fi
 
