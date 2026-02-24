@@ -107,7 +107,7 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
     echo "THREADS sample=${sample_id} bwa=${BWA_THREADS} view=${VIEW_THREADS} sort=${SORT_THREADS} sort_mem=${SORT_MEM_PER_THREAD}" >> "$LOG"
 
     if { bwa-mem2 mem -M -R "$RG" -t "$BWA_THREADS" "$reference" "$R1" "$R2" |
-         samtools view -b -@ "$VIEW_THREADS" - |
+         samtools view -b -F 4 -@ "$VIEW_THREADS" - |
          samtools sort -@ "$SORT_THREADS" -m "$SORT_MEM_PER_THREAD" -T "${TMP_DIR}/${sample_id}" -o "$BAM" - &&
          samtools index "$BAM"; } >> "$LOG" 2>&1; then
         if [ -s "$BAM" ] && [ -s "${BAM}.bai" ]; then
