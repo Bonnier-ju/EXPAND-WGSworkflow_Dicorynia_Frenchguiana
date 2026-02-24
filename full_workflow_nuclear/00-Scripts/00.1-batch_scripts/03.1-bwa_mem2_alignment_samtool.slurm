@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=08:00:00
-#SBATCH -J 04-bwa_mem2_alignment
+#SBATCH --time=24:00:00
+#SBATCH -J 03-bwa_mem2_alignment
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
-#SBATCH --array=1-6
+#SBATCH --array=1-36
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -17,6 +17,7 @@ module purge
 module load bioinfo/bwa-mem2/2.2.1
 module load bioinfo/samtools/1.21
 
+set -u
 set -o pipefail
 
 # -------------------------------------------------------------------
@@ -31,18 +32,23 @@ BWA_THREADS=$((TOTAL_THREADS - SORT_THREADS - VIEW_THREADS))
 SORT_MEM_PER_THREAD="1G"
 
 # File paths
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
-READS_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_test/cleaned_reads"
-ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_test/alignments"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.csv"
+READS_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/cleaned_reads"
+ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_full/alignments"
 LOG_DIR="${ALIGN_DIR}/logs"
 TMP_DIR="${ALIGN_DIR}/tmp"
 mkdir -p "$ALIGN_DIR" "$LOG_DIR" "$TMP_DIR"
+
+if [ ! -s "$SAMPLE_SHEET" ]; then
+    echo "ERROR: sample sheet not found or empty: $SAMPLE_SHEET" >&2
+    exit 1
+fi
 
 FILES_LIST="${ALIGN_DIR}/alignment_files.list"
 # Columns: sample_id (1), reference_genome (7), read_group (9), read1 (10), read2 (11)
 tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $7 "\t" $9 "\t" $10 "\t" $11}' > "$FILES_LIST"
 
-SAMPLES_PER_TASK=1
+SAMPLES_PER_TASK=5
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
@@ -50,6 +56,7 @@ END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 # Loop over sample sheet (skip header)
 # Expect read1/read2 as the last two columns in the CSV, and reference genome as the last column
 sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r sample_id reference read_group read1 read2; do
+    [ -z "$sample_id" ] && continue
     echo "Aligning sample: $sample_id"
 
     # Define input files
@@ -63,7 +70,7 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
         echo "ERROR: reference genome not found: $reference" | tee -a "$LOG"
         continue
     fi
-    if [ ! -f "$R1" ] || [ ! -f "$R2" ]; then
+    if [ ! -s "$R1" ] || [ ! -s "$R2" ]; then
         echo "ERROR: missing reads for $sample_id: $R1 $R2" | tee -a "$LOG"
         continue
     fi
