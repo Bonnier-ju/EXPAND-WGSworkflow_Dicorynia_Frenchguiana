@@ -25,6 +25,7 @@ OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_in
 FAILED_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/failed_reads"
 LOG_DIR="${OUTPUT_DIR}/logs"
 SAMPLES_PER_TASK=5
+DELETE_RAW_AFTER_TRIM=1
 
 # Create output directories
 mkdir -p "$OUTPUT_DIR" "$LOG_DIR"
@@ -77,7 +78,15 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
           --html "$html_report" \
           --json "$json_report" &> "$log_file"
 
-    echo "Finished processing $sample_id"
+    if [ -s "$out_r1" ] && [ -s "$out_r2" ] && [ -s "$json_report" ]; then
+        if [ "$DELETE_RAW_AFTER_TRIM" -eq 1 ]; then
+            rm -f "$read1" "$read2"
+            echo "Deleted raw FASTQ for $sample_id"
+        fi
+        echo "Finished processing $sample_id"
+    else
+        echo "ERROR: trimming outputs missing for $sample_id, raw FASTQ kept" >&2
+    fi
 done
 
 echo "Task ${TASK_ID} processed sample lines ${START_LINE}-${END_LINE}."
