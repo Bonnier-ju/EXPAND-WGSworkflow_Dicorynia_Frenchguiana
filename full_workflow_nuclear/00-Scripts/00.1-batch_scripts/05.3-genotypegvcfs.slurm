@@ -1,22 +1,22 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=48:00:00
+#SBATCH --time=80:00:00
 #SBATCH -J 05.3-genotypegvcfs
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
-#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out
+#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=32G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
-set -u
-set -o pipefail
+
+set -euo pipefail
 
 # -------------------------------------------------------------------
 # STEP 0: Environment setup
 # -------------------------------------------------------------------
 module purge
-module load devel/java/17.0.6
+module load devel/python/Python-3.11.1 devel/java/17.0.6
 module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
 
