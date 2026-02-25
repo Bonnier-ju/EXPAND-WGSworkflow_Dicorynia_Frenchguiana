@@ -4,7 +4,7 @@
 #SBATCH -J cp-04-mapping_qc
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.err
-#SBATCH --array=1-5
+#SBATCH --array=1-4
 #SBATCH --mem=12G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
