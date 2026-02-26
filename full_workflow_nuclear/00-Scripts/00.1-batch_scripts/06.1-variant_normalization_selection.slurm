@@ -38,6 +38,8 @@ NORM_VCF="${OUTPUT_DIR}/joint.norm.vcf.gz"
 NORM_TBI="${NORM_VCF}.tbi"
 SNP_VCF="${OUTPUT_DIR}/joint.norm.biallelic.snps.vcf.gz"
 SNP_TBI="${SNP_VCF}.tbi"
+SNP_RAW_VCF="${OUTPUT_DIR}/joint.norm.biallelic.snps.raw.vcf.gz"
+SNP_RAW_TBI="${SNP_RAW_VCF}.tbi"
 INDEL_VCF="${OUTPUT_DIR}/joint.norm.biallelic.indels.vcf.gz"
 INDEL_TBI="${INDEL_VCF}.tbi"
 
@@ -98,7 +100,17 @@ gatk --java-options "-Xms8G -Xmx8G -XX:ParallelGCThreads=2" SelectVariants \
     -V "$NORM_VCF" \
     --select-type-to-include SNP \
     --restrict-alleles-to BIALLELIC \
-    -O "$SNP_VCF" >> "$LOG_FILE" 2>&1
+    -O "$SNP_RAW_VCF" >> "$LOG_FILE" 2>&1
+
+echo "STEP 3b: remove symbolic/no-ALT SNP records" | tee -a "$LOG_FILE"
+bcftools view \
+    --threads "$BCFTOOLS_THREADS" \
+    -e 'ALT="*" || ALT~"^<"' \
+    -Oz \
+    -o "$SNP_VCF" \
+    "$SNP_RAW_VCF" >> "$LOG_FILE" 2>&1
+bcftools index --threads "$BCFTOOLS_THREADS" -t "$SNP_VCF" >> "$LOG_FILE" 2>&1
+rm -f "$SNP_RAW_VCF" "$SNP_RAW_TBI"
 
 echo "STEP 3: GATK SelectVariants (biallelic INDELs)" | tee -a "$LOG_FILE"
 gatk --java-options "-Xms8G -Xmx8G -XX:ParallelGCThreads=2" SelectVariants \
