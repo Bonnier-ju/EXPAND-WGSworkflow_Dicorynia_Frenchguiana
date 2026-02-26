@@ -16,8 +16,8 @@ set -euo pipefail
 # -------------------------------------------------------------------
 module purge
 module load bioinfo/PLINK/2.00a4
-module load bioinfo/bcftools/1.21
-module load bioinfo/samtools/1.21
+module load bioinfo/Bcftools/1.9
+module load bioinfo/samtools/1.23
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs

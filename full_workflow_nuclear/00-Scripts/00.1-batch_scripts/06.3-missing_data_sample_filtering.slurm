@@ -18,7 +18,7 @@ set -o pipefail
 module purge
 module load bioinfo/PLINK/2.00a4
 module load bioinfo/Bcftools/1.9
-module load bioinfo/samtools/1.14
+module load bioinfo/samtools/1.23
 module load bioinfo/VCFtools/0.1.16
 
 # -------------------------------------------------------------------

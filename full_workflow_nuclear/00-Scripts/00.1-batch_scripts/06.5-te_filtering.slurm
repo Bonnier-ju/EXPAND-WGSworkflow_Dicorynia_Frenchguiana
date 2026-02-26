@@ -17,7 +17,7 @@ set -euo pipefail
 module purge
 module load devel/python/Python-3.11.1
 module load bioinfo/Bcftools/1.9
-module load bioinfo/samtools/1.21
+module load bioinfo/samtools/1.23
 module load bioinfo/bedtools/2.30.0
 module load bioinfo/BEDOPS/2.4.41
 

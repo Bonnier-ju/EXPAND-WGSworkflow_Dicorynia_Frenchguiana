@@ -30,7 +30,7 @@ fi
 
 # Columns used from sample sheet:
 # sample_id (1), raw_read1 (last-1), raw_read2 (last)
-ALL_FILES_LIST="${REPORT_DIR}/trimmed_check_samples.all.list"
+ALL_FILES_LIST="${REPORT_DIR}/trimmed_check_samples.all.task${TASK_ID}.list"
 TASK_FILES_LIST="${REPORT_DIR}/trimmed_check_samples.task${TASK_ID}.list"
 tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' > "$ALL_FILES_LIST"
 sed -n "${START_LINE},${END_LINE}p" "$ALL_FILES_LIST" > "$TASK_FILES_LIST"
