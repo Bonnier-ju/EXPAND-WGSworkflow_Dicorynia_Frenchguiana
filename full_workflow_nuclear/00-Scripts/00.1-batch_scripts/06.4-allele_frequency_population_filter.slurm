@@ -16,8 +16,8 @@ set -o pipefail
 # STEP 0: Environment setup
 # -------------------------------------------------------------------
 module purge
-module load bioinfo/plink2
-module load bioinfo/bcftools/1.21
+module load bioinfo/PLINK/2.00a4
+module load bioinfo/Bcftools/1.9
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs

@@ -4,7 +4,7 @@
 #SBATCH -J cp-03-bwa_mem2_alignment
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.err
-#SBATCH --array=1-4
+#SBATCH --array=1-18
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -12,7 +12,7 @@
 
 # -------------------------------------------------------------------
 # Chloroplastic alignment from already-trimmed reads
-# - Default mode: test set (7 individuals)
+# - Default mode: full chloroplastic dataset
 # - Reuses trimmed reads generated in nuclear workflow
 # -------------------------------------------------------------------
 
@@ -30,9 +30,9 @@ BWA_THREADS=$((TOTAL_THREADS - SORT_THREADS - VIEW_THREADS))
 [ "$BWA_THREADS" -lt 1 ] && BWA_THREADS=1
 SORT_MEM_PER_THREAD="1G"
 
-SAMPLE_SHEET="${SAMPLE_SHEET:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_test.csv}"
+SAMPLE_SHEET="${SAMPLE_SHEET:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv}"
 READS_DIR="${READS_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/cleaned_reads}"
-ALIGN_DIR="${ALIGN_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/03-alignment/workflow_test_9ind/alignments}"
+ALIGN_DIR="${ALIGN_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/03-alignment/workflow_full/alignments}"
 LOG_DIR="${ALIGN_DIR}/logs"
 TMP_DIR="${ALIGN_DIR}/tmp"
 
@@ -69,7 +69,7 @@ if [ ! -s "${REF_GENOME}.fai" ]; then
     samtools faidx "$REF_GENOME"
 fi
 
-SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-2}"
+SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-10}"
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
@@ -92,8 +92,8 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
         continue
     fi
 
-    if [ -s "$BAM" ]; then
-        echo "SKIP: BAM already exists for $sample_id: $BAM" | tee -a "$LOG"
+    if [ -s "$BAM" ] && [ -s "${BAM}.bai" ]; then
+        echo "SKIP: BAM+BAI already exist for $sample_id: $BAM" | tee -a "$LOG"
         continue
     fi
 

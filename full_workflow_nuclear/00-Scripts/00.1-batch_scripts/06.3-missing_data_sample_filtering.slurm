@@ -3,7 +3,7 @@
 #SBATCH --time=24:00:00
 #SBATCH -J 06.3-missing_filter
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
-#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out
+#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=8G
 #SBATCH --cpus-per-task=2
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -16,9 +16,10 @@ set -o pipefail
 # STEP 0: Environment setup
 # -------------------------------------------------------------------
 module purge
-module load bioinfo/vcftools
 module load bioinfo/PLINK/2.00a4
-module load bioinfo/bcftools/1.21
+module load bioinfo/Bcftools/1.9
+module load bioinfo/samtools/1.14
+module load bioinfo/VCFtools/0.1.16
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs and thresholds

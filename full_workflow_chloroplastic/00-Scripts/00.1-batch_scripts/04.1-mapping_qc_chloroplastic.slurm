@@ -49,8 +49,8 @@ TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
-TASK_SUMMARY="${SUMMARY_DIR}/mapping_qc_task${TASK_ID}.tsv"
-printf "sample_id\tbam_path\ttotal_reads_in_bam\tmapq20_reads\tmapq20_pct\tproper_pair_reads\tproper_pair_pct\tavg_depth_q20\tbreadth_1x_q20\tbreadth_5x_q20\tbreadth_10x_q20\tnote\n" > "$TASK_SUMMARY"
+GLOBAL_SUMMARY="${SUMMARY_DIR}/mapping_qc_summary.tsv"
+SUMMARY_LOCK="${SUMMARY_DIR}/mapping_qc_summary.lock"
 
 echo "=== Step 1/4: Select samples for current array task ==="
 echo "TASK_ID=${TASK_ID} START_LINE=${START_LINE} END_LINE=${END_LINE} SAMPLES_PER_TASK=${SAMPLES_PER_TASK}"
@@ -71,7 +71,13 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS= read -r sample_id
 
     if [ ! -s "$BAM" ] || [ ! -s "$BAI" ]; then
         echo "ERROR: BAM/BAI missing for ${sample_id}: $BAM $BAI" | tee -a "$SAMPLE_LOG"
-        printf "%s\t%s\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tMISSING_BAM_OR_BAI\n" "$sample_id" "$BAM" >> "$TASK_SUMMARY"
+        {
+            flock -x 200
+            if [ ! -s "$GLOBAL_SUMMARY" ]; then
+                printf "sample_id\tbam_path\ttotal_reads_in_bam\tmapq20_reads\tmapq20_pct\tproper_pair_reads\tproper_pair_pct\tavg_depth_q20\tbreadth_1x_q20\tbreadth_5x_q20\tbreadth_10x_q20\tnote\n" > "$GLOBAL_SUMMARY"
+            fi
+            printf "%s\t%s\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tNA\tMISSING_BAM_OR_BAI\n" "$sample_id" "$BAM" >> "$GLOBAL_SUMMARY"
+        } 200>"$SUMMARY_LOCK"
         continue
     fi
 
@@ -103,15 +109,21 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS= read -r sample_id
         "$sample_id" "$BAM" "$TOTAL_READS" "$MAPQ20_READS" "$MAPQ20_PCT" "$PROPER_PAIR_READS" "$PROPER_PAIR_PCT" \
         "$AVG_DEPTH_Q20" "$BREADTH_1X" "$BREADTH_5X" "$BREADTH_10X" "$NOTE" >> "$SAMPLE_TSV"
 
-    printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
-        "$sample_id" "$BAM" "$TOTAL_READS" "$MAPQ20_READS" "$MAPQ20_PCT" "$PROPER_PAIR_READS" "$PROPER_PAIR_PCT" \
-        "$AVG_DEPTH_Q20" "$BREADTH_1X" "$BREADTH_5X" "$BREADTH_10X" "$NOTE" >> "$TASK_SUMMARY"
+    {
+        flock -x 200
+        if [ ! -s "$GLOBAL_SUMMARY" ]; then
+            printf "sample_id\tbam_path\ttotal_reads_in_bam\tmapq20_reads\tmapq20_pct\tproper_pair_reads\tproper_pair_pct\tavg_depth_q20\tbreadth_1x_q20\tbreadth_5x_q20\tbreadth_10x_q20\tnote\n" > "$GLOBAL_SUMMARY"
+        fi
+        printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
+            "$sample_id" "$BAM" "$TOTAL_READS" "$MAPQ20_READS" "$MAPQ20_PCT" "$PROPER_PAIR_READS" "$PROPER_PAIR_PCT" \
+            "$AVG_DEPTH_Q20" "$BREADTH_1X" "$BREADTH_5X" "$BREADTH_10X" "$NOTE" >> "$GLOBAL_SUMMARY"
+    } 200>"$SUMMARY_LOCK"
 
     echo "DONE sample=${sample_id}" | tee -a "$SAMPLE_LOG"
 done
 
 echo "=== Step 3/4: Task summary ==="
-echo "Task summary written: $TASK_SUMMARY"
+echo "Global summary updated: $GLOBAL_SUMMARY"
 
 echo "=== Step 4/4: End of cp-04 mapping QC task ${TASK_ID} ==="
 

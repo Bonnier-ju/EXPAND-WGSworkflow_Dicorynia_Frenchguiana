@@ -6,6 +6,7 @@
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=12G
 #SBATCH --cpus-per-task=3
+#SBATCH --array=1-18
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
@@ -15,6 +16,10 @@ set -o pipefail
 SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.csv"
 TRIMMED_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/cleaned_reads"
 REPORT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/trimmed_integrity_report"
+SAMPLES_PER_TASK=10
+TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
+START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
+END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
 mkdir -p "$REPORT_DIR"
 
@@ -25,17 +30,19 @@ fi
 
 # Columns used from sample sheet:
 # sample_id (1), raw_read1 (last-1), raw_read2 (last)
-FILES_LIST="${REPORT_DIR}/trimmed_check_samples.list"
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' > "$FILES_LIST"
+ALL_FILES_LIST="${REPORT_DIR}/trimmed_check_samples.all.list"
+TASK_FILES_LIST="${REPORT_DIR}/trimmed_check_samples.task${TASK_ID}.list"
+tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' > "$ALL_FILES_LIST"
+sed -n "${START_LINE},${END_LINE}p" "$ALL_FILES_LIST" > "$TASK_FILES_LIST"
 
-REPORT_TSV="${REPORT_DIR}/trimmed_integrity_report.tsv"
-SUMMARY_TXT="${REPORT_DIR}/trimmed_integrity_summary.txt"
+REPORT_TSV="${REPORT_DIR}/trimmed_integrity_report_task${TASK_ID}.tsv"
+SUMMARY_TXT="${REPORT_DIR}/trimmed_integrity_summary_task${TASK_ID}.txt"
 
-DUP_SAMPLE_IDS="${REPORT_DIR}/duplicate_sample_ids.txt"
-DUP_READ_PAIRS="${REPORT_DIR}/duplicate_read_pairs.txt"
+DUP_SAMPLE_IDS="${REPORT_DIR}/duplicate_sample_ids_task${TASK_ID}.txt"
+DUP_READ_PAIRS="${REPORT_DIR}/duplicate_read_pairs_task${TASK_ID}.txt"
 
-cut -f1 "$FILES_LIST" | sort | uniq -d > "$DUP_SAMPLE_IDS"
-awk -F'\t' '{k=$2"\t"$3; c[k]++} END {for (k in c) if (c[k] > 1) print k}' "$FILES_LIST" | sort > "$DUP_READ_PAIRS"
+cut -f1 "$ALL_FILES_LIST" | sort | uniq -d > "$DUP_SAMPLE_IDS"
+awk -F'\t' '{k=$2"\t"$3; c[k]++} END {for (k in c) if (c[k] > 1) print k}' "$ALL_FILES_LIST" | sort > "$DUP_READ_PAIRS"
 
 echo -e "sample_id\tstatus\tgzip_r1\tgzip_r2\tfastq_blocks_r1\tfastq_blocks_r2\tread_count_r1\tread_count_r2\tpair_sync\tdetail\tr1_path\tr2_path" > "$REPORT_TSV"
 
@@ -208,7 +215,7 @@ while IFS=$'\t' read -r sample_id raw_r1 raw_r2; do
     fi
 
     echo -e "${sample_id}\t${status}\t${gzip_r1}\t${gzip_r2}\t${blocks_r1}\t${blocks_r2}\t${count_r1}\t${count_r2}\t${pair_sync}\t${reasons}\t${r1}\t${r2}" >> "$REPORT_TSV"
-done < "$FILES_LIST"
+done < "$TASK_FILES_LIST"
 
 total_checked=$(awk 'NR>1 {n++} END {print n+0}' "$REPORT_TSV")
 total_pass=$(awk -F'\t' 'NR>1 && $2=="PASS" {n++} END {print n+0}' "$REPORT_TSV")
@@ -216,6 +223,8 @@ total_fail=$(awk -F'\t' 'NR>1 && $2=="FAIL" {n++} END {print n+0}' "$REPORT_TSV"
 
 {
     echo "Trimmed FASTQ integrity check"
+    echo "Task ID           : $TASK_ID"
+    echo "Sample lines      : $START_LINE-$END_LINE"
     echo "Checked samples   : $total_checked"
     echo "PASS              : $total_pass"
     echo "FAIL              : $total_fail"

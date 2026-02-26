@@ -4,7 +4,7 @@
 #SBATCH -J 03-bwa_mem2_alignment
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
-#SBATCH --array=1-90
+#SBATCH --array=1-36
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -48,7 +48,7 @@ FILES_LIST="${ALIGN_DIR}/alignment_files.list"
 # Columns: sample_id (1), reference_genome (7), read_group (9), read1 (10), read2 (11)
 tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $7 "\t" $9 "\t" $10 "\t" $11}' > "$FILES_LIST"
 
-SAMPLES_PER_TASK=2
+SAMPLES_PER_TASK=5
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
