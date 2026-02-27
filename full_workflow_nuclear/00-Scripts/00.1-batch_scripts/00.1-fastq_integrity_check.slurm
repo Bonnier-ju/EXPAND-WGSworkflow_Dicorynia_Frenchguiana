@@ -4,7 +4,7 @@
 #SBATCH -J 00-fastq_integrity_check
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
-#SBATCH --array=1-18
+#SBATCH --array=1-8
 #SBATCH --mem=16G
 #SBATCH --cpus-per-task=2
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -16,8 +16,8 @@ set -u
 # Expected CSV format: sample_id in column 1, read1/read2 in last 2 columns.
 
 # Defaults allow running directly with sbatch without extra arguments.
-DEFAULT_SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.csv"
-DEFAULT_OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_full/fastq_integrity_report"
+DEFAULT_SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_invalid_trimmed_73.csv"
+DEFAULT_OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/01-quality_control/workflow_retrim_73/fastq_integrity_report"
 SAMPLES_PER_TASK=10
 
 if [ "$#" -gt 2 ]; then
