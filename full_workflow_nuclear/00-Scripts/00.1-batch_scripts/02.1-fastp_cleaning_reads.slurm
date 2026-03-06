@@ -32,16 +32,15 @@ mkdir -p "$OUTPUT_DIR" "$LOG_DIR"
 
 echo "Starting fastp read filtering based on sample sheet: $SAMPLE_SHEET"
 
-# Read the sample sheet (skip header line)
-# Expect read1/read2 as the last two columns in the CSV
-FILES_LIST="${OUTPUT_DIR}/fastp_files.list"
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $(NF-1) "\t" $NF}' > "$FILES_LIST"
-
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
-sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r sample_id read1 read2; do
+# Build a per-task list to avoid concurrent writes between array tasks
+TASK_FILES_LIST="${TMPDIR:-/tmp}/fastp_files_${SLURM_JOB_ID:-manual}_${TASK_ID}.list"
+awk -F, 'NR>1{print $1 "\t" $(NF-1) "\t" $NF}' "$SAMPLE_SHEET" | sed -n "${START_LINE},${END_LINE}p" > "$TASK_FILES_LIST"
+
+while IFS=$'\t' read -r sample_id read1 read2; do
     [ -z "$sample_id" ] && continue
     echo "Processing sample: $sample_id"
 
@@ -87,7 +86,9 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
     else
         echo "ERROR: trimming outputs missing for $sample_id, raw FASTQ kept" >&2
     fi
-done
+done < "$TASK_FILES_LIST"
+
+rm -f "$TASK_FILES_LIST"
 
 echo "Task ${TASK_ID} processed sample lines ${START_LINE}-${END_LINE}."
 

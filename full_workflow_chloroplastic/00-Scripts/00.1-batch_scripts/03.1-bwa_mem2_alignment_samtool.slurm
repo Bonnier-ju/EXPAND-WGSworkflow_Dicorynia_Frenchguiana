@@ -43,15 +43,6 @@ if [ ! -s "$SAMPLE_SHEET" ]; then
     exit 1
 fi
 
-FILES_LIST="${ALIGN_DIR}/alignment_files.list"
-# Columns: sample_id (1), reference_genome (7), read_group (9)
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $7 "\t" $9}' > "$FILES_LIST"
-
-if [ ! -s "$FILES_LIST" ]; then
-    echo "ERROR: empty file list generated from $SAMPLE_SHEET" >&2
-    exit 1
-fi
-
 # Ensure reference index exists (single chloroplast reference expected)
 REF_GENOME=$(awk -F, 'NR==2{print $7}' "$SAMPLE_SHEET")
 if [ ! -s "$REF_GENOME" ]; then
@@ -74,7 +65,15 @@ TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
-sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r sample_id reference read_group; do
+# Build a per-task list (prevents race conditions between array tasks)
+TASK_FILES_LIST="${TMPDIR:-/tmp}/cp_alignment_files_${SLURM_JOB_ID:-manual}_${TASK_ID}.list"
+awk -F, 'NR>1{print $1 "\t" $7 "\t" $9}' "$SAMPLE_SHEET" | sed -n "${START_LINE},${END_LINE}p" > "$TASK_FILES_LIST"
+
+if [ ! -s "$TASK_FILES_LIST" ]; then
+    echo "WARNING: no samples selected for task ${TASK_ID} (lines ${START_LINE}-${END_LINE})."
+fi
+
+while IFS=$'\t' read -r sample_id reference read_group; do
     [ -z "$sample_id" ] && continue
 
     R1="${READS_DIR}/${sample_id}_R1.trimmed.fastq.gz"
@@ -118,6 +117,8 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
     else
         echo "ERROR: alignment pipeline failed for $sample_id" | tee -a "$LOG"
     fi
-done
+done < "$TASK_FILES_LIST"
+
+rm -f "$TASK_FILES_LIST"
 
 echo "All requested samples processed for task ${TASK_ID}."
