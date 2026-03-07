@@ -4,7 +4,7 @@
 #SBATCH -J cp-05-haplotype_caller
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.err
-#SBATCH --array=1-8
+#SBATCH --array=1-18
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -24,13 +24,12 @@ module load devel/java/17.0.6
 module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
 
-SAMPLE_SHEET="${SAMPLE_SHEET:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_test.csv}"
-ALIGN_DIR="${ALIGN_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/03-alignment/workflow_test_9ind/alignments}"
-OUTPUT_DIR="${OUTPUT_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_test_9ind/haplotypecaller_gvcf}"
+SAMPLE_SHEET="${SAMPLE_SHEET:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv}"
+ALIGN_DIR="${ALIGN_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/03-alignment/workflow_full/alignments}"
+OUTPUT_DIR="${OUTPUT_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/haplotypecaller_gvcf}"
 LOG_DIR="${OUTPUT_DIR}/logs"
-SAMPLES_LIST="${OUTPUT_DIR}/samples.list"
 
-SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-1}"
+SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-10}"
 JAVA_MEM_GB=20
 SAMPLE_PLOIDY=1
 MAX_READS_PER_ALIGNMENT_START=0
@@ -47,17 +46,18 @@ if [ ! -s "$SAMPLE_SHEET" ]; then
 fi
 
 # Columns: sample_id (1), reference_genome (7)
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $7}' > "$SAMPLES_LIST"
-if [ ! -s "$SAMPLES_LIST" ]; then
-    echo "ERROR: empty sample list generated from $SAMPLE_SHEET" >&2
-    exit 1
-fi
-
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
-sed -n "${START_LINE},${END_LINE}p" "$SAMPLES_LIST" | while IFS=$'\t' read -r sample_id reference; do
+# Build per-task sample list to avoid race conditions between array tasks
+TASK_SAMPLES_LIST="${TMPDIR:-/tmp}/cp_hc_samples_${SLURM_JOB_ID:-manual}_${TASK_ID}.list"
+awk -F, 'NR>1{print $1 "\t" $7}' "$SAMPLE_SHEET" | sed -n "${START_LINE},${END_LINE}p" > "$TASK_SAMPLES_LIST"
+if [ ! -s "$TASK_SAMPLES_LIST" ]; then
+    echo "WARNING: no samples selected for task ${TASK_ID} (lines ${START_LINE}-${END_LINE})."
+fi
+
+while IFS=$'\t' read -r sample_id reference; do
     [ -z "$sample_id" ] && continue
 
     BAM="${ALIGN_DIR}/${sample_id}.sorted.bam"
@@ -125,8 +125,9 @@ sed -n "${START_LINE},${END_LINE}p" "$SAMPLES_LIST" | while IFS=$'\t' read -r sa
     else
         echo "ERROR: GVCF output missing for ${sample_id}" | tee -a "$SAMPLE_LOG"
     fi
-done
+done < "$TASK_SAMPLES_LIST"
 
+rm -f "$TASK_SAMPLES_LIST"
 rm -rf "$TMP_ROOT"
 
 echo "HaplotypeCaller cp array task ${TASK_ID} completed."

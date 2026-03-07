@@ -4,7 +4,7 @@
 #SBATCH -J cp-04-mapping_qc
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.err
-#SBATCH --array=1-4
+#SBATCH --array=1-18
 #SBATCH --mem=12G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
@@ -21,9 +21,9 @@ set -euo pipefail
 module purge
 module load bioinfo/samtools/1.21
 
-SAMPLE_SHEET="${SAMPLE_SHEET:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_test.csv}"
-ALIGN_DIR="${ALIGN_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/03-alignment/workflow_test_9ind/alignments}"
-QC_BASE="${QC_BASE:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/04-mapping_qc/workflow_test_9ind}"
+SAMPLE_SHEET="${SAMPLE_SHEET:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv}"
+ALIGN_DIR="${ALIGN_DIR:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/03-alignment/workflow_full/alignments}"
+QC_BASE="${QC_BASE:-/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/04-mapping_qc/workflow_full}"
 
 PER_SAMPLE_DIR="${QC_BASE}/per_sample"
 SUMMARY_DIR="${QC_BASE}/summaries"
@@ -44,7 +44,7 @@ if [ ! -s "$FILES_LIST" ]; then
     exit 1
 fi
 
-SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-2}"
+SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-10}"
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
@@ -55,7 +55,14 @@ SUMMARY_LOCK="${SUMMARY_DIR}/mapping_qc_summary.lock"
 echo "=== Step 1/4: Select samples for current array task ==="
 echo "TASK_ID=${TASK_ID} START_LINE=${START_LINE} END_LINE=${END_LINE} SAMPLES_PER_TASK=${SAMPLES_PER_TASK}"
 
-sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS= read -r sample_id; do
+TASK_FILES_LIST="${TMPDIR:-/tmp}/cp_mapping_qc_samples_${SLURM_JOB_ID:-manual}_${TASK_ID}.list"
+sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" > "$TASK_FILES_LIST"
+
+if [ ! -s "$TASK_FILES_LIST" ]; then
+    echo "WARNING: no samples selected for task ${TASK_ID} (lines ${START_LINE}-${END_LINE})."
+fi
+
+while IFS= read -r sample_id; do
     [ -z "$sample_id" ] && continue
 
     BAM="${ALIGN_DIR}/${sample_id}.sorted.bam"
@@ -120,7 +127,9 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS= read -r sample_id
     } 200>"$SUMMARY_LOCK"
 
     echo "DONE sample=${sample_id}" | tee -a "$SAMPLE_LOG"
-done
+done < "$TASK_FILES_LIST"
+
+rm -f "$TASK_FILES_LIST"
 
 echo "=== Step 3/4: Task summary ==="
 echo "Global summary updated: $GLOBAL_SUMMARY"

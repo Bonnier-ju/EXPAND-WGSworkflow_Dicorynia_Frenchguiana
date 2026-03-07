@@ -44,18 +44,21 @@ if [ ! -s "$SAMPLE_SHEET" ]; then
     exit 1
 fi
 
-FILES_LIST="${ALIGN_DIR}/alignment_files.list"
-# Columns: sample_id (1), reference_genome (7), read_group (9), read1 (10), read2 (11)
-tail -n +2 "$SAMPLE_SHEET" | awk -F, '{print $1 "\t" $7 "\t" $9 "\t" $10 "\t" $11}' > "$FILES_LIST"
-
 SAMPLES_PER_TASK=5
 TASK_ID="${SLURM_ARRAY_TASK_ID:-1}"
 START_LINE=$(( (TASK_ID - 1) * SAMPLES_PER_TASK + 1 ))
 END_LINE=$(( START_LINE + SAMPLES_PER_TASK - 1 ))
 
-# Loop over sample sheet (skip header)
-# Expect read1/read2 as the last two columns in the CSV, and reference genome as the last column
-sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r sample_id reference read_group read1 read2; do
+# Build a per-task list to avoid race conditions between array tasks
+# Columns: sample_id (1), reference_genome (7), read_group (9), read1 (10), read2 (11)
+TASK_FILES_LIST="${TMPDIR:-/tmp}/nuc_alignment_files_${SLURM_JOB_ID:-manual}_${TASK_ID}.list"
+awk -F, 'NR>1{print $1 "\t" $7 "\t" $9 "\t" $10 "\t" $11}' "$SAMPLE_SHEET" | sed -n "${START_LINE},${END_LINE}p" > "$TASK_FILES_LIST"
+
+if [ ! -s "$TASK_FILES_LIST" ]; then
+    echo "WARNING: no samples selected for task ${TASK_ID} (lines ${START_LINE}-${END_LINE})."
+fi
+
+while IFS=$'\t' read -r sample_id reference read_group read1 read2; do
     [ -z "$sample_id" ] && continue
     echo "Aligning sample: $sample_id"
 
@@ -108,7 +111,9 @@ sed -n "${START_LINE},${END_LINE}p" "$FILES_LIST" | while IFS=$'\t' read -r samp
     else
         echo "ERROR: alignment pipeline failed for $sample_id" | tee -a "$LOG"
     fi
-done
+done < "$TASK_FILES_LIST"
+
+rm -f "$TASK_FILES_LIST"
 
 echo "All samples aligned, sorted, and indexed."
 
