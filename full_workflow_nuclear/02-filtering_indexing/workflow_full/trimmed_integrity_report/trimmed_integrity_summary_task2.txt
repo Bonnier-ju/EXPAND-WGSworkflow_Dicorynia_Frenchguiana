@@ -1,0 +1,9 @@
+Trimmed FASTQ integrity check
+Task ID           : 2
+Sample lines      : 11-20
+Checked samples   : 10
+PASS              : 10
+FAIL              : 0
+Report            : /home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/trimmed_integrity_report/trimmed_integrity_report_task2.tsv
+Duplicate sample IDs file : /home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/trimmed_integrity_report/duplicate_sample_ids_task2.txt
+Duplicate raw pairs file  : /home/jbonnier/work/chapitre_5/full_workflow_nuclear/02-filtering_indexing/workflow_full/trimmed_integrity_report/duplicate_read_pairs_task2.txt
