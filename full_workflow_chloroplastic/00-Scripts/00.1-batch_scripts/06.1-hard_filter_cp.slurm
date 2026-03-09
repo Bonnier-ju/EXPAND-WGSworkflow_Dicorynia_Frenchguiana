@@ -21,11 +21,17 @@ module load bioinfo/samtools/1.21
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
+# Pour tester sur le jeu de données test, changer WORKFLOW et SAMPLE_SHEET :
+#   WORKFLOW="workflow_test_9ind"
+#   SAMPLE_SHEET="...sample_sheet_chloroplastic_test.csv"
 # -------------------------------------------------------------------
+WORKFLOW="workflow_full"
 SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
+
+BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic"
 REF_GENOME="$(awk -F, 'NR==2{print $7}' "$SAMPLE_SHEET")"
-INPUT_VCF="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genotypegvcfs/jointgenotypes.raw.vcf.gz"
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/06-haplotype_filtering/workflow_full/hard_filter"
+INPUT_VCF="${BASE_DIR}/05-variant_calling/${WORKFLOW}/genotypegvcfs/jointgenotypes.raw.vcf.gz"
+OUTPUT_DIR="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/hard_filter"
 TMP_DIR="${OUTPUT_DIR}/tmp"
 LOG_FILE="${OUTPUT_DIR}/hard_filter_cp.log"
 
