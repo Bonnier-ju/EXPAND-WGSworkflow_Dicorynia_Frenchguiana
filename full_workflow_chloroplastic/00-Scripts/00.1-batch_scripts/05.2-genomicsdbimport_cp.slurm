@@ -4,8 +4,8 @@
 #SBATCH -J cp-05.2-genomicsdbimport
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
-#SBATCH --mem=16G
-#SBATCH --cpus-per-task=4
+#SBATCH --mem=24G
+#SBATCH --cpus-per-task=8
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
@@ -17,9 +17,9 @@ module load devel/java/17.0.6
 module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
 
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_test.csv"
-GVCF_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_test_9ind/haplotypecaller_gvcf"
-AGGREGATION_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_test_9ind/genomicsdbimport"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
+GVCF_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/haplotypecaller_gvcf"
+AGGREGATION_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genomicsdbimport"
 
 REF_GENOME="$(awk -F, 'NR==2{print $7}' "$SAMPLE_SHEET")"
 SAMPLE_MAP="${AGGREGATION_DIR}/sample_map.txt"
@@ -28,8 +28,8 @@ SEQ_LIST="${AGGREGATION_DIR}/reference.sequences.list"
 GVCF_LIST="${AGGREGATION_DIR}/gvcf_files.list"
 LOG_FILE="${AGGREGATION_DIR}/genomicsdbimport_cp.log"
 
-JAVA_MEM_GB=14
-READER_THREADS=4
+JAVA_MEM_GB=24
+READER_THREADS=8
 BATCH_SIZE=20
 TMP_DIR="/tmp/${USER}/cp_genomicsdbimport_${SLURM_JOB_ID}"
 
