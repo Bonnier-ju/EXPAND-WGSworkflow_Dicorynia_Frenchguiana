@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH -p workq
-#SBATCH --time=24:00:00
+#SBATCH -p unlimitq
+#SBATCH --time=50:00:00
 #SBATCH -J cp-05.3-genotypegvcfs
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
-#SBATCH --mem=16G
+#SBATCH --mem=32G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
@@ -21,19 +21,19 @@ module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
 
 # -------------------------------------------------------------------
-# STEP 1: Define inputs/outputs (chloroplastic workflow test)
+# STEP 1: Define inputs/outputs (chloroplastic workflow full)
 # -------------------------------------------------------------------
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_test.csv"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
 REF_GENOME="$(awk -F, 'NR==2{print $7}' "$SAMPLE_SHEET")"
-DB_PATH="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_test_9ind/genomicsdbimport/GATK_database_dicorynia_cp"
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_test_9ind/genotypegvcfs"
+DB_PATH="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genomicsdbimport/GATK_database_dicorynia_cp"
+OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genotypegvcfs"
 TMP_DIR="${OUTPUT_DIR}/tmp"
 LOG_FILE="${OUTPUT_DIR}/genotypegvcfs_cp.log"
 
 OUTPUT_VCF="${OUTPUT_DIR}/jointgenotypes.raw.vcf.gz"
 OUTPUT_TBI="${OUTPUT_VCF}.tbi"
 
-JAVA_MEM_GB=14
+JAVA_MEM_GB=28
 SAMPLE_PLOIDY=1
 
 mkdir -p "$OUTPUT_DIR" "$TMP_DIR"
@@ -77,11 +77,12 @@ fi
 # -------------------------------------------------------------------
 # STEP 2: Joint genotyping (chloroplastic adapted)
 # -------------------------------------------------------------------
-gatk --java-options "-Xms${JAVA_MEM_GB}G -Xmx${JAVA_MEM_GB}G -XX:ParallelGCThreads=2" GenotypeGVCFs \
+gatk --java-options "-Xms${JAVA_MEM_GB}G -Xmx${JAVA_MEM_GB}G -XX:ParallelGCThreads=4" GenotypeGVCFs \
     -R "$REF_GENOME" \
     -V "gendb://${DB_PATH}" \
     -O "$OUTPUT_VCF" \
     --sample-ploidy "$SAMPLE_PLOIDY" \
+    --genomicsdb-use-bcf-codec true \
     --create-output-variant-index true \
     --tmp-dir "$TMP_DIR" >> "$LOG_FILE" 2>&1
 
