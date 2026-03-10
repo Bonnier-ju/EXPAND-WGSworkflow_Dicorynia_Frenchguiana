@@ -19,13 +19,13 @@ module load bioinfo/Bcftools/1.9
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
-# Pour tester sur le jeu de données test, changer WORKFLOW et SAMPLE_SHEET :
+# To run on the test dataset, change WORKFLOW and SAMPLE_SHEET:
 #   WORKFLOW="workflow_test_9ind"
 #   SAMPLE_SHEET="...sample_sheet_chloroplastic_test.csv"
-# Seuils (chloroplaste haploïde) :
-#   MAX_SITE_MISSING  : taux de données manquantes max par site (0.2 = 20%)
-#   MAX_SAMPLE_MISSING: taux de données manquantes max par individu (0.5 = 50%)
-#   MIN_MAC           : nombre minimal d'allèles mineurs (1 = au moins 1 copie)
+# Thresholds (haploid chloroplast):
+#   MAX_SITE_MISSING  : max missing rate per site (0.2 = 20%)
+#   MAX_SAMPLE_MISSING: max missing rate per sample (0.5 = 50%)
+#   MIN_MAC           : minimum minor allele count (1 = at least 1 copy)
 # -------------------------------------------------------------------
 WORKFLOW="workflow_full"
 SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
@@ -54,9 +54,9 @@ fi
 echo "START $(date -Iseconds) missing_data_filter cp" > "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 2: Identifier les individus avec trop de données manquantes
-#   bcftools stats -s- : stats par échantillon
-#   Extraire le taux de génotypes manquants par individu
+# STEP 2: Identify samples with too much missing data
+#   bcftools stats -s- : per-sample statistics
+#   Extract missing genotype rate per sample
 # -------------------------------------------------------------------
 echo "INFO: computing per-sample missing rate" >> "$LOG_FILE"
 bcftools stats -s - "$INPUT_VCF" 2>> "$LOG_FILE" | \
@@ -75,10 +75,10 @@ if [ "$n_excluded" -gt 0 ]; then
 fi
 
 # -------------------------------------------------------------------
-# STEP 3: Filtrer sites et individus
-#   -e 'F_MISSING > MAX_SITE_MISSING' : exclure sites trop incomplets
-#   -c MIN_MAC:minor                  : garder sites avec ≥1 allèle mineur
-#   --samples-file avec ^ prefix      : exclure les individus à exclure
+# STEP 3: Filter sites and samples
+#   -e 'F_MISSING > MAX_SITE_MISSING' : exclude sites with too much missing data
+#   -c MIN_MAC:minor                  : retain sites with ≥1 minor allele
+#   --samples-file with ^ prefix      : exclude high-missing samples
 # -------------------------------------------------------------------
 echo "INFO: filtering sites (missing > ${MAX_SITE_MISSING}) and MAC < ${MIN_MAC}" >> "$LOG_FILE"
 
@@ -95,7 +95,7 @@ bcftools view \
     "$INPUT_VCF" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
-# STEP 4: Indexer le VCF filtré
+# STEP 4: Index the filtered VCF
 # -------------------------------------------------------------------
 echo "INFO: indexing filtered VCF" >> "$LOG_FILE"
 bcftools index --tbi "$OUTPUT_VCF" >> "$LOG_FILE" 2>&1
@@ -110,10 +110,10 @@ fi
 
 # -------------------------------------------------------------------
 # Description
-# Step 1: bcftools stats -s- → taux de génotypes manquants par individu
-# Step 2: Exclusion individus avec > MAX_SAMPLE_MISSING (défaut 50%)
-# Step 3: bcftools view -e 'F_MISSING > 0.2' → filtre sites incomplets
-#         -c 1:minor → garde sites polymorphes (MAC ≥ 1)
-# Step 4: Indexation TBI
-# Chloroplaste haploïde : pas de filtre HWE, pas de filtre MAF minimum strict
+# Step 1: bcftools stats -s- → per-sample missing genotype rate
+# Step 2: Exclude samples with missing rate > MAX_SAMPLE_MISSING (default 50%)
+# Step 3: bcftools view -e 'F_MISSING > 0.2' → remove incomplete sites
+#         -c 1:minor → retain polymorphic sites (MAC ≥ 1)
+# Step 4: TBI indexing
+# Haploid chloroplast: no HWE filter, no strict minimum MAF filter
 # -------------------------------------------------------------------

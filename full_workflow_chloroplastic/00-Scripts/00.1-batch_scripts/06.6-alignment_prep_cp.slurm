@@ -19,7 +19,7 @@ module load bioinfo/trimAl/1.4.1
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
-# Pour tester sur le jeu de données test, changer WORKFLOW :
+# To run on the test dataset, change WORKFLOW:
 #   WORKFLOW="workflow_test_9ind"
 # -------------------------------------------------------------------
 WORKFLOW="workflow_full"
@@ -32,8 +32,8 @@ LOG_FILE="${OUTPUT_DIR}/alignment_prep_cp.log"
 OUTPUT_FASTA="${OUTPUT_DIR}/alignment_trimmed.fasta"
 STATS_FILE="${OUTPUT_DIR}/trimal_stats.txt"
 
-# Seuil trimAl : conserver les colonnes présentes dans >= 80% des séquences
-# (élimine les colonnes avec >20% de N ou de gaps)
+# trimAl threshold: retain columns present in >= 80% of sequences
+# (removes columns with >20% N or gaps)
 GT_THRESHOLD=0.8
 
 mkdir -p "$OUTPUT_DIR"
@@ -48,7 +48,7 @@ fi
 echo "START $(date -Iseconds) alignment_prep cp" > "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 2: Stats de l'alignement d'entrée
+# STEP 2: Input alignment statistics
 # -------------------------------------------------------------------
 echo "INFO: input alignment stats" >> "$LOG_FILE"
 n_seq_in=$(grep -c "^>" "$INPUT_FASTA")
@@ -56,14 +56,13 @@ seq_len_in=$(awk '/^>/{next} {len+=length($0)} END{print len/NR}' "$INPUT_FASTA"
 echo "INFO: sequences=${n_seq_in} mean_length_before=${seq_len_in}" >> "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 3: Nettoyage de l'alignement avec trimAl
-#   -gt 0.8 : conserver colonnes présentes dans >= 80% des séquences
-#             (supprime colonnes avec >20% de gaps/N)
-#   -fasta   : format de sortie FASTA
-#   -colnumbering : afficher les positions conservées
-# Note : les séquences consensus sur le même génome de référence sont
-#        déjà alignées en coordonnées → trimAl retire uniquement les
-#        colonnes trop incomplètes (beaucoup de N)
+# STEP 3: Clean alignment with trimAl
+#   -gt 0.8 : retain columns present in >= 80% of sequences
+#             (removes columns with >20% gaps/N)
+#   -fasta   : output format FASTA
+# Note: consensus sequences on the same reference genome are already
+#       coordinate-aligned → trimAl only removes columns that are too
+#       incomplete (high N content)
 # -------------------------------------------------------------------
 echo "INFO: running trimAl -gt ${GT_THRESHOLD}" >> "$LOG_FILE"
 
@@ -74,13 +73,13 @@ trimal \
     -fasta 2>> "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 4: Stats de l'alignement de sortie
+# STEP 4: Output alignment statistics
 # -------------------------------------------------------------------
 if [ -s "$OUTPUT_FASTA" ]; then
     n_seq_out=$(grep -c "^>" "$OUTPUT_FASTA")
     seq_len_out=$(awk '/^>/{next} {len+=length($0)} END{print len/NR}' "$OUTPUT_FASTA" | awk '{printf "%d\n", $1}')
 
-    # Stats détaillées avec trimAl
+    # Detailed stats with trimAl
     trimal \
         -in  "$OUTPUT_FASTA" \
         -sident 2>/dev/null > "$STATS_FILE" || true
@@ -96,14 +95,14 @@ fi
 
 # -------------------------------------------------------------------
 # Description
-# Step 1: Vérification du multi-FASTA d'entrée (06.5 consensus_sequences)
-# Step 2: trimAl -gt 0.8 → supprime colonnes avec >20% de gaps/N
-#         Les séquences sont déjà pseudo-alignées sur le même génome
-#         de référence → pas besoin de MAFFT
-# Step 3: Le fichier de sortie est prêt pour IQ-TREE2 (07.1)
-# Sorties :
-#   alignment_trimmed.fasta : alignement nettoyé pour phylogénie
-#   trimal_stats.txt        : identité/conservation des colonnes
-# Outgroup : individus Cameroun_Benin déjà présents dans l'alignement,
-#            seront déclarés outgroup dans IQ-TREE (07.1)
+# Step 1: Validate input multi-FASTA (from 06.5 consensus_sequences)
+# Step 2: trimAl -gt 0.8 → remove columns with >20% gaps/N
+#         Sequences are already pseudo-aligned on the same reference
+#         genome → no MAFFT required
+# Step 3: Output is ready for IQ-TREE2 (07.1)
+# Outputs:
+#   alignment_trimmed.fasta : cleaned alignment for phylogenetics
+#   trimal_stats.txt        : column identity/conservation statistics
+# Outgroup: Cameroun_Benin individuals already present in the alignment,
+#           will be declared as outgroup in IQ-TREE (07.1)
 # -------------------------------------------------------------------

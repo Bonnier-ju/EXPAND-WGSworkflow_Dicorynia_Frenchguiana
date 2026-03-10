@@ -15,13 +15,15 @@ set -euo pipefail
 # STEP 0: Environment setup
 # -------------------------------------------------------------------
 module purge
+module load devel/python/Python-3.11.1
 module load devel/java/17.0.6
 module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
+module load bioinfo/Bcftools/1.9
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
-# Pour tester sur le jeu de données test, changer WORKFLOW et SAMPLE_SHEET :
+# To run on the test dataset, change WORKFLOW and SAMPLE_SHEET:
 #   WORKFLOW="workflow_test_9ind"
 #   SAMPLE_SHEET="...sample_sheet_chloroplastic_test.csv"
 # -------------------------------------------------------------------
@@ -76,7 +78,7 @@ gatk --java-options "-Xmx${JAVA_MEM_GB}G" SelectVariants \
     -O "$INDEL_RAW" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
-# STEP 3: Hard filter SNPs (seuils adaptés chloroplaste haploïde)
+# STEP 3: Hard filter SNPs (thresholds adapted for haploid chloroplast)
 # -------------------------------------------------------------------
 echo "INFO: hard filtering SNPs" >> "$LOG_FILE"
 gatk --java-options "-Xmx${JAVA_MEM_GB}G" VariantFiltration \
@@ -104,7 +106,7 @@ gatk --java-options "-Xmx${JAVA_MEM_GB}G" VariantFiltration \
     -O "$INDEL_FILTERED" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
-# STEP 5: Merge SNPs + INDELs filtrés
+# STEP 5: Merge filtered SNPs + INDELs
 # -------------------------------------------------------------------
 echo "INFO: merging filtered SNPs and INDELs" >> "$LOG_FILE"
 gatk --java-options "-Xmx${JAVA_MEM_GB}G" MergeVcfs \
@@ -113,7 +115,7 @@ gatk --java-options "-Xmx${JAVA_MEM_GB}G" MergeVcfs \
     -O "$MERGED_VCF" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
-# STEP 6: Garder uniquement les variants PASS
+# STEP 6: Retain PASS variants only
 # -------------------------------------------------------------------
 echo "INFO: selecting PASS variants only" >> "$LOG_FILE"
 gatk --java-options "-Xmx${JAVA_MEM_GB}G" SelectVariants \
@@ -123,9 +125,10 @@ gatk --java-options "-Xmx${JAVA_MEM_GB}G" SelectVariants \
     -O "$OUTPUT_VCF" >> "$LOG_FILE" 2>&1
 
 if [ -s "$OUTPUT_VCF" ]; then
-    n_snp=$(gatk --java-options "-Xmx4G" CountVariants -V "$SNP_FILTERED" --exclude-filtered 2>/dev/null | tail -1)
-    n_indel=$(gatk --java-options "-Xmx4G" CountVariants -V "$INDEL_FILTERED" --exclude-filtered 2>/dev/null | tail -1)
-    echo "DONE $(date -Iseconds) snps_pass=${n_snp} indels_pass=${n_indel} output=${OUTPUT_VCF}" | tee -a "$LOG_FILE"
+    n_snp=$(bcftools view -H -v snps "$OUTPUT_VCF" | wc -l)
+    n_indel=$(bcftools view -H -v indels "$OUTPUT_VCF" | wc -l)
+    n_total=$(bcftools view -H "$OUTPUT_VCF" | wc -l)
+    echo "DONE $(date -Iseconds) total_pass=${n_total} snps_pass=${n_snp} indels_pass=${n_indel} output=${OUTPUT_VCF}" | tee -a "$LOG_FILE"
 else
     echo "ERROR: hard filter output missing" | tee -a "$LOG_FILE"; exit 1
 fi
@@ -134,9 +137,9 @@ rm -rf "$TMP_DIR"
 
 # -------------------------------------------------------------------
 # Description
-# Step 1: SelectVariants SNPs / INDELs depuis le VCF brut (05.3)
-# Step 2: VariantFiltration SNPs — seuils GATK best practices (chloroplaste haploïde)
+# Step 1: SelectVariants SNPs / INDELs from raw VCF (05.3)
+# Step 2: VariantFiltration SNPs — GATK best practices thresholds (haploid chloroplast)
 # Step 3: VariantFiltration INDELs
-# Step 4: MergeVcfs SNPs + INDELs filtrés
-# Step 5: SelectVariants --exclude-filtered → VCF final PASS uniquement
+# Step 4: MergeVcfs filtered SNPs + INDELs
+# Step 5: SelectVariants --exclude-filtered → final PASS-only VCF
 # -------------------------------------------------------------------

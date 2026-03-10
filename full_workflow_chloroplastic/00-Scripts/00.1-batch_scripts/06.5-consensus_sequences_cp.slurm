@@ -20,7 +20,7 @@ module load bioinfo/samtools/1.21
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
-# Pour tester sur le jeu de données test, changer WORKFLOW et SAMPLE_SHEET :
+# To run on the test dataset, change WORKFLOW and SAMPLE_SHEET:
 #   WORKFLOW="workflow_test_9ind"
 #   SAMPLE_SHEET="...sample_sheet_chloroplastic_test.csv"
 # -------------------------------------------------------------------
@@ -55,11 +55,11 @@ fi
 echo "START $(date -Iseconds) consensus_sequences cp" > "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 2: Générer une séquence consensus FASTA par individu
-#   -s SAMPLE  : sélectionner l'individu
-#   -H 1       : utiliser le premier (et unique) haplotype (chloroplaste haploïde)
-#   -f REF     : appliquer les variants sur le génome de référence
-#   Sites manquants (./.) : conservés comme N dans le consensus
+# STEP 2: Generate one consensus FASTA sequence per sample
+#   -s SAMPLE  : select the sample
+#   -H 1       : use the first (and only) haplotype (haploid chloroplast)
+#   -f REF     : apply variants onto the reference genome
+#   Missing sites (./.) : retained as N in the consensus
 # -------------------------------------------------------------------
 echo "INFO: generating per-sample consensus sequences" >> "$LOG_FILE"
 
@@ -102,7 +102,7 @@ while IFS= read -r sample; do
 done < <(bcftools query -l "$INPUT_VCF")
 
 # -------------------------------------------------------------------
-# STEP 3: Vérification du multi-FASTA final
+# STEP 3: Validate the final multi-FASTA
 # -------------------------------------------------------------------
 if [ -s "$MULTIFASTA" ]; then
     n_seq=$(grep -c "^>" "$MULTIFASTA")
@@ -116,14 +116,14 @@ fi
 
 # -------------------------------------------------------------------
 # Description
-# Step 1: Pour chaque individu du VCF filtré (06.3) :
+# Step 1: For each sample in the filtered VCF (06.3):
 #   bcftools consensus -s SAMPLE -H 1 -f REF
-#   → applique les allèles de l'individu sur la séquence de référence
-#   → sites manquants conservés comme N
-#   → en-tête FASTA renommé au sample_id
-# Step 2: Concaténation de tous les FASTA individuels en un multi-FASTA
-# Sorties :
-#   per_sample/{sample}.consensus.fasta : une séquence par individu
-#   all_samples_consensus.fasta         : multi-FASTA prêt pour alignement phylo (07.1)
-# Chloroplaste haploïde : -H 1 (un seul haplotype, pas de phase à résoudre)
+#   → apply sample alleles onto the reference sequence
+#   → missing sites retained as N
+#   → FASTA header renamed to sample_id
+# Step 2: Concatenate all individual FASTAs into a multi-FASTA
+# Outputs:
+#   per_sample/{sample}.consensus.fasta : one sequence per sample
+#   all_samples_consensus.fasta         : multi-FASTA ready for phylogenetic alignment (06.6)
+# Haploid chloroplast: -H 1 (single haplotype, no phasing required)
 # -------------------------------------------------------------------

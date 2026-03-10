@@ -19,7 +19,7 @@ module load bioinfo/Bcftools/1.9
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
-# Pour tester sur le jeu de données test, changer WORKFLOW :
+# To run on the test dataset, change WORKFLOW:
 #   WORKFLOW="workflow_test_9ind"
 # -------------------------------------------------------------------
 WORKFLOW="workflow_full"
@@ -45,17 +45,17 @@ fi
 echo "START $(date -Iseconds) haplotype_tables cp" > "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 2: Extraire la matrice de génotypes
-#   Colonnes : CHROM, POS, REF, ALT, puis un GT par individu (0 ou 1)
-#   Chloroplaste haploïde : GT = 0 (ref) ou 1 (alt), jamais hétérozygote
+# STEP 2: Extract genotype matrix
+#   Columns: CHROM, POS, REF, ALT, then one GT per sample (0 or 1)
+#   Haploid chloroplast: GT = 0 (ref) or 1 (alt), never heterozygous
 # -------------------------------------------------------------------
 echo "INFO: extracting genotype matrix from VCF" >> "$LOG_FILE"
 
-# Récupérer l'en-tête avec les noms des samples
+# Retrieve header with sample names
 SAMPLES=$(bcftools query -l "$INPUT_VCF" | tr '\n' '\t' | sed 's/\t$//')
 echo -e "CHROM\tPOS\tREF\tALT\t${SAMPLES}" > "$GENOTYPE_MATRIX"
 
-# Extraire les génotypes (haploid: 0 ou 1, remplacer . par NA)
+# Extract genotypes (haploid: 0 or 1, replace missing . with NA)
 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' "$INPUT_VCF" 2>> "$LOG_FILE" | \
     sed 's/\.\//NA/g; s/\//NA/g; s/|/\t/g' >> "$GENOTYPE_MATRIX"
 
@@ -63,26 +63,26 @@ n_sites=$(tail -n +2 "$GENOTYPE_MATRIX" | wc -l)
 echo "INFO: genotype matrix: ${n_sites} sites" >> "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 3: Construire la table des haplotypes
-#   Haplotype = concaténation des allèles de tous les sites pour un individu
-#   Assigner un ID unique (H1, H2, ...) à chaque haplotype distinct
+# STEP 3: Build the haplotype table
+#   Haplotype = concatenation of alleles across all sites for one sample
+#   Assign a unique ID (H1, H2, ...) to each distinct haplotype
 # -------------------------------------------------------------------
 echo "INFO: building haplotype table" >> "$LOG_FILE"
 
 awk 'BEGIN{OFS="\t"}
 NR==1 {
-    # Récupérer les noms des samples (colonnes 5+)
+    # Get sample names (columns 5+)
     for(i=5; i<=NF; i++) samples[i]=$i
     next
 }
 {
-    # Construire la chaîne haplotype pour chaque sample
+    # Build haplotype string for each sample
     for(i=5; i<=NF; i++) {
         haplo[i] = haplo[i] $i
     }
 }
 END {
-    # Identifier les haplotypes uniques et leur assigner un ID
+    # Identify unique haplotypes and assign IDs
     h_id = 0
     for(i=5; i<=length(samples)+4; i++) {
         h = haplo[i]
@@ -91,7 +91,7 @@ END {
             haplo_id[h] = "H" h_id
         }
     }
-    # Ecrire la table haplotype
+    # Write haplotype table
     print "sample_id", "haplotype_id", "haplotype_string"
     for(i=5; i<=length(samples)+4; i++) {
         h = haplo[i]
@@ -100,7 +100,7 @@ END {
 }' "$GENOTYPE_MATRIX" > "$HAPLOTYPE_TABLE"
 
 # -------------------------------------------------------------------
-# STEP 4: Calculer les fréquences des haplotypes
+# STEP 4: Compute haplotype frequencies
 # -------------------------------------------------------------------
 echo "INFO: computing haplotype frequencies" >> "$LOG_FILE"
 
@@ -110,7 +110,7 @@ awk -v total="$n_total" 'BEGIN{OFS="\t"}
 NR==1 {next}
 {
     count[$2]++
-    # Garder un représentant par haplotype pour la chaîne
+    # Keep one representative string per haplotype
     if(!($2 in haplo_str)) haplo_str[$2]=$3
 }
 END {
@@ -120,7 +120,7 @@ END {
     }
 }' "$HAPLOTYPE_TABLE" | sort -t$'\t' -k1,1V >> "$HAPLOTYPE_FREQ"
 
-# Ajouter header au fichier fréquences
+# Add header to frequency file
 head -1 <(echo -e "haplotype_id\tcount\tfrequency\thaplotype_string") | cat - "$HAPLOTYPE_FREQ" > "${HAPLOTYPE_FREQ}.tmp"
 mv "${HAPLOTYPE_FREQ}.tmp" "$HAPLOTYPE_FREQ"
 
@@ -133,13 +133,13 @@ fi
 
 # -------------------------------------------------------------------
 # Description
-# Step 1: bcftools query → matrice génotypes (sites × individus)
-# Step 2: Concaténation des allèles par individu → chaîne haplotypique
-# Step 3: Attribution d'IDs uniques (H1, H2, ...) aux haplotypes distincts
-# Step 4: Calcul des fréquences par haplotype
-# Sorties :
-#   genotype_matrix.tsv      : matrice complète CHROM/POS/REF/ALT + GTs
+# Step 1: bcftools query → genotype matrix (sites × samples)
+# Step 2: Concatenate alleles per sample → haplotype string
+# Step 3: Assign unique IDs (H1, H2, ...) to each distinct haplotype
+# Step 4: Compute haplotype frequencies
+# Outputs:
+#   genotype_matrix.tsv      : full matrix CHROM/POS/REF/ALT + GTs
 #   haplotype_table.tsv      : sample_id | haplotype_id | haplotype_string
 #   haplotype_frequencies.tsv: haplotype_id | count | frequency | string
-# Chloroplaste haploïde : GT = 0/1 uniquement, pas d'hétérozygotes attendus
+# Haploid chloroplast: GT = 0/1 only, no heterozygous genotypes expected
 # -------------------------------------------------------------------

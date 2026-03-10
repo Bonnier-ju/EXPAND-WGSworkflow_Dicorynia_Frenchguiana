@@ -15,7 +15,7 @@ module purge
 module load bioinfo/Bcftools/1.9
 
 # -------------------------------------------------------------------
-# STEP 0: Paramètres
+# STEP 0: Parameters
 # -------------------------------------------------------------------
 WORKFLOW="workflow_full"
 
@@ -26,14 +26,14 @@ mkdir -p "$OUT_DIR"
 SUMMARY_TSV="${OUT_DIR}/filtration_summary.tsv"
 SUMMARY_TXT="${OUT_DIR}/filtration_summary.txt"
 
-# VCFs à chaque étape
+# VCFs at each filtering step
 VCF_RAW="${BASE_DIR}/05-variant_calling/${WORKFLOW}/genotypegvcfs/jointgenotypes.raw.vcf.gz"
 VCF_HARD="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/hard_filter/variants.hard_filtered.pass.vcf.gz"
 VCF_NORM="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/normalization/variants.normalized.vcf.gz"
 VCF_FILT="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/missing_data_filter/variants.filtered.vcf.gz"
 
 # -------------------------------------------------------------------
-# Fonction : compte SNPs / INDELs / total depuis un VCF
+# Function: count SNPs / INDELs / total from a VCF
 # -------------------------------------------------------------------
 count_variants() {
     local vcf="$1"
@@ -46,14 +46,14 @@ count_variants() {
     snps=$(bcftools view -H -v snps "$vcf" | wc -l)
     indels=$(bcftools view -H -v indels "$vcf" | wc -l)
     multi=$(bcftools view -H -m3 "$vcf" | wc -l)
-    # taux de missing moyen sur les sites (INFO/AN vs INFO/AN_max)
-    # bcftools stats pour missing
+    # average missing rate per site (INFO/AN vs INFO/AN_max)
+    # bcftools stats for missing data
     missing_pct=$(bcftools stats "$vcf" | awk '/^SN.*number of no-ALTs/{print $4}')
     echo "$total $snps $indels $multi"
 }
 
 # -------------------------------------------------------------------
-# STEP 1: Compter les variants à chaque étape
+# STEP 1: Count variants at each filtering step
 # -------------------------------------------------------------------
 echo "INFO: counting variants at each step..."
 
@@ -63,7 +63,7 @@ read total_norm  snps_norm  indels_norm  multi_norm  <<< $(count_variants "$VCF_
 read total_filt  snps_filt  indels_filt  multi_filt  <<< $(count_variants "$VCF_FILT")
 
 # -------------------------------------------------------------------
-# STEP 2: Calcul des pertes relatives
+# STEP 2: Compute relative losses between steps
 # -------------------------------------------------------------------
 pct_lost() {
     local before="$1" after="$2"
@@ -85,7 +85,7 @@ snp_lost_filt=$(pct_lost "$snps_norm" "$snps_filt")
 snp_lost_total=$(pct_lost "$snps_raw" "$snps_filt")
 
 # -------------------------------------------------------------------
-# STEP 3: Écriture du tableau TSV
+# STEP 3: Write TSV summary table
 # -------------------------------------------------------------------
 {
 echo -e "step\tdescription\ttotal_sites\tSNPs\tINDELs\tmultiallelic\tlost_vs_prev_pct"
@@ -96,7 +96,7 @@ echo -e "06.3_missing_filter\tF_MISSING<0.2 + MAC>=1\t${total_filt}\t${snps_filt
 } > "$SUMMARY_TSV"
 
 # -------------------------------------------------------------------
-# STEP 4: Rapport lisible en texte
+# STEP 4: Human-readable text report
 # -------------------------------------------------------------------
 {
 echo "================================================================"
@@ -135,7 +135,7 @@ echo "  06.3      : F_MISSING > 0.2 removed | MAC < 1 removed"
 echo "================================================================"
 } > "$SUMMARY_TXT"
 
-# Affichage dans le log SLURM
+# Print to SLURM log
 cat "$SUMMARY_TXT"
 
 echo ""

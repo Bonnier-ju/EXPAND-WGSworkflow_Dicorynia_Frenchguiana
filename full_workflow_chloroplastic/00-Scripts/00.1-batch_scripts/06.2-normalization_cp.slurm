@@ -20,7 +20,7 @@ module load bioinfo/samtools/1.21
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
-# Pour tester sur le jeu de données test, changer WORKFLOW et SAMPLE_SHEET :
+# To run on the test dataset, change WORKFLOW and SAMPLE_SHEET:
 #   WORKFLOW="workflow_test_9ind"
 #   SAMPLE_SHEET="...sample_sheet_chloroplastic_test.csv"
 # -------------------------------------------------------------------
@@ -50,16 +50,16 @@ fi
 echo "START $(date -Iseconds) normalization cp" > "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 2: Décomposer les variants multi-alléliques puis normaliser
-#   -m -any  : séparer chaque allèle alternatif sur une ligne distincte
-#   -f REF   : aligner à gauche les indels sur la référence
+# STEP 2: Split multiallelic variants then normalize
+#   -m -any  : split each alternate allele onto a separate line
+#   -f REF   : left-align indels against the reference
 # -------------------------------------------------------------------
 echo "INFO: decomposing multiallelic sites and left-aligning indels" >> "$LOG_FILE"
 bcftools norm -m -any "$INPUT_VCF" 2>> "$LOG_FILE" | \
     bcftools norm -f "$REF_GENOME" -O z -o "$OUTPUT_VCF" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
-# STEP 3: Indexer le VCF normalisé
+# STEP 3: Index the normalized VCF
 # -------------------------------------------------------------------
 echo "INFO: indexing normalized VCF" >> "$LOG_FILE"
 bcftools index --tbi "$OUTPUT_VCF" >> "$LOG_FILE" 2>&1
@@ -73,8 +73,8 @@ fi
 
 # -------------------------------------------------------------------
 # Description
-# Step 1: bcftools norm -m -any  → décomposition des sites multi-alléliques
-# Step 2: bcftools norm -f REF   → alignement à gauche des indels
-# Step 3: bcftools index --tbi   → indexation TBI du VCF compressé
-# Résultat : VCF normalisé prêt pour le filtrage données manquantes
+# Step 1: bcftools norm -m -any  → split multiallelic sites into biallelic records
+# Step 2: bcftools norm -f REF   → left-align indels against the reference
+# Step 3: bcftools index --tbi   → TBI index of the compressed VCF
+# Output: normalized VCF ready for missing data filtering (06.3)
 # -------------------------------------------------------------------
