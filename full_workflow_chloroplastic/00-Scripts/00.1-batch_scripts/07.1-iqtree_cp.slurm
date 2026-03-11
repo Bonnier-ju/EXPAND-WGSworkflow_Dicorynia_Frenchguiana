@@ -32,7 +32,7 @@ OUTPUT_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/iqtree
 RESULTS_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/results/07.1-iqtree_phylogeny"
 LOG_FILE="${OUTPUT_DIR}/iqtree_cp.log"
 PREFIX="${OUTPUT_DIR}/cp_phylo"
-METADATA="${BASE_DIR}/metadata/sample_sheet_chloroplastic_complete.csv"
+METADATA="${BASE_DIR}/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
 R_SCRIPT="${BASE_DIR}/00-Scripts/00.2-R_scripts/07.1-iqtree_viz_cp.R"
 
 # Outgroup: 4 Cameroun/Benin individuals (outgroup declared in sample sheet)

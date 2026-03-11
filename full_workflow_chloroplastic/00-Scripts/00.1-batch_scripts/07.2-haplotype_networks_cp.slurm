@@ -25,7 +25,7 @@ WORKFLOW="workflow_full"
 BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic"
 INPUT_ALN="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/alignments_phylo/alignment_trimmed.fasta"
 HAP_TABLE="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/haplotype_tables/haplotype_table.tsv"
-METADATA="${BASE_DIR}/metadata/sample_sheet_chloroplastic_complete.csv"
+METADATA="${BASE_DIR}/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
 OUTPUT_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/02-haplotype_networks"
 R_SCRIPT="${BASE_DIR}/00-Scripts/00.2-R_scripts/07.2-haplotype_networks_cp.R"
 

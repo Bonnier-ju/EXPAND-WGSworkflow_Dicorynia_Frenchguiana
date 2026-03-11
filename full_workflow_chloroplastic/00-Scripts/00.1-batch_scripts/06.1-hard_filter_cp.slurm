@@ -28,7 +28,7 @@ module load bioinfo/Bcftools/1.9
 #   SAMPLE_SHEET="...sample_sheet_chloroplastic_test.csv"
 # -------------------------------------------------------------------
 WORKFLOW="workflow_full"
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
 
 BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic"
 REF_GENOME="$(awk -F, 'NR==2{print $7}' "$SAMPLE_SHEET")"

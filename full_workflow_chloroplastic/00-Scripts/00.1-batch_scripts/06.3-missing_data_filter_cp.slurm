@@ -28,7 +28,7 @@ module load bioinfo/Bcftools/1.9
 #   MIN_MAC           : minimum minor allele count (1 = at least 1 copy)
 # -------------------------------------------------------------------
 WORKFLOW="workflow_full"
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
 
 BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic"
 INPUT_VCF="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/normalization/variants.normalized.vcf.gz"

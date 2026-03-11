@@ -17,7 +17,7 @@ module load devel/java/17.0.6
 module load bioinfo/GATK/4.2.6.1
 module load bioinfo/samtools/1.21
 
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
 GVCF_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/haplotypecaller_gvcf"
 AGGREGATION_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genomicsdbimport"
 
@@ -62,9 +62,19 @@ fi
 cut -f1 "${REF_GENOME}.fai" > "$SEQ_LIST"
 echo "INFO: sequence list created: $SEQ_LIST" >> "$LOG_FILE"
 
-find "$GVCF_DIR" -maxdepth 1 -type f -name "*.g.vcf.gz" | sort > "$GVCF_LIST"
+# Build GVCF list from filtered sample sheet only (164 samples)
+: > "$GVCF_LIST"
+while IFS=',' read -r sample_id _rest; do
+    gvcf="${GVCF_DIR}/${sample_id}.g.vcf.gz"
+    if [ -s "$gvcf" ]; then
+        echo "$gvcf" >> "$GVCF_LIST"
+    else
+        echo "WARNING: GVCF not found for sample ${sample_id}: ${gvcf}" | tee -a "$LOG_FILE"
+    fi
+done < <(tail -n +2 "$SAMPLE_SHEET")
+
 if [ ! -s "$GVCF_LIST" ]; then
-    echo "ERROR: no .g.vcf.gz files found in $GVCF_DIR" | tee -a "$LOG_FILE"
+    echo "ERROR: no .g.vcf.gz files found from sample sheet samples" | tee -a "$LOG_FILE"
     exit 1
 fi
 

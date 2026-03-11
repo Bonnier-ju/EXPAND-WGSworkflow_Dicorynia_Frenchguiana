@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p unlimitq
+#SBATCH -p workq
 #SBATCH --time=50:00:00
 #SBATCH -J cp-05.3-genotypegvcfs
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
@@ -23,7 +23,7 @@ module load bioinfo/samtools/1.21
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs (chloroplastic workflow full)
 # -------------------------------------------------------------------
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete.csv"
+SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
 REF_GENOME="$(awk -F, 'NR==2{print $7}' "$SAMPLE_SHEET")"
 DB_PATH="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genomicsdbimport/GATK_database_dicorynia_cp"
 OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic/05-variant_calling/workflow_full/genotypegvcfs"
