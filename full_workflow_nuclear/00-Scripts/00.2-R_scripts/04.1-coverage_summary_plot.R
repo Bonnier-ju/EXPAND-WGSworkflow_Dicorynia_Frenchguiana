@@ -14,6 +14,12 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 library(ggplot2)
 library(readr)
 
+# White background for all plots (PNG export)
+theme_set(theme_minimal() + theme(
+  plot.background  = element_rect(fill = "white", color = NA),
+  panel.background = element_rect(fill = "white", color = NA)
+))
+
 # Read input coverage file
 coverage <- read_tsv(input_file, col_types = cols())
 
@@ -44,7 +50,6 @@ p_cov <- ggplot(coverage_plot, aes(x = reorder(Sample, -Average_Coverage), y = A
   labs(title = "Average Coverage per Sample",
        x = "Sample",
        y = "Average Coverage (Q >= 20)") +
-  theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Save coverage plot
@@ -64,7 +69,6 @@ p_map <- ggplot(mapping_plot, aes(x = reorder(Sample, -Mapped_Percent), y = Mapp
   labs(title = "Mapped Reads Percentage per Sample",
        x = "Sample",
        y = "Mapped reads (%)") +
-  theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ggsave(filename = mapped_png, plot = p_map, width = 10, height = 6)
 
@@ -75,8 +79,7 @@ p_hist <- ggplot(coverage_plot, aes(x = Average_Coverage)) +
   geom_vline(xintercept = 10, color = "red", linetype = "dashed", linewidth = 1) +
   labs(title = "Distribution of Average Coverage",
        x = "Average coverage (Q >= 20)",
-       y = "Number of samples") +
-  theme_minimal()
+       y = "Number of samples")
 ggsave(filename = depth_hist_png, plot = p_hist, width = 8, height = 6)
 
 # Scatter plot: mapped percentage vs average coverage
@@ -88,8 +91,7 @@ p_scatter <- ggplot(mapping_plot, aes(x = Mapped_Percent, y = Average_Coverage, 
   geom_hline(yintercept = 10, color = "red", linetype = "dashed", linewidth = 1) +
   labs(title = "Mapped Percentage vs Average Coverage",
        x = "Mapped reads (%)",
-       y = "Average coverage (Q >= 20)") +
-  theme_minimal()
+       y = "Average coverage (Q >= 20)")
 ggsave(filename = scatter_png, plot = p_scatter, width = 9, height = 6)
 
 message("Coverage plot saved to:")

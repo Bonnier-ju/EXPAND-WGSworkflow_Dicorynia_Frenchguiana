@@ -20,10 +20,15 @@ module load statistics/R/4.3.0
 
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
+# To run on the test dataset, change WORKFLOW:
+#   WORKFLOW="workflow_test"
 # -------------------------------------------------------------------
-INPUT_TSV="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_test/mapping_coverage_summary.tsv"
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_test/plots"
-R_SCRIPT="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.2-R_scripts/04.1-coverage_summary_plot.R"
+WORKFLOW="workflow_full"
+
+BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
+INPUT_TSV="${BASE_DIR}/04-coverage_mapping/${WORKFLOW}/mapping_coverage_summary.tsv"
+OUTPUT_DIR="${BASE_DIR}/04-coverage_mapping/${WORKFLOW}/plots"
+R_SCRIPT="${BASE_DIR}/00-Scripts/00.2-R_scripts/04.1-coverage_summary_plot.R"
 
 if [ ! -f "$INPUT_TSV" ]; then
     echo "ERROR: input TSV not found: $INPUT_TSV" >&2

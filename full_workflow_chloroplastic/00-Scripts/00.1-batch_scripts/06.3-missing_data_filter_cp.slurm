@@ -39,6 +39,11 @@ MAX_SITE_MISSING=0.2
 MAX_SAMPLE_MISSING=0.5
 MIN_MAC=1
 
+# Samples explicitly excluded regardless of missing rate.
+# Reason: chloroplast coverage < 1x → thousands of spurious SNP calls.
+# Possible causes: failed DNA extraction or sampling error.
+FORCE_EXCLUDE="DBR_ACY DBR_ADM DSW_AAAO"
+
 SAMPLES_TO_EXCLUDE="${OUTPUT_DIR}/samples_high_missing.txt"
 OUTPUT_VCF="${OUTPUT_DIR}/variants.filtered.vcf.gz"
 
@@ -67,8 +72,16 @@ bcftools stats -s - "$INPUT_VCF" 2>> "$LOG_FILE" | \
         }
     ' > "$SAMPLES_TO_EXCLUDE"
 
+# Append forced exclusions to the exclusion list
+for s in $FORCE_EXCLUDE; do
+    echo "$s" >> "$SAMPLES_TO_EXCLUDE"
+done
+# Remove duplicates
+sort -u "$SAMPLES_TO_EXCLUDE" -o "$SAMPLES_TO_EXCLUDE"
+
 n_excluded=$(wc -l < "$SAMPLES_TO_EXCLUDE")
-echo "INFO: ${n_excluded} samples excluded (missing > ${MAX_SAMPLE_MISSING})" >> "$LOG_FILE"
+echo "INFO: ${n_excluded} samples excluded total (missing > ${MAX_SAMPLE_MISSING} or forced)" >> "$LOG_FILE"
+echo "INFO: forced exclusions (low cp coverage): ${FORCE_EXCLUDE}" >> "$LOG_FILE"
 if [ "$n_excluded" -gt 0 ]; then
     echo "INFO: excluded samples:" >> "$LOG_FILE"
     cat "$SAMPLES_TO_EXCLUDE" >> "$LOG_FILE"

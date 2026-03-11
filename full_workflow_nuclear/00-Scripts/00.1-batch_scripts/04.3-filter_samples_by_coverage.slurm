@@ -14,16 +14,22 @@ set -o pipefail
 
 # -------------------------------------------------------------------
 # STEP 0: Define thresholds and paths
+# To run on the test dataset, change WORKFLOW and SAMPLE_SHEET_IN:
+#   WORKFLOW="workflow_test"
+#   SAMPLE_SHEET_IN="${BASE_DIR}/metadata/sample_sheet_test.csv"
 # -------------------------------------------------------------------
-MIN_MAPPED_PERCENT="${MIN_MAPPED_PERCENT:-70}"
+MIN_MAPPED_PERCENT="${MIN_MAPPED_PERCENT:-60}"
 MIN_AVG_DEPTH="${MIN_AVG_DEPTH:-5}"
 
-SAMPLE_SHEET_IN="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
-MAPPING_SUMMARY="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_test/mapping_coverage_summary.tsv"
+BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
+WORKFLOW="workflow_full"
 
-SAMPLE_SHEET_KEEP="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test_filtered.csv"
-SAMPLE_SHEET_REMOVED="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.removed_low_quality.csv"
-FILTER_REPORT="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_test/sample_filtering_report.txt"
+SAMPLE_SHEET_IN="${BASE_DIR}/metadata/sample_sheet_complete.csv"
+MAPPING_SUMMARY="${BASE_DIR}/04-coverage_mapping/${WORKFLOW}/mapping_coverage_summary.tsv"
+
+SAMPLE_SHEET_KEEP="${BASE_DIR}/metadata/sample_sheet_complete_filtered.csv"
+SAMPLE_SHEET_REMOVED="${BASE_DIR}/metadata/sample_sheet_complete.removed_low_quality.csv"
+FILTER_REPORT="${BASE_DIR}/04-coverage_mapping/${WORKFLOW}/sample_filtering_report.txt"
 
 if [ ! -s "$SAMPLE_SHEET_IN" ]; then
     echo "ERROR: input sample sheet not found or empty: $SAMPLE_SHEET_IN" >&2
@@ -125,11 +131,12 @@ echo "Report: $FILTER_REPORT"
 # - Uses mapped_percent and avg_depth_q20
 # - Loads metrics by sample_id
 #
-# Step 2: Evaluate each sample from sample_sheet_test.csv
-# - Keep sample if mapped_percent >= MIN_MAPPED_PERCENT and avg_depth_q20 >= MIN_AVG_DEPTH
+# Step 2: Evaluate each sample from sample_sheet_complete.csv
+# - Keep sample if mapped_percent >= MIN_MAPPED_PERCENT (default: 60%) and avg_depth_q20 >= MIN_AVG_DEPTH (default: 5x)
 # - Otherwise write sample to removed table with explicit removal reason
+# - Thresholds are overridable via env vars: MIN_MAPPED_PERCENT, MIN_AVG_DEPTH
 #
 # Step 3: Write three outputs
-# - sample_sheet_test.filtered.csv: samples kept for downstream analysis
-# - sample_sheet_test.removed_low_quality.csv: excluded samples + QC metrics + reason
+# - sample_sheet_complete_filtered.csv: samples kept for downstream analysis
+# - sample_sheet_complete.removed_low_quality.csv: excluded samples + QC metrics + reason
 # - sample_filtering_report.txt: thresholds and final counts

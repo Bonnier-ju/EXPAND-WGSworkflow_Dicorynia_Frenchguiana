@@ -82,16 +82,18 @@ site_colors <- setNames(c(pal_fg, pal_out), all_sites)
 tip_data <- data.frame(label = tree$tip.label, stringsAsFactors = FALSE) %>%
   left_join(meta, by = c("label" = "sample_id"))
 
+# ── Join support data to tree via %<+% ────────────────────────────────────────
+# This ensures isTip column is available internally when geom_nodelab is called
+
 # ── Plot 1: Rectangular tree ───────────────────────────────────────────────────
-p_rect <- ggtree(tree, layout = "rectangular", size = 0.3) %<+% tip_data +
+p_rect <- ggtree(tree, layout = "rectangular", linewidth = 0.3) %<+% tip_data %<+% support_df +
 
   # Tip points colored by site
   geom_tippoint(aes(color = site), size = 1.5, alpha = 0.9) +
 
-  # Node support: show UFBoot value only at well-supported nodes
+  # Node support: show UFBoot only at well-supported internal nodes
   geom_nodelab(
-    data = support_df %>% filter(supported),
-    aes(node = node, label = ufboot),
+    aes(label = ifelse(!is.na(supported) & supported, as.character(ufboot), "")),
     size  = 1.8,
     hjust = 1.2,
     vjust = -0.4,
@@ -114,6 +116,8 @@ p_rect <- ggtree(tree, layout = "rectangular", size = 0.3) %<+% tip_data +
     caption  = "Node labels: UFBoot support (shown if SH-aLRT ≥ 80 & UFBoot ≥ 95)"
   ) +
   theme(
+    plot.background  = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA),
     plot.title    = element_text(face = "bold", size = 11),
     plot.subtitle = element_text(size = 8, color = "grey40"),
     plot.caption  = element_text(size = 7, color = "grey50"),
@@ -123,13 +127,12 @@ p_rect <- ggtree(tree, layout = "rectangular", size = 0.3) %<+% tip_data +
   guides(color = guide_legend(ncol = 1, override.aes = list(size = 3)))
 
 # ── Plot 2: Circular (fan) tree ────────────────────────────────────────────────
-p_circ <- ggtree(tree, layout = "circular", size = 0.3) %<+% tip_data +
+p_circ <- ggtree(tree, layout = "circular", linewidth = 0.3) %<+% tip_data %<+% support_df +
 
   geom_tippoint(aes(color = site), size = 1.2, alpha = 0.9) +
 
   geom_nodelab(
-    data = support_df %>% filter(supported),
-    aes(node = node, label = ufboot),
+    aes(label = ifelse(!is.na(supported) & supported, as.character(ufboot), "")),
     size  = 1.5,
     color = "grey30"
   ) +
@@ -142,6 +145,8 @@ p_circ <- ggtree(tree, layout = "circular", size = 0.3) %<+% tip_data +
                       Ntip(tree), " individuals")
   ) +
   theme(
+    plot.background  = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA),
     plot.title    = element_text(face = "bold", size = 11),
     plot.subtitle = element_text(size = 8, color = "grey40"),
     legend.text   = element_text(size = 7),
@@ -152,13 +157,12 @@ p_circ <- ggtree(tree, layout = "circular", size = 0.3) %<+% tip_data +
 # ── Plot 3: Region-level tree (FG vs Outgroup) ─────────────────────────────────
 region_colors <- c("French Guiana" = "#2166AC", "Outgroup (Cameroun/Benin)" = "#E41A1C")
 
-p_region <- ggtree(tree, layout = "rectangular", size = 0.3) %<+% tip_data +
+p_region <- ggtree(tree, layout = "rectangular", linewidth = 0.3) %<+% tip_data %<+% support_df +
 
   geom_tippoint(aes(color = region), size = 1.5, alpha = 0.9) +
 
   geom_nodelab(
-    data = support_df %>% filter(supported),
-    aes(node = node, label = ufboot),
+    aes(label = ifelse(!is.na(supported) & supported, as.character(ufboot), "")),
     size  = 1.8,
     hjust = 1.2,
     vjust = -0.4,
@@ -172,6 +176,8 @@ p_region <- ggtree(tree, layout = "rectangular", size = 0.3) %<+% tip_data +
     subtitle = "French Guiana vs. Cameroun/Benin outgroup"
   ) +
   theme(
+    plot.background  = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA),
     plot.title  = element_text(face = "bold", size = 11),
     legend.text = element_text(size = 9)
   )

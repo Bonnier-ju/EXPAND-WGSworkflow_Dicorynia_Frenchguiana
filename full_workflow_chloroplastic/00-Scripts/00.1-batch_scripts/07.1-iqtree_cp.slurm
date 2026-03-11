@@ -29,7 +29,7 @@ WORKFLOW="workflow_full"
 BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic"
 INPUT_ALN="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/alignments_phylo/alignment_trimmed.fasta"
 OUTPUT_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/iqtree"
-TREES_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/trees"
+RESULTS_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/results/07.1-iqtree_phylogeny"
 LOG_FILE="${OUTPUT_DIR}/iqtree_cp.log"
 PREFIX="${OUTPUT_DIR}/cp_phylo"
 METADATA="${BASE_DIR}/metadata/sample_sheet_chloroplastic_complete.csv"
@@ -41,7 +41,7 @@ OUTGROUP="DBR_AGN,DBR_AGP,DBR_AGQ,DBR_AGR"
 
 THREADS=${SLURM_CPUS_PER_TASK:-8}
 
-mkdir -p "$OUTPUT_DIR" "$TREES_DIR"
+mkdir -p "$OUTPUT_DIR" "$RESULTS_DIR"
 
 if [ ! -s "$INPUT_ALN" ]; then
     echo "ERROR: input alignment not found or empty: $INPUT_ALN" >&2; exit 1
@@ -102,14 +102,17 @@ echo "INFO: running R visualization script" >> "$LOG_FILE"
 Rscript --vanilla "$R_SCRIPT" \
     "${PREFIX}.treefile" \
     "$METADATA" \
-    "$TREES_DIR" \
+    "$RESULTS_DIR" \
     >> "$LOG_FILE" 2>&1
 
-if ls "${TREES_DIR}/cp_phylo_tree_rectangular.png" &>/dev/null; then
-    echo "DONE $(date -Iseconds) tree plots saved to ${TREES_DIR}" | tee -a "$LOG_FILE"
+if ls "${RESULTS_DIR}/cp_phylo_tree_rectangular.png" &>/dev/null; then
+    echo "DONE $(date -Iseconds) tree plots saved to ${RESULTS_DIR}" | tee -a "$LOG_FILE"
 else
     echo "ERROR: R visualization failed — check log" | tee -a "$LOG_FILE"; exit 1
 fi
+
+# Copy key IQ-TREE files to results dir for easy access
+cp "${PREFIX}.treefile" "${PREFIX}.iqtree" "${PREFIX}.mldist" "$RESULTS_DIR/" 2>/dev/null || true
 
 # -------------------------------------------------------------------
 # Description
@@ -120,10 +123,14 @@ fi
 # Step 3: UFBoot2 (1000 rep.) + SH-aLRT (1000 rep.) for node support.
 #         UFBoot >= 95 and SH-aLRT >= 80 indicate well-supported nodes.
 # Step 4: Tree rooted with 4 Cameroun/Benin outgroup individuals.
-# Outputs:
-#   cp_phylo.treefile : ML tree with bootstrap support (Newick)
-#   cp_phylo.iqtree   : full run report (model, logL, parameters)
-#   cp_phylo.log      : IQ-TREE run log
-#   cp_phylo.mldist   : pairwise ML distance matrix
+# Outputs (iqtree/ = raw IQ-TREE files, results/07.1-iqtree_phylogeny/ = final results):
+#   cp_phylo.treefile            : ML tree with bootstrap support (Newick)
+#   cp_phylo.iqtree              : full run report (model, logL, parameters)
+#   cp_phylo.log                 : IQ-TREE run log
+#   cp_phylo.mldist              : pairwise ML distance matrix
+#   cp_phylo_tree_rectangular.png: rectangular tree colored by site
+#   cp_phylo_tree_circular.png   : circular tree colored by site
+#   cp_phylo_tree_region.png     : tree colored by region (FG vs outgroup)
+#   cp_phylo_node_support.tsv    : node support table (alrt, ufboot)
 # Haploid chloroplast: no ploidy correction needed
 # -------------------------------------------------------------------

@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=24:00:00
+#SBATCH --time=50:00:00
 #SBATCH -J 04-coverage_mapping_qc
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
 #SBATCH --array=1-36
-#SBATCH --mem=32G
+#SBATCH --mem=12G
 #SBATCH --cpus-per-task=4
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
@@ -162,5 +162,5 @@ fi
 # - In sequential mode, also builds mapping_coverage_summary.tsv directly
 #
 # Parallelization note:
-# - Current setting is 2 samples per array task (SAMPLES_PER_TASK=2)
+# - Current setting is 5 samples per array task (SAMPLES_PER_TASK=5)
 # - To scale to full dataset, change SAMPLES_PER_TASK and --array range together

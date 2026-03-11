@@ -4,9 +4,9 @@
 #SBATCH -J 05.1-haplotype_caller
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%A_%a.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%A_%a.out
-#SBATCH --array=1-6
+#SBATCH --array=1-164%35
 #SBATCH --mem=24G
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
@@ -25,9 +25,15 @@ module load bioinfo/samtools/1.21
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
 # -------------------------------------------------------------------
-SAMPLE_SHEET="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_test.csv"
-ALIGN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/03-reading_sorting/workflow_test/alignments"
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_test/haplotypecaller_gvcf"
+# To run on the test dataset, change WORKFLOW and SAMPLE_SHEET:
+#   WORKFLOW="workflow_test"
+#   SAMPLE_SHEET="${BASE_DIR}/metadata/sample_sheet_test.csv"
+WORKFLOW="workflow_full"
+
+BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
+SAMPLE_SHEET="${BASE_DIR}/metadata/sample_sheet_complete_filtered.csv"
+ALIGN_DIR="${BASE_DIR}/03-reading_sorting/${WORKFLOW}/alignments"
+OUTPUT_DIR="${BASE_DIR}/05-variant_calling/${WORKFLOW}/haplotypecaller_gvcf"
 LOG_DIR="${OUTPUT_DIR}/logs"
 SAMPLES_LIST="${OUTPUT_DIR}/samples.list"
 
