@@ -178,7 +178,7 @@ p_sites <- make_network_plot(
   pie_cols     = all_sites,
   fill_colors  = site_colors,
   legend_title = "Sampling site",
-  subtitle_text = paste0("Minimum spanning network | MDS layout | n=180 individuals | ",
+  subtitle_text = paste0("Minimum spanning network | MDS layout | n=", nrow(meta), " individuals | ",
                          n_haps, " haplotypes")
 )
 

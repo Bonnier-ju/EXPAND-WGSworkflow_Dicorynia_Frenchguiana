@@ -40,9 +40,8 @@ MAX_SAMPLE_MISSING=0.5
 MIN_MAC=1
 
 # Samples explicitly excluded regardless of missing rate.
-# Reason: chloroplast coverage < 1x → thousands of spurious SNP calls.
-# Possible causes: failed DNA extraction or sampling error.
-FORCE_EXCLUDE="DBR_ACY DBR_ADM DSW_AAAO"
+# All low-quality samples already removed via filtered sample sheet (164 samples).
+FORCE_EXCLUDE=""
 
 SAMPLES_TO_EXCLUDE="${OUTPUT_DIR}/samples_high_missing.txt"
 OUTPUT_VCF="${OUTPUT_DIR}/variants.filtered.vcf.gz"
