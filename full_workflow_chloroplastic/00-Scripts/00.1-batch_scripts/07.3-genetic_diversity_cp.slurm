@@ -61,16 +61,22 @@ fi
 #   - haplotype_table.tsv     : per-sample haplotype assignment (from 06.4)
 #   - sample_sheet_chloroplastic_complete_filtered.csv : metadata (164 samples)
 # Statistics computed globally, per region, and per sampling site:
-#   - n_samples       : number of individuals
-#   - n_haplotypes    : number of unique haplotypes
-#   - Hd              : haplotype diversity (Nei 1987)
-#   - pi              : nucleotide diversity (mean pairwise differences / site)
-#   - Tajima's D      : test of selective neutrality / demographic history
-#   - n_private_haps  : haplotypes unique to one site
-# Outputs (03-genetic_diversity/):
-#   diversity_stats_per_site.tsv      : full stats table
-#   cp_diversity_hd_per_site.png      : barplot of Hd per site
-#   cp_diversity_pi_per_site.png      : barplot of pi per site
-#   cp_diversity_hd_vs_pi.png         : Hd vs. pi scatter per site
-#   cp_diversity_haplotype_counts.png : total vs. private haplotypes per site
+#   - n_samples          : number of individuals
+#   - n_haplotypes       : number of unique haplotypes
+#   - Hd                 : haplotype diversity (Nei 1987)
+#   - pi                 : nucleotide diversity (mean pairwise differences / site)
+#   - theta_w            : Watterson's theta (from segregating sites)
+#   - Tajima's D         : test of selective neutrality / demographic history
+#   - Fu's Fs            : test of population expansion (Monte Carlo Ewens)
+#   - n_private_haps     : haplotypes unique to one site
+#   - rarefied_richness  : expected haplotypes at minimum sample size
+# Outputs (07.3-genetic_diversity/):
+#   diversity_stats_per_site.tsv       : full stats table
+#   pairwise_fst.tsv                   : pairwise FST matrix (Hudson 1992)
+#   cp_diversity_hd_per_site.png       : barplot of Hd per site
+#   cp_diversity_pi_per_site.png       : barplot of pi per site
+#   cp_diversity_hd_vs_pi.png          : Hd vs. pi scatter per site
+#   cp_diversity_haplotype_counts.png  : total vs. private haplotypes per site
+#   cp_diversity_rarefied_richness.png : rarefied haplotype richness per site
+#   cp_diversity_pairwise_fst.png      : pairwise FST heatmap between sites
 # -------------------------------------------------------------------
