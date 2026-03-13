@@ -4,7 +4,10 @@
 # Description : Chloroplast haplotype network for Dicorynia guianensis.
 #               Network topology from pegas::haploNet (MSN).
 #               Layout via MDS on pairwise genetic distances.
-#               Nodes = pie charts (scatterpie) sized by haplotype frequency.
+#               Nodes = pie charts (scatterpie), fixed uniform size.
+#               Two plots:
+#                 1. All samples (outgroup + Dicorynia paranensis included)
+#                 2. French Guiana only (outgroup + D.paranensis excluded)
 # Author  : Julien Bonnier
 # Usage   : Rscript --vanilla 07.2-haplotype_networks_cp.R \
 #               <alignment_fasta> <haplotype_table> <metadata_csv> <output_dir>
@@ -54,7 +57,14 @@ hap_table <- read.table(hap_file, header = TRUE, sep = "\t", stringsAsFactors = 
 meta <- read.csv(meta_file, stringsAsFactors = FALSE) %>%
   select(sample_id, site, project) %>%
   distinct() %>%
-  mutate(region = ifelse(site == "Cameroun_Benin", "Outgroup (Cameroun/Benin)", "French Guiana"))
+  mutate(
+    site   = case_when(
+      project == "Treemutation" ~ "Angela",
+      site    == "Herbier"      ~ "Dicorynia paranensis",
+      TRUE                      ~ site
+    ),
+    region = ifelse(site == "Cameroun_Benin", "Outgroup (Cameroun/Benin)", "French Guiana")
+  )
 
 cat("INFO: metadata loaded —", nrow(meta), "samples,", n_distinct(meta$site), "sites\n")
 
@@ -80,75 +90,80 @@ edge_step <- net_mat[, 3]
 
 # ── MDS layout on pairwise haplotype distances ────────────────────────────────
 # Positions haplotypes by genetic distance: close haplotypes → close nodes
+# pos_all : original MDS (no scaling) — used for all-samples plot
+# pos_fg  : scaled x10 to spread FG nodes — used for FG-only plot
 cat("INFO: computing MDS layout...\n")
 d_mat <- as.matrix(dist.dna(haps, model = "N", pairwise.deletion = TRUE))
 mds   <- cmdscale(d_mat, k = 2)
-pos   <- data.frame(hap_id = seq_len(n_haps), x = mds[, 1], y = mds[, 2])
 
-# ── Site/region composition per haplotype ────────────────────────────────────
+pos_all <- data.frame(hap_id = seq_len(n_haps),
+                      x = mds[, 1],
+                      y = mds[, 2])
+
+pos_fg <- data.frame(hap_id = seq_len(n_haps),
+                     x = mds[, 1] * 20,
+                     y = mds[, 2] * 20)
+
+# ── Site composition per haplotype ───────────────────────────────────────────
 hap_membership <- attr(haps, "index")
 seq_names      <- rownames(aln)
 
-all_sites   <- sort(unique(meta$site))
-all_regions <- c("French Guiana", "Outgroup (Cameroun/Benin)")
+all_sites <- sort(unique(meta$site))
 
-pie_sites   <- matrix(0, nrow = n_haps, ncol = length(all_sites),
-                      dimnames = list(NULL, all_sites))
-pie_regions <- matrix(0, nrow = n_haps, ncol = length(all_regions),
-                      dimnames = list(NULL, all_regions))
+pie_sites <- matrix(0, nrow = n_haps, ncol = length(all_sites),
+                    dimnames = list(NULL, all_sites))
 
 for (i in seq_along(hap_membership)) {
   samples <- seq_names[hap_membership[[i]]]
   info    <- sample_info %>% filter(sample_id %in% samples)
-  for (s in info$site)   pie_sites[i, s]   <- pie_sites[i, s]   + 1
-  for (r in info$region) pie_regions[i, r] <- pie_regions[i, r] + 1
+  for (s in info$site) pie_sites[i, s] <- pie_sites[i, s] + 1
 }
 
 node_sizes <- sapply(hap_membership, length)
 
 # ── Color palettes ─────────────────────────────────────────────────────────────
-sites_fg    <- sort(unique(meta$site[meta$region == "French Guiana"]))
-pal_fg      <- colorRampPalette(brewer.pal(12, "Paired"))(length(sites_fg))
-site_colors <- setNames(c(pal_fg, "#E41A1C"), c(sites_fg, "Cameroun_Benin"))
+# FG sites (includes Angela, excludes Cameroun_Benin and Dicorynia paranensis)
+sites_fg <- sort(unique(meta$site[meta$region == "French Guiana" &
+                                   meta$site != "Dicorynia paranensis"]))
+pal_fg   <- colorRampPalette(brewer.pal(12, "Paired"))(length(sites_fg))
 
-region_colors <- c("French Guiana" = "#2166AC", "Outgroup (Cameroun/Benin)" = "#E41A1C")
+site_colors <- setNames(
+  c(pal_fg, "#E41A1C", "#888888"),
+  c(sites_fg, "Cameroun_Benin", "Dicorynia paranensis")
+)
 
-# ── Build node data frames ─────────────────────────────────────────────────────
-# Pie radius: sqrt(n) scaled to plot coordinates
-r_scale <- diff(range(pos$x)) * 0.03
+# ── Node radii ────────────────────────────────────────────────────────────────
+# r_pie      : radius for haplotypes with n >= 2 (shown as pie charts)
+# r_singleton: radius for singletons (n == 1, shown as small grey dots)
+r_pie       <- diff(range(mds[, 1])) * 0.012
+r_singleton <- r_pie * 0.4
 
-node_sites <- pos %>%
-  bind_cols(as.data.frame(pie_sites)) %>%
-  mutate(n = node_sizes, r = pmax(sqrt(n) * r_scale, r_scale * 0.6))
+# ── Build edge data frames (one per layout) ───────────────────────────────────
+make_edges <- function(pos_df) {
+  data.frame(from = edge_from, to = edge_to, steps = edge_step) %>%
+    left_join(pos_df, by = c("from" = "hap_id")) %>%
+    rename(x_from = x, y_from = y) %>%
+    left_join(pos_df, by = c("to" = "hap_id")) %>%
+    rename(x_to = x, y_to = y)
+}
 
-node_regions <- pos %>%
-  bind_cols(as.data.frame(pie_regions)) %>%
-  mutate(n = node_sizes, r = pmax(sqrt(n) * r_scale, r_scale * 0.6))
-
-# ── Build edge data frame ─────────────────────────────────────────────────────
-edges <- data.frame(from = edge_from, to = edge_to, steps = edge_step) %>%
-  left_join(pos, by = c("from" = "hap_id")) %>%
-  rename(x_from = x, y_from = y) %>%
-  left_join(pos, by = c("to" = "hap_id")) %>%
-  rename(x_to = x, y_to = y)
+edges_all <- make_edges(pos_all)
+edges_fg  <- make_edges(pos_fg)
 
 # ── Plot helper function ───────────────────────────────────────────────────────
-make_network_plot <- function(node_df, pie_cols, fill_colors, legend_title, subtitle_text) {
+make_network_plot <- function(node_df, edge_df, pie_cols, fill_colors,
+                              legend_title, title_text, subtitle_text) {
   ggplot() +
-    # Edges
-    geom_segment(data = edges,
+    geom_segment(data = edge_df,
                  aes(x = x_from, y = y_from, xend = x_to, yend = y_to),
                  color = "grey50", linewidth = 0.4, alpha = 0.7) +
-    # Edge step labels (only for edges with few steps, to avoid clutter)
-    geom_text(data = edges %>% filter(steps <= 5),
+    geom_text(data = edge_df %>% filter(steps <= 5),
               aes(x = (x_from + x_to) / 2, y = (y_from + y_to) / 2, label = steps),
               size = 1.8, color = "grey30") +
-    # Pie chart nodes
     geom_scatterpie(data = node_df,
                     aes(x = x, y = y, r = r),
                     cols = pie_cols,
-                    color = "white", linewidth = 0.2,
-                    alpha = 0.95) +
+                    color = "white", linewidth = 0.2, alpha = 0.95) +
     scale_fill_manual(values = fill_colors, name = legend_title) +
     coord_equal() +
     theme_void(base_size = 11) +
@@ -164,76 +179,141 @@ make_network_plot <- function(node_df, pie_cols, fill_colors, legend_title, subt
       plot.margin      = margin(10, 10, 10, 10)
     ) +
     labs(
-      title    = expression(italic("Dicorynia guianensis") ~ "— Chloroplast haplotype network"),
+      title    = title_text,
       subtitle = subtitle_text,
-      caption  = "Node size ∝ haplotype frequency | Edge labels = mutational steps (≤5 shown)"
+      caption  = "Uniform node size | Edge labels = mutational steps (≤5 shown)"
     ) +
     guides(fill = guide_legend(ncol = 1, override.aes = list(size = 4)))
 }
 
-# ── Plot 1: by sampling site ──────────────────────────────────────────────────
-cat("INFO: generating site-level network plot...\n")
-p_sites <- make_network_plot(
-  node_df      = node_sites,
+# ── Plot 1: All samples (outgroup + Dicorynia paranensis included) ─────────────
+cat("INFO: generating all-samples network plot...\n")
+
+node_all_base <- pos_all %>%
+  bind_cols(as.data.frame(pie_sites)) %>%
+  mutate(n = node_sizes,
+         is_singleton = n == 1,
+         r = ifelse(is_singleton, r_singleton, r_pie))
+
+node_all_pies <- node_all_base %>% filter(!is_singleton)
+node_all_sing <- node_all_base %>% filter(is_singleton)
+
+p_all <- make_network_plot(
+  node_df      = node_all_pies,
+  edge_df      = edges_all,
   pie_cols     = all_sites,
   fill_colors  = site_colors,
   legend_title = "Sampling site",
-  subtitle_text = paste0("Minimum spanning network | MDS layout | n=", nrow(meta), " individuals | ",
-                         n_haps, " haplotypes")
-)
+  title_text   = expression(italic("Dicorynia guianensis") ~ "— Chloroplast haplotype network"),
+  subtitle_text = paste0("All samples | n=", nrow(meta), " individuals | ", n_haps, " haplotypes | ",
+                         nrow(node_all_sing), " singletons as grey dots")
+) +
+  geom_point(data = node_all_sing,
+             aes(x = x, y = y), shape = 21,
+             fill = "grey60", color = "white", size = r_singleton * 80, stroke = 0.3)
 
-out_sites <- file.path(output_dir, "cp_hapnet_sites.png")
-ggsave(out_sites, p_sites, width = 16, height = 14, dpi = 300, device = "png")
-cat("INFO: saved", out_sites, "\n")
+out_all <- file.path(output_dir, "cp_hapnet_all_samples.png")
+ggsave(out_all, p_all, width = 16, height = 14, dpi = 300, device = "png")
+cat("INFO: saved", out_all, "\n")
 
-# ── Plot 2: by region ─────────────────────────────────────────────────────────
-cat("INFO: generating region-level network plot...\n")
-p_regions <- make_network_plot(
-  node_df      = node_regions,
-  pie_cols     = all_regions,
-  fill_colors  = region_colors,
-  legend_title = "Region",
-  subtitle_text = "French Guiana vs. Cameroun/Benin outgroup"
-)
+# ── Repulsion algorithm ────────────────────────────────────────────────────────
+# Iteratively pushes overlapping nodes apart while preserving relative layout.
+# Returns repelled x/y; original positions kept for connector lines.
+repel_positions <- function(x, y, r, max_iter = 2000, padding = 0.05) {
+  n  <- length(x)
+  px <- x
+  py <- y
+  for (iter in seq_len(max_iter)) {
+    moved <- FALSE
+    for (i in seq_len(n - 1)) {
+      for (j in seq(i + 1, n)) {
+        dx     <- px[j] - px[i]
+        dy     <- py[j] - py[i]
+        dist_ij <- sqrt(dx^2 + dy^2)
+        min_d  <- r[i] + r[j] + padding
+        if (dist_ij < min_d && dist_ij > 1e-10) {
+          push   <- (min_d - dist_ij) / 2
+          angle  <- atan2(dy, dx)
+          px[i]  <- px[i] - push * cos(angle)
+          py[i]  <- py[i] - push * sin(angle)
+          px[j]  <- px[j] + push * cos(angle)
+          py[j]  <- py[j] + push * sin(angle)
+          moved  <- TRUE
+        }
+      }
+    }
+    if (!moved) break
+  }
+  cat("INFO: repulsion converged after", iter, "iterations\n")
+  list(x = px, y = py)
+}
 
-out_regions <- file.path(output_dir, "cp_hapnet_regions.png")
-ggsave(out_regions, p_regions, width = 14, height = 12, dpi = 300, device = "png")
-cat("INFO: saved", out_regions, "\n")
+# ── Plot 2: French Guiana only (no outgroup, no Dicorynia paranensis) ──────────
+cat("INFO: generating French Guiana-only network plot...\n")
 
-# ── Plot 3: French Guiana only — by site (outgroup excluded) ──────────────────
-cat("INFO: generating French Guiana-only site network plot...\n")
-
-# Sites excluding outgroup
-sites_fg_only <- sort(unique(meta$site[meta$region == "French Guiana"]))
+# Sites for FG-only plot: exclude Cameroun_Benin and Dicorynia paranensis
+sites_fg_only  <- sort(unique(meta$site[meta$region == "French Guiana" &
+                                          meta$site != "Dicorynia paranensis"]))
 site_colors_fg <- site_colors[sites_fg_only]
 
 # Node data: keep only FG site columns, exclude haplotypes with 0 FG individuals
-node_fg <- pos %>%
+node_fg <- pos_fg %>%
   bind_cols(as.data.frame(pie_sites[, sites_fg_only, drop = FALSE])) %>%
   mutate(
-    n_fg = rowSums(across(all_of(sites_fg_only))),
-    n    = node_sizes,
-    r    = pmax(sqrt(n_fg) * r_scale, r_scale * 0.6)
+    n_fg        = rowSums(across(all_of(sites_fg_only))),
+    n           = node_sizes,
+    is_singleton = n_fg == 1,
+    r           = ifelse(is_singleton, r_singleton, r_pie)
   ) %>%
-  filter(n_fg > 0)  # remove outgroup-only haplotypes
+  filter(n_fg > 0)
 
 n_fg_haps <- nrow(node_fg)
 n_fg_ind  <- sum(node_fg$n_fg)
 cat("INFO: French Guiana —", n_fg_haps, "haplotypes,", n_fg_ind, "individuals\n")
 
+# Apply repulsion to FG nodes — store original positions for connector lines
+cat("INFO: applying repulsion to FG nodes...\n")
+repelled <- repel_positions(node_fg$x, node_fg$y, node_fg$r)
+node_fg <- node_fg %>%
+  mutate(
+    x_orig = x,
+    y_orig = y,
+    x      = repelled$x,
+    y      = repelled$y,
+    moved  = sqrt((x - x_orig)^2 + (y - y_orig)^2) > (r_fixed * 0.1)
+  )
+
+# Connector lines: only for nodes that were actually moved
+connectors_fg <- node_fg %>% filter(moved) %>% select(x_orig, y_orig, x, y)
+
 # Edges: keep only edges where both endpoints have FG individuals
+# Built from scratch using repelled node positions
 fg_hap_ids <- node_fg$hap_id
-edges_fg <- edges %>%
-  filter(from %in% fg_hap_ids & to %in% fg_hap_ids)
+edges_fg_plot <- data.frame(from = edge_from, to = edge_to, steps = edge_step) %>%
+  filter(from %in% fg_hap_ids & to %in% fg_hap_ids) %>%
+  left_join(node_fg %>% select(hap_id, x, y), by = c("from" = "hap_id")) %>%
+  rename(x_from = x, y_from = y) %>%
+  left_join(node_fg %>% select(hap_id, x, y), by = c("to" = "hap_id")) %>%
+  rename(x_to = x, y_to = y)
 
 p_fg <- ggplot() +
-  geom_segment(data = edges_fg,
+  # Connector lines from original to repelled position
+  geom_segment(data = connectors_fg,
+               aes(x = x_orig, y = y_orig, xend = x, yend = y),
+               color = "grey70", linewidth = 0.3, linetype = "dashed") +
+  # Network edges (at repelled positions)
+  geom_segment(data = edges_fg_plot,
                aes(x = x_from, y = y_from, xend = x_to, yend = y_to),
                color = "grey50", linewidth = 0.4, alpha = 0.7) +
-  geom_text(data = edges_fg %>% filter(steps <= 5),
+  geom_text(data = edges_fg_plot %>% filter(steps <= 5),
             aes(x = (x_from + x_to) / 2, y = (y_from + y_to) / 2, label = steps),
             size = 1.8, color = "grey30") +
-  geom_scatterpie(data = node_fg,
+  # Singleton nodes: small grey dots
+  geom_point(data = node_fg %>% filter(is_singleton),
+             aes(x = x, y = y), shape = 21,
+             fill = "grey60", color = "white", size = r_singleton * 80, stroke = 0.3) +
+  # Pie chart nodes for haplotypes with n >= 2
+  geom_scatterpie(data = node_fg %>% filter(!is_singleton),
                   aes(x = x, y = y, r = r),
                   cols = sites_fg_only,
                   color = "white", linewidth = 0.2, alpha = 0.95) +
@@ -253,93 +333,15 @@ p_fg <- ggplot() +
   ) +
   labs(
     title    = expression(italic("Dicorynia guianensis") ~ "— Chloroplast haplotype network (French Guiana)"),
-    subtitle = paste0("Outgroup excluded | ", n_fg_haps, " haplotypes | ", n_fg_ind, " individuals | 21 sites"),
-    caption  = "Node size ∝ haplotype frequency | Edge labels = mutational steps (≤5 shown)"
+    subtitle = paste0("Outgroup & Dicorynia paranensis excluded | ", n_fg_haps,
+                      " haplotypes | ", n_fg_ind, " individuals | singletons = grey dots"),
+    caption  = "Pie charts: n≥2 | Grey dots: singletons (n=1) | Dashed lines = repelled nodes | Edge labels = mutational steps (≤5)"
   ) +
   guides(fill = guide_legend(ncol = 1, override.aes = list(size = 4)))
 
 out_fg <- file.path(output_dir, "cp_hapnet_fg_only.png")
 ggsave(out_fg, p_fg, width = 16, height = 14, dpi = 300, device = "png")
 cat("INFO: saved", out_fg, "\n")
-
-# ── Plot 4: French Guiana only, Treemutation samples highlighted ───────────────
-cat("INFO: generating Treemutation-highlighted network plot...\n")
-
-treemut_samples <- meta %>%
-  filter(project == "Treemutation") %>%
-  pull(sample_id)
-
-cat("INFO: Treemutation samples —", length(treemut_samples), ":",
-    paste(treemut_samples, collapse = ", "), "\n")
-
-# For each haplotype, count how many Treemutation individuals it contains
-n_treemut_per_hap <- sapply(hap_membership, function(idx) {
-  samples <- seq_names[idx]
-  sum(samples %in% treemut_samples)
-})
-
-# Build node data: FG only + Treemutation flag
-node_treemut <- node_fg %>%
-  mutate(
-    n_treemut   = n_treemut_per_hap[hap_id],
-    has_treemut = n_treemut > 0,
-    border_col  = ifelse(has_treemut, "#FF6600", "white"),
-    border_size = ifelse(has_treemut, 1.2, 0.2)
-  )
-
-# Haplotypes carrying only Treemutation individuals (private)
-treemut_only_ids <- node_treemut %>% filter(has_treemut & n_fg == n_treemut) %>% pull(hap_id)
-
-p_treemut <- ggplot() +
-  geom_segment(data = edges_fg,
-               aes(x = x_from, y = y_from, xend = x_to, yend = y_to),
-               color = "grey50", linewidth = 0.4, alpha = 0.7) +
-  geom_text(data = edges_fg %>% filter(steps <= 5),
-            aes(x = (x_from + x_to) / 2, y = (y_from + y_to) / 2, label = steps),
-            size = 1.8, color = "grey30") +
-  # All FG nodes (no Treemutation border) — drawn first
-  geom_scatterpie(data = node_treemut %>% filter(!has_treemut),
-                  aes(x = x, y = y, r = r),
-                  cols = sites_fg_only,
-                  color = "white", linewidth = 0.2, alpha = 0.95) +
-  # Treemutation nodes — drawn on top with orange border
-  geom_scatterpie(data = node_treemut %>% filter(has_treemut),
-                  aes(x = x, y = y, r = r),
-                  cols = sites_fg_only,
-                  color = "#FF6600", linewidth = 1.2, alpha = 0.95) +
-  scale_fill_manual(values = site_colors_fg, name = "Sampling site") +
-  # Dummy layer for legend entry for Treemutation border
-  geom_point(data = data.frame(x = NA_real_, y = NA_real_),
-             aes(x = x, y = y, shape = "Treemutation individuals"),
-             color = "#FF6600", size = 4, stroke = 1.5) +
-  scale_shape_manual(values = c("Treemutation individuals" = 1), name = NULL) +
-  coord_equal() +
-  theme_void(base_size = 11) +
-  theme(
-    plot.background  = element_rect(fill = "white", color = NA),
-    panel.background = element_rect(fill = "white", color = NA),
-    legend.position  = "right",
-    legend.text      = element_text(size = 7),
-    legend.key.size  = unit(0.4, "cm"),
-    plot.title       = element_text(face = "bold", size = 12, hjust = 0.5),
-    plot.subtitle    = element_text(size = 8, hjust = 0.5, color = "grey40"),
-    plot.caption     = element_text(size = 7, color = "grey50"),
-    plot.margin      = margin(10, 10, 10, 10)
-  ) +
-  labs(
-    title    = expression(italic("Dicorynia guianensis") ~ "— Chloroplast haplotype network (French Guiana)"),
-    subtitle = paste0("Outgroup excluded | Treemutation individuals highlighted (orange border) | n=",
-                      length(treemut_samples), " Treemutation samples"),
-    caption  = "Node size ∝ haplotype frequency | Edge labels = mutational steps (≤5 shown)"
-  ) +
-  guides(
-    fill  = guide_legend(ncol = 1, override.aes = list(size = 4)),
-    shape = guide_legend(override.aes = list(size = 4, stroke = 1.5))
-  )
-
-out_treemut <- file.path(output_dir, "cp_hapnet_treemutation.png")
-ggsave(out_treemut, p_treemut, width = 16, height = 14, dpi = 300, device = "png")
-cat("INFO: saved", out_treemut, "\n")
 
 # ── Export summary table ───────────────────────────────────────────────────────
 hap_summary <- data.frame(
