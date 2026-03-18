@@ -67,7 +67,7 @@ xlim_fg <- c(-55.2, -51.2)
 ylim_fg <- c(1.8, 6.4)
 
 # ── Haplotype frequencies per site ───────────────────────────────────────────
-N_TOP_HAPS <- 20
+N_TOP_HAPS <- 30
 
 hap_counts_global <- sample_info %>%
   count(haplotype_id, name = "n_global") %>%
@@ -114,7 +114,7 @@ pal_haps <- colorRampPalette(c(
 hap_colors <- setNames(c(pal_haps, "grey70"), c(sort(top_haps), "Other"))
 
 # ── Fixed pie radius (avoids large pies in dense areas) ───────────────────────
-r_fixed <- diff(xlim_fg) * 0.022   # uniform radius for all sites
+r_fixed <- diff(xlim_fg) * 0.040   # uniform radius for all sites
 map_data_sites <- map_data_sites %>% mutate(r = r_fixed)
 
 # ── Repulsion layout: push overlapping pies apart ─────────────────────────────
@@ -129,7 +129,7 @@ repel_pies <- function(x, y, r, max_iter = 800, step_frac = 0.5) {
         dx   <- px[j] - px[i]
         dy   <- py[j] - py[i]
         dist <- sqrt(dx^2 + dy^2)
-        gap  <- r[i] + r[j] + 0.04    # minimum separation (degrees)
+        gap  <- r[i] + r[j] + 0.12    # minimum separation (degrees)
         if (dist < gap && dist > 1e-9) {
           push   <- (gap - dist) * step_frac
           px[i]  <- px[i] - push * dx / dist

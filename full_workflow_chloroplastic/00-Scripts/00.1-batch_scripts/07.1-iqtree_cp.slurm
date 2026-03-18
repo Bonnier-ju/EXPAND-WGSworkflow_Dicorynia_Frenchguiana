@@ -46,10 +46,6 @@ mkdir -p "$RESULTS_DIR"
 if [ ! -s "$INPUT_ALN" ]; then
     echo "ERROR: input alignment not found or empty: $INPUT_ALN" >&2; exit 1
 fi
-if [ -s "${PREFIX}.treefile" ]; then
-    echo "SKIP: output already exists: ${PREFIX}.treefile"; exit 0
-fi
-
 echo "START $(date -Iseconds) iqtree cp" > "$LOG_FILE"
 echo "INFO: alignment=${INPUT_ALN}" >> "$LOG_FILE"
 echo "INFO: outgroup=${OUTGROUP}" >> "$LOG_FILE"
@@ -69,27 +65,30 @@ echo "INFO: threads=${THREADS}" >> "$LOG_FILE"
 #   --prefix : output file prefix
 #   --redo   : overwrite previous run if partial files exist
 # -------------------------------------------------------------------
-echo "INFO: running IQ-TREE3 ModelFinder + ML + UFBoot" >> "$LOG_FILE"
-
-iqtree3 \
-    -s "$INPUT_ALN" \
-    -m MFP \
-    -B 1000 \
-    -alrt 1000 \
-    -o "$OUTGROUP" \
-    -T "$THREADS" \
-    --prefix "$PREFIX" \
-    --redo \
-    2>> "$LOG_FILE"
+if [ -s "${PREFIX}.treefile" ]; then
+    echo "SKIP: IQ-TREE treefile already exists — skipping tree inference" | tee -a "$LOG_FILE"
+else
+    echo "INFO: running IQ-TREE3 ModelFinder + ML + UFBoot" >> "$LOG_FILE"
+    iqtree3 \
+        -s "$INPUT_ALN" \
+        -m MFP \
+        -B 1000 \
+        -alrt 1000 \
+        -o "$OUTGROUP" \
+        -T "$THREADS" \
+        --prefix "$PREFIX" \
+        --redo \
+        2>> "$LOG_FILE"
+fi
 
 # -------------------------------------------------------------------
-# STEP 3: Validate outputs
+# STEP 3: Validate treefile
 # -------------------------------------------------------------------
 if [ -s "${PREFIX}.treefile" ]; then
     best_model=$(grep "^Best-fit model" "${PREFIX}.iqtree" 2>/dev/null | awk '{print $NF}' || echo "unknown")
     log_l=$(grep "^Log-likelihood of the tree" "${PREFIX}.iqtree" 2>/dev/null | awk '{print $NF}' || echo "unknown")
     n_leaves=$(grep -c "^>" "$INPUT_ALN" || echo "unknown")
-    echo "DONE $(date -Iseconds) model=${best_model} logL=${log_l} leaves=${n_leaves} output=${PREFIX}.treefile" | tee -a "$LOG_FILE"
+    echo "INFO: model=${best_model} logL=${log_l} leaves=${n_leaves}" | tee -a "$LOG_FILE"
 else
     echo "ERROR: IQ-TREE output treefile not found" | tee -a "$LOG_FILE"; exit 1
 fi

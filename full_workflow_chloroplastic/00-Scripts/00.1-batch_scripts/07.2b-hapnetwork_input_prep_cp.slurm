@@ -86,13 +86,13 @@ echo "INFO: generating group file (all samples)..." | tee -a "$LOG"
 GROUP_ALL="${OUTPUT_DIR}/group_file_all.txt"
 
 # Header-free tab-separated: sample_id <TAB> site
-# Treemutation -> Angela, Herbier -> Dicorynia paranensis
+# Treemutation -> Angela (excluded), Herbier -> Dicorynia paranensis
 tail -n +2 "${META}" | awk -F',' '
 {
     sample = $1
     project = $3
     site    = $4
-    if (project == "Treemutation") site = "Angela"
+    if (project == "Treemutation") next
     if (site == "Herbier") site = "Dicorynia_paranensis"
     print sample "\t" site
 }' > "${GROUP_ALL}"

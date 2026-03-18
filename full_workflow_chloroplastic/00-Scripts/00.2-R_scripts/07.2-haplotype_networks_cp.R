@@ -68,6 +68,20 @@ meta <- read.csv(meta_file, stringsAsFactors = FALSE) %>%
 
 cat("INFO: metadata loaded —", nrow(meta), "samples,", n_distinct(meta$site), "sites\n")
 
+# Exclude Angela (Treemutation project — reference genome individuals, not biological)
+angela_samples <- meta$sample_id[meta$site == "Angela"]
+if (length(angela_samples) > 0) {
+  meta <- meta %>% filter(site != "Angela")
+  cat("INFO: removed", length(angela_samples), "Angela samples from metadata\n")
+}
+
+# Remove Angela sequences from alignment (must be done after angela_samples is defined)
+angela_in_aln <- angela_samples[angela_samples %in% rownames(aln)]
+if (length(angela_in_aln) > 0) {
+  aln <- aln[!rownames(aln) %in% angela_in_aln, ]
+  cat("INFO: removed", length(angela_in_aln), "Angela sequences from alignment\n")
+}
+
 sample_info <- hap_table %>% left_join(meta, by = "sample_id")
 
 # ── Compute haplotypes ─────────────────────────────────────────────────────────
@@ -280,7 +294,7 @@ node_fg <- node_fg %>%
     y_orig = y,
     x      = repelled$x,
     y      = repelled$y,
-    moved  = sqrt((x - x_orig)^2 + (y - y_orig)^2) > (r_fixed * 0.1)
+    moved  = sqrt((x - x_orig)^2 + (y - y_orig)^2) > (r_pie * 0.1)
   )
 
 # Connector lines: only for nodes that were actually moved
@@ -347,8 +361,8 @@ cat("INFO: saved", out_fg, "\n")
 hap_summary <- data.frame(
   haplotype_id  = seq_len(n_haps),
   n_individuals = node_sizes,
-  x_mds = pos$x,
-  y_mds = pos$y,
+  x_mds = pos_all$x,
+  y_mds = pos_all$y,
   sites = sapply(hap_membership, function(idx) {
     samples <- seq_names[idx]
     paste(sort(unique(sample_info$site[sample_info$sample_id %in% samples])), collapse = ";")

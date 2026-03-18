@@ -223,9 +223,9 @@ cat("INFO: saved cp_phylo_all_circ_sqrt.png\n")
 # ── Plot 3: Rectangular — French Guiana only (no outgroups) ───────────────────
 cat("INFO: generating plot 3 — French Guiana only...\n")
 
-outgroup_tips <- meta$sample_id[meta$region == "Outgroup"]
+outgroup_tips <- meta$sample_id[meta$region == "Outgroup" | meta$site == "Angela"]
 outgroup_tips <- outgroup_tips[outgroup_tips %in% tree$tip.label]
-cat("INFO: dropping", length(outgroup_tips), "outgroup tips\n")
+cat("INFO: dropping", length(outgroup_tips), "outgroup + Angela tips\n")
 
 tree_fg <- drop.tip(tree, outgroup_tips)
 tip_data_fg <- data.frame(label = tree_fg$tip.label, stringsAsFactors = FALSE) %>%
@@ -244,7 +244,8 @@ support_df_fg <- data.frame(
   )
 
 site_colors_fg <- site_colors[names(site_colors) != "Cameroun_Benin" &
-                                names(site_colors) != "D.paranensis"]
+                                names(site_colors) != "D.paranensis"    &
+                                names(site_colors) != "Angela"]
 
 p_fg_rect <- ggtree(tree_fg, layout = "rectangular", linewidth = 0.3) %<+%
   tip_data_fg %<+% support_df_fg +
@@ -270,7 +271,8 @@ cat("INFO: generating plots 4 & 5 — site-level FG only (rect + circ)...\n")
 # Keep one representative per site (all sites including outgroups)
 site_reps_fg <- meta %>%
   filter(sample_id %in% tree$tip.label,
-         site != "Cameroun_Benin") %>%
+         site != "Cameroun_Benin",
+         site != "Angela") %>%
   group_by(site) %>%
   slice(1) %>%
   ungroup()
