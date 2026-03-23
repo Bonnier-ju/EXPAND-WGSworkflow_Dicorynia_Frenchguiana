@@ -26,6 +26,7 @@ BASE_DIR="/home/jbonnier/work/chapitre_5/full_workflow_chloroplastic"
 INPUT_ALN="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/alignments_phylo/alignment_trimmed.fasta"
 HAP_TABLE="${BASE_DIR}/06-haplotype_filtering/${WORKFLOW}/haplotype_tables/haplotype_table.tsv"
 METADATA="${BASE_DIR}/metadata/sample_sheet_chloroplastic_complete_filtered.csv"
+GEOLOC="${BASE_DIR}/metadata/geoloc_site.csv"
 OUTPUT_DIR="${BASE_DIR}/07-phylogeny_phylogeography_structure/${WORKFLOW}/07.3-genetic_diversity"
 R_SCRIPT="${BASE_DIR}/00-Scripts/00.2-R_scripts/07.3-genetic_diversity_cp.R"
 
@@ -34,6 +35,7 @@ mkdir -p "$OUTPUT_DIR"
 if [ ! -s "$INPUT_ALN" ];  then echo "ERROR: alignment not found: $INPUT_ALN" >&2; exit 1; fi
 if [ ! -s "$HAP_TABLE" ];  then echo "ERROR: haplotype table not found: $HAP_TABLE" >&2; exit 1; fi
 if [ ! -s "$METADATA" ];   then echo "ERROR: metadata not found: $METADATA" >&2; exit 1; fi
+if [ ! -s "$GEOLOC" ];     then echo "ERROR: geoloc file not found: $GEOLOC" >&2; exit 1; fi
 
 echo "START $(date -Iseconds) genetic_diversity cp"
 
@@ -44,14 +46,23 @@ Rscript --vanilla "$R_SCRIPT" \
     "$INPUT_ALN" \
     "$HAP_TABLE" \
     "$METADATA" \
-    "$OUTPUT_DIR"
+    "$OUTPUT_DIR" \
+    "$GEOLOC"
 
-if [ -s "${OUTPUT_DIR}/diversity_stats_per_site.tsv" ]; then
-    n_sites=$(tail -n +2 "${OUTPUT_DIR}/diversity_stats_per_site.tsv" | wc -l)
-    echo "DONE $(date -Iseconds) n_groups=${n_sites} outputs saved to ${OUTPUT_DIR}"
-else
-    echo "ERROR: R script produced no output" >&2; exit 1
+# Output verification
+ok=0; fail=0
+for f in diversity_stats_per_site.tsv pairwise_fst.tsv mantel_results.tsv \
+         cp_diversity_hd_per_site.png cp_diversity_pi_per_site.png \
+         cp_diversity_pairwise_fst.png cp_ibd_scatter.png \
+         cp_ibd_intracluster.png session_info.txt; do
+    if [ -s "${OUTPUT_DIR}/${f}" ]; then echo "  [OK] $f"; ok=$((ok + 1))
+    else echo "  [MISSING] $f"; fail=$((fail + 1)); fi
+done
+
+if [ "$fail" -gt 0 ]; then
+    echo "ERROR: $fail output(s) missing" >&2; exit 1
 fi
+echo "DONE $(date -Iseconds) ${ok} outputs saved to ${OUTPUT_DIR}"
 
 # -------------------------------------------------------------------
 # Description

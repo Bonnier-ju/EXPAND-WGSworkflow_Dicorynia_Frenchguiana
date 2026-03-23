@@ -3,10 +3,17 @@
 # Script : 07.3-genetic_diversity_cp.R
 # Description : Chloroplast genetic diversity statistics for Dicorynia guianensis.
 #               Computes Hd, pi, Watterson's theta, Tajima's D, Fu's Fs,
-#               rarefied haplotype richness, and pairwise FST per sampling site.
+#               rarefied haplotype richness, pairwise FST per sampling site,
+#               and Isolation by Distance (Mantel tests).
 # Author  : Julien Bonnier
 # Usage   : Rscript --vanilla 07.3-genetic_diversity_cp.R \
-#               <alignment_fasta> <haplotype_table> <metadata_csv> <output_dir>
+#               <alignment_fasta> <haplotype_table> <metadata_csv> \
+#               <output_dir> <geoloc_csv>
+# Outputs (units):
+#   pi, theta_w : nucleotide diversity per site (mean pairwise differences / bp)
+#   Hd          : haplotype diversity [0, 1]
+#   FST         : Hudson (1992) estimator [0, 1]
+#   Mantel r    : Pearson correlation (FST vs ln(geo_km + 1))
 # =============================================================================
 
 .libPaths(c(path.expand("~/work/R"), .libPaths()))
@@ -14,6 +21,7 @@
 suppressPackageStartupMessages({
   library(ape)
   library(pegas)
+  library(vegan)
   library(dplyr)
   library(tidyr)
   library(ggplot2)
@@ -30,19 +38,42 @@ set.seed(42)  # reproducibility for Monte Carlo (Fu's Fs)
 
 # ── Arguments ─────────────────────────────────────────────────────────────────
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) < 4) stop("Usage: script.R <aln> <hap_table> <metadata> <outdir>")
+if (length(args) < 5) stop(
+  "Usage: script.R <aln> <hap_table> <metadata> <outdir> <geoloc_csv>"
+)
 
-aln_file   <- args[1]
-hap_file   <- args[2]
-meta_file  <- args[3]
-output_dir <- args[4]
+aln_file    <- args[1]
+hap_file    <- args[2]
+meta_file   <- args[3]
+output_dir  <- args[4]
+geoloc_file <- args[5]
+
+# Input validation
+for (f in c(aln_file, hap_file, meta_file, geoloc_file)) {
+  if (!file.exists(f) || file.size(f) == 0)
+    stop("ERROR: input file missing or empty: ", f)
+}
 
 cat("INFO: alignment    =", aln_file, "\n")
 cat("INFO: hap_table    =", hap_file, "\n")
 cat("INFO: metadata     =", meta_file, "\n")
+cat("INFO: geoloc       =", geoloc_file, "\n")
 cat("INFO: output_dir   =", output_dir, "\n")
 
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+
+# ── Haplogroup assignments (West vs Center-East) ───────────────────────────────
+# Defined from haplotype network, ML tree topology, and pairwise FST matrix.
+# West core = Maroni/Suriname corridor refugium (positive D/Fs, all private haplotypes).
+# Chutes_Voltaires assigned to Center-East based on FST: 0.053 vs Trinité vs 0.370 vs Acarouany.
+HAPLOGROUPS <- list(
+  West        = c("Acarouany", "Apatou", "Maripasoula"),
+  Center_East = c("Cacao", "Chutes_Voltaires", "Crique_Tigre",
+                  "Foret_Regina_St_Georges", "MC_87", "MC_88", "Montagne_Fer",
+                  "Nouragues_Inselberg", "Petit_croissant", "Piste_St_Elie",
+                  "Regina", "Saul", "Saut_Lavilette", "Saut_Takari",
+                  "St_georges", "Trinité")
+)
 
 # ── Read data ─────────────────────────────────────────────────────────────────
 cat("INFO: reading alignment...\n")
@@ -68,7 +99,9 @@ meta <- read.csv(meta_file, stringsAsFactors = FALSE) %>%
   )
 
 # French Guiana samples only — outgroups excluded from all analyses
-meta_fg <- meta %>% filter(region == "French Guiana")
+# Angela excluded: monomorphic site (Hd=0, n=4, 0 private haplotypes) → severe
+# founder effect with no interpretable diversity signal; absent from GPS file.
+meta_fg <- meta %>% filter(region == "French Guiana", site != "Angela")
 
 hap_table <- read.table(hap_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
   select(sample_id, haplotype_id)
@@ -448,5 +481,237 @@ cat(sprintf("  Hd (global) : %.4f\n", stats_global$Hd))
 cat(sprintf("  pi (global) : %.6f\n", stats_global$pi))
 cat(sprintf("  Tajima's D  : %.4f (p=%.4f)\n", stats_global$tajima_D, stats_global$tajima_pval))
 cat("──────────────────────────────────────────────────────────────────────\n\n")
+
+# ── Isolation by Distance — Mantel tests ──────────────────────────────────────
+cat("INFO: loading GPS coordinates for IBD analysis...\n")
+
+# Site name harmonization: geoloc names → FST matrix names (grepl = encoding-robust)
+# Read with latin1 encoding: GPS file uses French accents (é = 0xE9 latin1)
+# which are invalid UTF-8 bytes — without fileEncoding="latin1" grepl() silently
+# fails on strings containing these characters (Maripasoula, Trinité, Saut Takari).
+geoloc_raw <- read.csv(geoloc_file, stringsAsFactors = FALSE, fileEncoding = "latin1")
+geoloc <- geoloc_raw %>%
+  mutate(site = case_when(
+    grepl("Crique Tigre",   Sites, fixed = TRUE) ~ "Crique_Tigre",
+    grepl("Maripasoula",    Sites, fixed = TRUE) ~ "Maripasoula",
+    grepl("Croissant",      Sites, fixed = TRUE) ~ "Petit_croissant",
+    grepl("Saut Takari",    Sites, fixed = TRUE) ~ "Saut_Takari",
+    grepl("Chutes Voltaires", Sites, fixed = TRUE) ~ "Chutes_Voltaires",
+    grepl("Montagne Fer",   Sites, fixed = TRUE) ~ "Montagne_Fer",
+    grepl("Trinit",         Sites, fixed = TRUE) ~ "Trinité",
+    grepl("nin",            Sites, fixed = TRUE) ~ NA_character_,  # Bénin = outgroup
+    TRUE ~ Sites
+  )) %>%
+  filter(!is.na(site), site %in% fg_sites) %>%
+  select(site, lat, long) %>%
+  distinct()
+
+missing_gps <- setdiff(fg_sites, geoloc$site)
+if (length(missing_gps) > 0)
+  cat("WARNING: no GPS for:", paste(missing_gps, collapse = ", "),
+      "— excluded from IBD\n")
+cat("INFO: GPS matched —", nrow(geoloc), "FG sites\n")
+
+# ── Haversine distance matrix (km) — no external package ──────────────────────
+haversine_km <- function(lat1, lon1, lat2, lon2) {
+  R    <- 6371
+  d2r  <- pi / 180
+  dlat <- (lat2 - lat1) * d2r
+  dlon <- (lon2 - lon1) * d2r
+  a    <- sin(dlat / 2)^2 + cos(lat1 * d2r) * cos(lat2 * d2r) * sin(dlon / 2)^2
+  2 * R * asin(sqrt(a))
+}
+
+ms <- geoloc$site
+nm <- length(ms)
+geo_mat <- matrix(0, nm, nm, dimnames = list(ms, ms))
+for (i in seq_len(nm))
+  for (j in seq_len(nm))
+    if (i != j)
+      geo_mat[i, j] <- haversine_km(geoloc$lat[i], geoloc$long[i],
+                                    geoloc$lat[j], geoloc$long[j])
+geo_log_mat <- log(geo_mat + 1)   # ln(km + 1) — Mantel standard transformation
+
+# FST submatrix for sites with GPS
+fst_mantel <- fst_mat[ms, ms]
+
+# Cluster membership for each site with GPS
+cluster_vec <- ifelse(ms %in% HAPLOGROUPS$West, "West", "Center_East")
+# Binary matrix: 0 = same cluster, 1 = different cluster (for partial Mantel)
+cluster_mat <- outer(cluster_vec, cluster_vec, FUN = function(a, b) as.integer(a != b))
+dimnames(cluster_mat) <- list(ms, ms)
+
+# ── Run Mantel tests ───────────────────────────────────────────────────────────
+cat("INFO: running Mantel tests (9999 permutations)...\n")
+
+run_mantel <- function(fst_sub, geo_sub, label, n_s) {
+  tryCatch({
+    res <- mantel(as.dist(fst_sub), as.dist(geo_sub),
+                  method = "pearson", permutations = 9999)
+    cat(sprintf("  %-30s r = %6.4f  p = %.4f  n = %d\n",
+                label, res$statistic, res$signif, n_s))
+    data.frame(test = label, r = round(res$statistic, 4),
+               p_value = round(res$signif, 4), n_sites = n_s,
+               stringsAsFactors = FALSE)
+  }, error = function(e) {
+    cat("  WARNING:", label, "failed:", conditionMessage(e), "\n")
+    data.frame(test = label, r = NA_real_, p_value = NA_real_,
+               n_sites = n_s, stringsAsFactors = FALSE)
+  })
+}
+
+# Global Mantel
+m_global <- run_mantel(fst_mantel, geo_log_mat, "Global (all FG sites)", nm)
+
+# Intra-West
+west_s <- intersect(HAPLOGROUPS$West, ms)
+m_west <- if (length(west_s) >= 3)
+  run_mantel(fst_mantel[west_s, west_s], geo_log_mat[west_s, west_s],
+             "Intra-West", length(west_s))
+else {
+  cat("  WARNING: Intra-West skipped (< 3 sites)\n")
+  data.frame(test = "Intra-West", r = NA_real_, p_value = NA_real_,
+             n_sites = length(west_s), stringsAsFactors = FALSE)
+}
+
+# Intra-Center-East
+ce_s <- intersect(HAPLOGROUPS$Center_East, ms)
+m_ce <- run_mantel(fst_mantel[ce_s, ce_s], geo_log_mat[ce_s, ce_s],
+                   "Intra-Center-East", length(ce_s))
+
+# Partial Mantel: FST ~ geo | cluster membership
+m_partial <- tryCatch({
+  res_p <- mantel.partial(as.dist(fst_mantel), as.dist(geo_log_mat),
+                          as.dist(cluster_mat),
+                          method = "pearson", permutations = 9999)
+  cat(sprintf("  %-30s r = %6.4f  p = %.4f  n = %d\n",
+              "Partial (geo | cluster)", res_p$statistic, res_p$signif, nm))
+  data.frame(test = "Partial (geo | cluster)", r = round(res_p$statistic, 4),
+             p_value = round(res_p$signif, 4), n_sites = nm,
+             stringsAsFactors = FALSE)
+}, error = function(e) {
+  cat("  WARNING: partial Mantel failed:", conditionMessage(e), "\n")
+  data.frame(test = "Partial (geo | cluster)", r = NA_real_,
+             p_value = NA_real_, n_sites = nm, stringsAsFactors = FALSE)
+})
+
+mantel_results <- bind_rows(m_global, m_west, m_ce, m_partial) %>%
+  mutate(significance = case_when(
+    p_value < 0.001 ~ "***",
+    p_value < 0.01  ~ "**",
+    p_value < 0.05  ~ "*",
+    p_value < 0.1   ~ ".",
+    TRUE            ~ "ns"
+  ))
+
+write.table(mantel_results, file.path(output_dir, "mantel_results.tsv"),
+            sep = "\t", row.names = FALSE, quote = FALSE)
+cat("INFO: saved mantel_results.tsv\n")
+
+# ── Plot 7: IBD scatter — FST vs ln(geo dist), coloured by pair type ──────────
+cat("INFO: generating IBD scatter plot...\n")
+
+# Build long data frame of all upper-triangle pairs
+pair_data <- do.call(rbind, lapply(seq_len(nm - 1), function(i) {
+  lapply((i + 1):nm, function(j) {
+    data.frame(
+      site1    = ms[i],
+      site2    = ms[j],
+      fst      = fst_mantel[i, j],
+      geo_log  = geo_log_mat[i, j],
+      geo_km   = geo_mat[i, j],
+      pair_type = paste(sort(c(cluster_vec[i], cluster_vec[j])), collapse = " — "),
+      stringsAsFactors = FALSE
+    )
+  })
+}))
+pair_data <- do.call(rbind, pair_data)
+pair_data  <- pair_data[!is.na(pair_data$fst), ]
+
+pair_colors <- c(
+  "West — West"               = "#E41A1C",
+  "Center_East — Center_East" = "#377EB8",
+  "Center_East — West"        = "#FF7F00"
+)
+
+# Mantel annotation for plot
+annot_global <- sprintf("Global Mantel\nr = %.3f, p = %.3f %s",
+                        mantel_results$r[1],
+                        mantel_results$p_value[1],
+                        mantel_results$significance[1])
+
+p_ibd <- ggplot(pair_data, aes(x = geo_log, y = fst, colour = pair_type)) +
+  geom_point(alpha = 0.7, size = 2) +
+  geom_smooth(data = pair_data, aes(x = geo_log, y = fst),
+              inherit.aes = FALSE, method = "lm", se = TRUE,
+              colour = "grey30", linewidth = 0.8, linetype = "dashed") +
+  scale_colour_manual(values = pair_colors, name = "Pair type") +
+  annotate("text", x = -Inf, y = Inf, label = annot_global,
+           hjust = -0.1, vjust = 1.3, size = 3.2, colour = "grey20") +
+  labs(
+    title    = expression(italic("Dicorynia guianensis") ~
+                          "— Isolation by Distance (chloroplast)"),
+    subtitle = "Hudson FST vs. ln(geographic distance km + 1) | Pearson Mantel test",
+    x        = "ln(geographic distance km + 1)",
+    y        = expression(F[ST])
+  )
+
+ggsave(file.path(output_dir, "cp_ibd_scatter.png"),
+       p_ibd, width = 10, height = 7, dpi = 300)
+cat("INFO: saved cp_ibd_scatter.png\n")
+
+# ── Plot 8: Intra-cluster IBD panels ──────────────────────────────────────────
+cat("INFO: generating intra-cluster IBD plot...\n")
+
+pair_intra <- pair_data %>%
+  filter(pair_type %in% c("West — West", "Center_East — Center_East")) %>%
+  mutate(cluster = ifelse(pair_type == "West — West", "West", "Center-East"))
+
+annot_df <- data.frame(
+  cluster = c("West", "Center-East"),
+  label   = c(
+    sprintf("r = %.3f\np = %.3f %s",
+            mantel_results$r[mantel_results$test == "Intra-West"],
+            mantel_results$p_value[mantel_results$test == "Intra-West"],
+            mantel_results$significance[mantel_results$test == "Intra-West"]),
+    sprintf("r = %.3f\np = %.3f %s",
+            mantel_results$r[mantel_results$test == "Intra-Center-East"],
+            mantel_results$p_value[mantel_results$test == "Intra-Center-East"],
+            mantel_results$significance[mantel_results$test == "Intra-Center-East"])
+  ),
+  stringsAsFactors = FALSE
+)
+
+p_ibd_intra <- ggplot(pair_intra, aes(x = geo_log, y = fst)) +
+  geom_point(aes(colour = cluster), alpha = 0.8, size = 2.5) +
+  geom_smooth(method = "lm", se = TRUE, colour = "grey30",
+              linewidth = 0.8, linetype = "dashed") +
+  geom_text(data = annot_df, aes(label = label),
+            x = -Inf, y = Inf, hjust = -0.1, vjust = 1.2,
+            size = 3, colour = "grey20", inherit.aes = FALSE) +
+  scale_colour_manual(values = c("West" = "#E41A1C", "Center-East" = "#377EB8"),
+                      guide = "none") +
+  facet_wrap(~cluster, scales = "free") +
+  labs(
+    title    = expression(italic("Dicorynia guianensis") ~
+                          "— Intra-cluster IBD (chloroplast)"),
+    subtitle = "Within West and Center-East haplogroups | Pearson Mantel test",
+    x        = "ln(geographic distance km + 1)",
+    y        = expression(F[ST])
+  )
+
+ggsave(file.path(output_dir, "cp_ibd_intracluster.png"),
+       p_ibd_intra, width = 12, height = 6, dpi = 300)
+cat("INFO: saved cp_ibd_intracluster.png\n")
+
+# ── Reproducibility record (FAIR) ─────────────────────────────────────────────
+cat("INFO: writing session info...\n")
+sink(file.path(output_dir, "session_info.txt"))
+cat("Script : 07.3-genetic_diversity_cp.R\n")
+cat("Date   :", format(Sys.time(), "%Y-%m-%dT%H:%M:%S"), "\n")
+cat("Seed   : 42\n\n")
+sessionInfo()
+sink()
+cat("INFO: saved session_info.txt\n")
 
 cat("DONE genetic diversity statistics complete\n")
