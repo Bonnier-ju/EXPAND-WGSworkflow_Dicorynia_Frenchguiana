@@ -6,9 +6,9 @@
 #               - 2-level : Among sites / Within sites  → PhiST
 #               - 3-level : Among haplogroups / Among sites within groups /
 #                           Within sites                → PhiCT, PhiSC, PhiST
-#               Haplogroups defined from haplotype network topology and ML tree:
-#               West        = Acarouany, Apatou, Chutes_Voltaires, Maripasoula, Saul
-#               Center-East = all remaining FG sites
+#               Haplogroups defined from haplotype network, ML tree + pairwise FST:
+#               West        = Acarouany, Apatou, Maripasoula (refugial core)
+#               Center-East = all remaining FG sites (incl. Chutes_Voltaires, Saul)
 # Author  : Julien Bonnier
 # Usage   : Rscript --vanilla 07.6-amova_cp.R \
 #               <alignment_fasta> <metadata_csv> <output_dir>
@@ -49,14 +49,22 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 N_PERM <- 9999
 
 # ── Haplogroup assignments ─────────────────────────────────────────────────────
-# Defined from haplotype network (left cluster = West, central cluster = Center-East)
-# and corroborated by ML tree basal clade topology.
+# Defined from haplotype network topology, ML tree, and pairwise FST matrix.
+# Option A (2 groups — corrected):
+#   West        = Acarouany, Apatou, Maripasoula (refugial core, positive D/Fs,
+#                 all private haplotypes, Suriname corridor)
+#   Center_East = all remaining FG sites, including:
+#                 - Chutes_Voltaires (FST/Trinité = 0.053 vs FST/Acarouany = 0.370
+#                   → belongs to CE lineage despite geographic proximity to West)
+#                 - Saul (FST pattern closer to CE than West)
+#                 - Trinité (central node of star network, CE ancestral haplotypes)
 HAPLOGROUPS <- list(
-  West        = c("Acarouany", "Apatou", "Chutes_Voltaires", "Maripasoula", "Saul"),
-  Center_East = c("Angela", "Cacao", "Crique_Tigre", "Foret_Regina_St_Georges",
-                  "MC_87", "MC_88", "Montagne_Fer", "Nouragues_Inselberg",
-                  "Petit_croissant", "Piste_St_Elie", "Regina", "Saut_Lavilette",
-                  "Saut_Takari", "St_georges", "Trinité")
+  West        = c("Acarouany", "Apatou", "Maripasoula"),
+  Center_East = c("Angela", "Cacao", "Chutes_Voltaires", "Crique_Tigre",
+                  "Foret_Regina_St_Georges", "MC_87", "MC_88", "Montagne_Fer",
+                  "Nouragues_Inselberg", "Petit_croissant", "Piste_St_Elie",
+                  "Regina", "Saut_Lavilette", "Saut_Takari", "St_georges",
+                  "Saul", "Trinité")
 )
 
 site_to_group <- stack(HAPLOGROUPS) %>%
@@ -111,34 +119,42 @@ extract_amova <- function(amova_obj, model_label) {
 }
 
 compute_phi <- function(amova_obj, model) {
-  vc    <- amova_obj$varcomp[, "sigma2"]
-  total <- sum(vc)
-  rows  <- names(vc)
-  pvals <- if ("P.value" %in% colnames(amova_obj$varcomp))
-              amova_obj$varcomp[, "P.value"] else rep(NA, length(vc))
-  names(pvals) <- rows
+  # pegas does not store Phi in the object — compute from varcomp sigma2 values.
+  # trimws() removes padding spaces that pegas adds to row names; direct [row,col]
+  # indexing avoids named-vector issues with round().
+  vc     <- amova_obj$varcomp
+  rnames <- trimws(rownames(vc))
+  rownames(vc) <- rnames
+
+  total <- sum(vc[, "sigma2"])
+
+  get_s <- function(name) as.numeric(vc[name, "sigma2"])
+  get_p <- function(name) {
+    if (!"P.value" %in% colnames(vc)) return(NA_real_)
+    as.numeric(vc[name, "P.value"])
+  }
 
   if (model == "2-level") {
-    phi_st <- vc["site"] / total
+    phi_st <- get_s("site") / total
     data.frame(
-      statistic = "PhiST",
-      value     = round(phi_st, 5),
-      p_value   = round(pvals["site"], 4),
-      model     = "2-level",
+      statistic      = "PhiST",
+      value          = round(phi_st, 5),
+      p_value        = round(get_p("site"), 4),
+      model          = "2-level",
       interpretation = "Total differentiation among sites",
       stringsAsFactors = FALSE
     )
   } else {
-    # pegas uses row name "site" for within-haplogroup level (not "site %in% haplogroup")
-    phi_ct <- vc["haplogroup"] / total
-    phi_sc <- vc["site"] / (vc["site"] + vc["Error"])
-    phi_st <- (vc["haplogroup"] + vc["site"]) / total
+    s_grp <- get_s("haplogroup")
+    s_pop <- get_s("site")
+    s_err <- get_s("Error")
+    phi_ct <- s_grp / total
+    phi_sc <- s_pop / (s_pop + s_err)
+    phi_st <- (s_grp + s_pop) / total
     data.frame(
       statistic = c("PhiCT", "PhiSC", "PhiST"),
       value     = round(c(phi_ct, phi_sc, phi_st), 5),
-      p_value   = round(c(pvals["haplogroup"],
-                          pvals["site"],
-                          pvals["Error"]), 4),
+      p_value   = round(c(get_p("haplogroup"), get_p("site"), NA_real_), 4),
       model     = "3-level",
       interpretation = c(
         "Differentiation among haplogroups",
