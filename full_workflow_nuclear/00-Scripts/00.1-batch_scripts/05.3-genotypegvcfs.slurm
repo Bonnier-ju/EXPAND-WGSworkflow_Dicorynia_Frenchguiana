@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p unlimitq
-#SBATCH --time=50-00:00:00
+#SBATCH --time=10-00:00:00
 #SBATCH -J 05.3-genotypegvcfs
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
@@ -11,6 +11,13 @@
 
 
 set -euo pipefail
+
+echo "======================================================"
+echo "START $(date -Iseconds) GenotypeGVCFs"
+echo "  SLURM job ID : ${SLURM_JOB_ID}"
+echo "  CPUs         : ${SLURM_CPUS_PER_TASK}"
+echo "  Memory       : 32G"
+echo "======================================================"
 
 # -------------------------------------------------------------------
 # STEP 0: Environment setup
@@ -24,9 +31,9 @@ module load bioinfo/samtools/1.21
 # STEP 1: Define inputs/outputs
 # -------------------------------------------------------------------
 REF_GENOME="/home/jbonnier/work/chapitre_5/raw_data/reference_genome/nuclear/Dgu_HS1_HYBRID_SCAFFOLD.fa"
-DB_PATH="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_test/genomicsdbimport/GATK_database_dicorynia"
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_test/genotypegvcfs"
-TMP_DIR="${OUTPUT_DIR}/tmp"
+DB_PATH="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_full/genomicsdbimport/GATK_database_dicorynia"
+OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_full/genotypegvcfs"
+TMP_DIR="/tmp/${USER}/genotypegvcfs_${SLURM_JOB_ID}"
 LOG_FILE="${OUTPUT_DIR}/genotypegvcfs.log"
 
 OUTPUT_VCF="${OUTPUT_DIR}/jointgenotypes.raw.vcf.gz"
@@ -45,6 +52,7 @@ if [ ! -d "$DB_PATH" ]; then
     exit 1
 fi
 
+echo "INFO: modules loaded"
 echo "START $(date -Iseconds) GenotypeGVCFs" > "$LOG_FILE"
 
 # Ensure reference indexes exist
@@ -67,26 +75,36 @@ fi
 # -------------------------------------------------------------------
 # STEP 2: Joint genotyping
 # -------------------------------------------------------------------
+echo "INFO: running GenotypeGVCFs..." | tee -a "$LOG_FILE"
+echo "  DB path    : ${DB_PATH}"     | tee -a "$LOG_FILE"
+echo "  Output VCF : ${OUTPUT_VCF}"  | tee -a "$LOG_FILE"
+echo "  Java heap  : ${JAVA_MEM_GB}G" | tee -a "$LOG_FILE"
+
 gatk --java-options "-Xms${JAVA_MEM_GB}G -Xmx${JAVA_MEM_GB}G -XX:ParallelGCThreads=2" GenotypeGVCFs \
     -R "$REF_GENOME" \
     -V "gendb://${DB_PATH}" \
     -O "$OUTPUT_VCF" \
     --create-output-variant-index true \
-    --tmp-dir "$TMP_DIR" >> "$LOG_FILE" 2>&1
+    --tmp-dir "$TMP_DIR" \
+    --verbosity WARNING \
+    >> "$LOG_FILE" 2>&1
 
 if [ -s "$OUTPUT_VCF" ] && [ -s "$OUTPUT_TBI" ]; then
-    echo "DONE $(date -Iseconds) output=${OUTPUT_VCF}" | tee -a "$LOG_FILE"
+    VCF_SIZE=$(du -sh "$OUTPUT_VCF" | cut -f1)
+    echo "INFO: output verified — size: ${VCF_SIZE}" | tee -a "$LOG_FILE"
 else
     echo "ERROR: joint genotyping output missing" | tee -a "$LOG_FILE"
     exit 1
 fi
 
-# Step 1: Validate GenomicsDB workspace and reference files
-# - Checks DB path and reference indexes (.fai and .dict)
-#
-# Step 2: Run GATK GenotypeGVCFs on GenomicsDB
-# - Uses all individual gVCFs aggregated in GATK_database_dicorynia
-# - Produces final raw joint VCF
-#
-# Step 3: Validate outputs
-# - Ensures jointgenotypes.raw.vcf.gz and its .tbi index exist
+# --- Cleanup ------------------------------------------------------------------
+rm -rf "$TMP_DIR"
+echo "INFO: tmp cleaned up" | tee -a "$LOG_FILE"
+
+echo "======================================================"
+echo "DONE $(date -Iseconds) GenotypeGVCFs"
+echo "  VCF output : ${OUTPUT_VCF} (${VCF_SIZE})"
+echo "  Log        : ${LOG_FILE}"
+echo "  Next step  : sbatch 06.x-variant_filtering.slurm"
+echo "======================================================"
+echo "DONE $(date -Iseconds)" >> "$LOG_FILE"
