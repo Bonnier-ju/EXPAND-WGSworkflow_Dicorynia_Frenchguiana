@@ -485,24 +485,12 @@ cat("─────────────────────────
 # ── Isolation by Distance — Mantel tests ──────────────────────────────────────
 cat("INFO: loading GPS coordinates for IBD analysis...\n")
 
-# Site name harmonization: geoloc names → FST matrix names (grepl = encoding-robust)
-# Read with latin1 encoding: GPS file uses French accents (é = 0xE9 latin1)
-# which are invalid UTF-8 bytes — without fileEncoding="latin1" grepl() silently
-# fails on strings containing these characters (Maripasoula, Trinité, Saut Takari).
-geoloc_raw <- read.csv(geoloc_file, stringsAsFactors = FALSE, fileEncoding = "latin1")
-geoloc <- geoloc_raw %>%
-  mutate(site = case_when(
-    grepl("Crique Tigre",   Sites, fixed = TRUE) ~ "Crique_Tigre",
-    grepl("Maripasoula",    Sites, fixed = TRUE) ~ "Maripasoula",
-    grepl("Croissant",      Sites, fixed = TRUE) ~ "Petit_croissant",
-    grepl("Saut Takari",    Sites, fixed = TRUE) ~ "Saut_Takari",
-    grepl("Chutes Voltaires", Sites, fixed = TRUE) ~ "Chutes_Voltaires",
-    grepl("Montagne Fer",   Sites, fixed = TRUE) ~ "Montagne_Fer",
-    grepl("Trinit",         Sites, fixed = TRUE) ~ "Trinité",
-    grepl("nin",            Sites, fixed = TRUE) ~ NA_character_,  # Bénin = outgroup
-    TRUE ~ Sites
-  )) %>%
-  filter(!is.na(site), site %in% fg_sites) %>%
+# Load GPS coordinates — geoloc_site.csv uses exact site names matching the metadata
+# (same underscore format, UTF-8 encoded). Outgroup (Cameroun_Benin) is absent from
+# this file and will be automatically excluded by the fg_sites filter below.
+geoloc <- read.csv(geoloc_file, stringsAsFactors = FALSE, fileEncoding = "UTF-8") %>%
+  filter(Sites %in% fg_sites) %>%
+  rename(site = Sites) %>%
   select(site, lat, long) %>%
   distinct()
 
@@ -565,11 +553,11 @@ m_global <- run_mantel(fst_mantel, geo_log_mat, "Global (all FG sites)", nm)
 
 # Intra-West
 west_s <- intersect(HAPLOGROUPS$West, ms)
-m_west <- if (length(west_s) >= 3)
+m_west <- if (length(west_s) >= 3) {
   run_mantel(fst_mantel[west_s, west_s], geo_log_mat[west_s, west_s],
              "Intra-West", length(west_s))
-else {
-  cat("  WARNING: Intra-West skipped (< 3 sites)\n")
+} else {
+  cat("  WARNING: Intra-West skipped (< 3 sites with GPS)\n")
   data.frame(test = "Intra-West", r = NA_real_, p_value = NA_real_,
              n_sites = length(west_s), stringsAsFactors = FALSE)
 }
