@@ -3,14 +3,13 @@
 #SBATCH --time=24:00:00
 #SBATCH -J 06.2-hard_filter_snps
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
-#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out
+#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=16G
 #SBATCH --cpus-per-task=2
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
-set -u
-set -o pipefail
+set -euo pipefail
 
 # -------------------------------------------------------------------
 # STEP 0: Environment setup
@@ -26,10 +25,10 @@ module load bioinfo/samtools/1.23
 # STEP 1: Define inputs/outputs
 # -------------------------------------------------------------------
 REF_GENOME="/home/jbonnier/work/chapitre_5/raw_data/reference_genome/nuclear/Dgu_HS1_HYBRID_SCAFFOLD.fa"
-INPUT_VCF="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.1-normalization_selection/joint.norm.biallelic.snps.vcf.gz"
+INPUT_VCF="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.1-normalization_selection/joint.norm.biallelic.snps.vcf.gz"
 INPUT_TBI="${INPUT_VCF}.tbi"
 
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.2-technical_hard_filter"
+OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.2-technical_hard_filter"
 LOG_DIR="${OUTPUT_DIR}/logs"
 STATS_DIR="${OUTPUT_DIR}/stats"
 TMP_DIR="${OUTPUT_DIR}/tmp"
@@ -42,8 +41,10 @@ HARDFILTERED_TBI="${HARDFILTERED_VCF}.tbi"
 RAW_STATS="${STATS_DIR}/joint.norm.biallelic.snps.stats.txt"
 HARD_STATS="${STATS_DIR}/snps.hardfiltered.stats.txt"
 
-MIN_DP="${MIN_DP:-5}"
-MAX_DP="${MAX_DP:-100}"
+BCFTOOLS_THREADS="${SLURM_CPUS_PER_TASK:-2}"
+# NOTE: INFO/DP in a cohort VCF is the sum of all sample depths (~164*15x = ~2460x).
+# DP filtering is therefore NOT applied here at INFO level — it is handled at
+# the genotype (FORMAT/DP) level in step 06.3 (missing data / sample filtering).
 
 mkdir -p "$OUTPUT_DIR" "$LOG_DIR" "$STATS_DIR" "$TMP_DIR"
 echo "START $(date -Iseconds) 06.2 hard filter SNPs" > "$LOG_FILE"
@@ -78,7 +79,6 @@ gatk --java-options "-Xms8G -Xmx8G -XX:ParallelGCThreads=2" VariantFiltration \
     --filter-name "MQ_lt_40" --filter-expression "MQ < 40.0" \
     --filter-name "MQRankSum_lt_-12.5" --filter-expression "MQRankSum < -12.5" \
     --filter-name "ReadPosRankSum_lt_-8" --filter-expression "ReadPosRankSum < -8.0" \
-    --filter-name "DP_out_of_range" --filter-expression "DP < ${MIN_DP} || DP > ${MAX_DP}" \
     --create-output-variant-index true \
     --tmp-dir "$TMP_DIR" >> "$LOG_FILE" 2>&1
 
@@ -101,8 +101,12 @@ fi
 # -------------------------------------------------------------------
 # STEP 4: Build technical filtering statistics
 # -------------------------------------------------------------------
-bcftools stats "$INPUT_VCF" > "$RAW_STATS"
-bcftools stats "$HARDFILTERED_VCF" > "$HARD_STATS"
+# SNP stats before filtering already computed in 06.1 — reuse via symlink
+STATS_06_1="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.1-normalization_selection/stats/joint.norm.biallelic.snps.stats.txt"
+ln -sf "$STATS_06_1" "$RAW_STATS"
+echo "INFO: raw SNP stats symlinked from 06.1" | tee -a "$LOG_FILE"
+
+bcftools stats --threads "$BCFTOOLS_THREADS" "$HARDFILTERED_VCF" > "$HARD_STATS"
 
 echo "DONE $(date -Iseconds) 06.2 completed" | tee -a "$LOG_FILE"
 echo "Output: $HARDFILTERED_VCF"
