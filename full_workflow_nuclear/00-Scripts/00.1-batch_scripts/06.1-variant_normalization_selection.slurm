@@ -3,9 +3,9 @@
 #SBATCH --time=24:00:00
 #SBATCH -J 06.1-variant_norm
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
-#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.out
-#SBATCH --mem=16G
-#SBATCH --cpus-per-task=4
+#SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
+#SBATCH --mem=24G
+#SBATCH --cpus-per-task=8
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
@@ -25,11 +25,11 @@ module load bioinfo/samtools/1.23
 # STEP 1: Define inputs/outputs and validate files
 # -------------------------------------------------------------------
 REF_GENOME="/home/jbonnier/work/chapitre_5/raw_data/reference_genome/nuclear/Dgu_HS1_HYBRID_SCAFFOLD.fa"
-INPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_test/genotypegvcfs"
+INPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_full/genotypegvcfs"
 INPUT_VCF="${INPUT_DIR}/jointgenotypes.raw.vcf.gz"
 INPUT_TBI="${INPUT_VCF}.tbi"
 
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.1-normalization_selection"
+OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.1-normalization_selection"
 LOG_DIR="${OUTPUT_DIR}/logs"
 STATS_DIR="${OUTPUT_DIR}/stats"
 LOG_FILE="${LOG_DIR}/06.1-variant_normalization_selection.log"
