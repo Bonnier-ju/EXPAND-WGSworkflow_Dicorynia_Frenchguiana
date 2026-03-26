@@ -9,8 +9,7 @@
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
-set -u
-set -o pipefail
+set -euo pipefail
 
 # -------------------------------------------------------------------
 # STEP 0: Environment setup
@@ -22,12 +21,12 @@ module load bioinfo/Bcftools/1.9
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
 # -------------------------------------------------------------------
-IN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.3-missing_data_sample_filtering"
+IN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.3-missing_data_sample_filtering"
 IN_VCF="${IN_DIR}/snps.missing_filtered.vcf.gz"
 IN_TBI="${IN_VCF}.tbi"
 IN_BFILE="${IN_DIR}/snps.missing_filtered"
 
-OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.4-allele_frequency_population_filter"
+OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.4-allele_frequency_population_filter"
 LOG_DIR="${OUT_DIR}/logs"
 STATS_DIR="${OUT_DIR}/stats"
 TMP_DIR="${OUT_DIR}/tmp"
@@ -40,7 +39,12 @@ OUT_TBI="${OUT_VCF}.tbi"
 OUT_STATS="${STATS_DIR}/snps_non_informative_filtered.stats.txt"
 
 # Remove singleton/doubleton by MAC threshold (MAC <=2 removed)
+# NOTE: MAC=3 corresponds to MAF ~0.9% (3/328 alleles) — removes only singletons/doubletons.
+# For GEA analyses, a stricter MAF >=5% threshold (MAC >=17) is applied at the LD pruning
+# step (06.6) on the final filtered dataset.
 MIN_MAC="${MIN_MAC:-3}"
+
+BCFTOOLS_THREADS="${SLURM_CPUS_PER_TASK:-2}"
 
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$STATS_DIR" "$TMP_DIR"
 echo "START $(date -Iseconds) 06.4 allele frequency/population filtering" > "$LOG_FILE"
@@ -80,7 +84,7 @@ plink2 \
     --recode vcf bgz \
     --out "$OUT_VCF_PREFIX" >> "$LOG_FILE" 2>&1
 
-bcftools index -t "$OUT_VCF" >> "$LOG_FILE" 2>&1
+bcftools index --threads "$BCFTOOLS_THREADS" -t "$OUT_VCF" >> "$LOG_FILE" 2>&1
 
 if [ ! -s "$OUT_VCF" ] || [ ! -s "$OUT_TBI" ]; then
     echo "ERROR: filtered VCF output missing: $OUT_VCF" | tee -a "$LOG_FILE"
@@ -90,7 +94,7 @@ fi
 # -------------------------------------------------------------------
 # STEP 4: Variant statistics after filtering
 # -------------------------------------------------------------------
-bcftools stats "$OUT_VCF" > "$OUT_STATS"
+bcftools stats --threads "$BCFTOOLS_THREADS" "$OUT_VCF" > "$OUT_STATS"
 
 echo "DONE $(date -Iseconds) 06.4 completed" | tee -a "$LOG_FILE"
 echo "Output VCF: $OUT_VCF"

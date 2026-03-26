@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH -J 06.3-missing_filter
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
@@ -9,8 +9,7 @@
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
-set -u
-set -o pipefail
+set -euo pipefail
 
 # -------------------------------------------------------------------
 # STEP 0: Environment setup
@@ -24,10 +23,10 @@ module load bioinfo/VCFtools/0.1.16
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs and thresholds
 # -------------------------------------------------------------------
-INPUT_VCF="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.2-technical_hard_filter/snps.hardfiltered.vcf.gz"
+INPUT_VCF="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.2-technical_hard_filter/snps.hardfiltered.vcf.gz"
 INPUT_TBI="${INPUT_VCF}.tbi"
 
-OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.3-missing_data_sample_filtering"
+OUTPUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.3-missing_data_sample_filtering"
 LOG_DIR="${OUTPUT_DIR}/logs"
 TMP_DIR="${OUTPUT_DIR}/tmp"
 LOG_FILE="${LOG_DIR}/06.3-missing_data_sample_filtering.log"
@@ -44,8 +43,12 @@ REMOVE_SAMPLES_TXT="${OUTPUT_DIR}/samples_to_remove_missing.txt"
 KEPT_SAMPLES_TXT="${OUTPUT_DIR}/samples_kept_missing.txt"
 
 PLINK_PREFIX="${OUTPUT_DIR}/snps.missing_filtered"
+STATS_DIR="${OUTPUT_DIR}/stats"
+FINAL_STATS="${STATS_DIR}/snps.missing_filtered.stats.txt"
 
-mkdir -p "$OUTPUT_DIR" "$LOG_DIR" "$TMP_DIR"
+BCFTOOLS_THREADS="${SLURM_CPUS_PER_TASK:-2}"
+
+mkdir -p "$OUTPUT_DIR" "$LOG_DIR" "$TMP_DIR" "$STATS_DIR"
 echo "START $(date -Iseconds) 06.3 missing data and sample filtering" > "$LOG_FILE"
 
 if [ ! -s "$INPUT_VCF" ] || [ ! -s "$INPUT_TBI" ]; then
@@ -62,7 +65,7 @@ vcftools \
     --recode --recode-INFO-all \
     --stdout 2>> "$LOG_FILE" | bgzip -c > "$SITES_FILTERED_VCF"
 
-bcftools index -t "$SITES_FILTERED_VCF" >> "$LOG_FILE" 2>&1
+bcftools index --threads "$BCFTOOLS_THREADS" -t "$SITES_FILTERED_VCF" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
 # STEP 3: Sample-level missingness report and sample removal
@@ -85,7 +88,7 @@ else
     cp "$SITES_FILTERED_VCF" "$FINAL_VCF"
 fi
 
-bcftools index -t "$FINAL_VCF" >> "$LOG_FILE" 2>&1
+bcftools index --threads "$BCFTOOLS_THREADS" -t "$FINAL_VCF" >> "$LOG_FILE" 2>&1
 
 # -------------------------------------------------------------------
 # STEP 4: Export PLINK2 files (.bed .bim .fam)
@@ -105,19 +108,29 @@ if [ ! -s "${PLINK_PREFIX}.bed" ] || [ ! -s "${PLINK_PREFIX}.bim" ] || [ ! -s "$
     exit 1
 fi
 
+# -------------------------------------------------------------------
+# STEP 5: Statistics
+# -------------------------------------------------------------------
+bcftools stats --threads "$BCFTOOLS_THREADS" "$FINAL_VCF" > "$FINAL_STATS"
+
 echo "DONE $(date -Iseconds) 06.3 completed" | tee -a "$LOG_FILE"
 echo "Output VCF: $FINAL_VCF"
 echo "PLINK files: ${PLINK_PREFIX}.bed/.bim/.fam"
-echo "Removed samples list: $REMOVE_SAMPLES_TXT"
+echo "Removed samples: $(wc -l < "$REMOVE_SAMPLES_TXT")"
+echo "Kept samples: $(wc -l < "$KEPT_SAMPLES_TXT")"
+echo "Stats: $FINAL_STATS"
 
 # Step 1: Input SNP VCF from 06.2 hard filtering
 # - snps.hardfiltered.vcf.gz
 #
-# Step 2: Remove sites with too much missing data
-# - vcftools --max-missing
+# Step 2: Site-level missing data filter (vcftools --max-missing 0.8)
+# - Remove sites where >20% of genotypes are missing
 #
-# Step 3: Remove samples with high missingness
-# - vcftools --missing-indv + threshold on F_MISS
+# Step 3: Sample-level missingness report and removal
+# - vcftools --missing-indv: compute F_MISS per sample
+# - Remove samples with >20% missing genotypes
 #
 # Step 4: Export PLINK2 binary files
 # - snps.missing_filtered.bed/.bim/.fam
+#
+# Step 5: bcftools stats on final VCF (Ts/Tv, SNP count)
