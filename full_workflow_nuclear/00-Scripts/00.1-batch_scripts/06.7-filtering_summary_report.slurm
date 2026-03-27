@@ -14,7 +14,9 @@ set -euo pipefail
 module purge
 module load bioinfo/Bcftools/1.9
 
-BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test"
+BCFTOOLS_THREADS="${SLURM_CPUS_PER_TASK:-2}"
+
+BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full"
 OUT_DIR="${BASE}/06.7-filtering_summary"
 LOG_DIR="${OUT_DIR}/logs"
 mkdir -p "$OUT_DIR" "$LOG_DIR"
@@ -26,10 +28,13 @@ LOG_FILE="${LOG_DIR}/06.7-filtering_summary.log"
 
 echo "START $(date -Iseconds) 06.7 filtering summary" > "$LOG_FILE"
 
+# Fast variant counting via tabix index — avoids streaming the full VCF.
+# bcftools index -n reads the record count directly from the .tbi index.
+# Falls back to full stream count if index is missing.
 count_variants() {
     local vcf="$1"
     if [ -s "$vcf" ]; then
-        bcftools view -H "$vcf" | wc -l
+        bcftools index -n "$vcf" 2>/dev/null || bcftools view -H "$vcf" | wc -l
     else
         echo "NA"
     fi
@@ -90,7 +95,7 @@ echo -e "step_id\treason\tcount\tnotes" > "$REASONS_TSV"
 # -----------------------------
 # 06.1
 # -----------------------------
-S61_IN="${BASE}/05-variant_calling/workflow_test/genotypegvcfs/jointgenotypes.raw.vcf.gz"
+S61_IN="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/05-variant_calling/workflow_full/genotypegvcfs/jointgenotypes.raw.vcf.gz"
 S61_OUT="${BASE}/06.1-normalization_selection/joint.norm.biallelic.snps.vcf.gz"
 S61_IN_N="$(count_variants "$S61_IN")"
 S61_OUT_N="$(count_variants "$S61_OUT")"
@@ -106,7 +111,7 @@ S62_TAGGED="${BASE}/06.2-technical_hard_filter/snps.filtered.tagged.vcf.gz"
 S62_IN_N="$(count_variants "$S62_IN")"
 S62_OUT_N="$(count_variants "$S62_OUT")"
 S62_SAMPLES="$(count_samples_vcf "$S62_OUT")"
-write_step_row "06.2" "$S62_IN" "$S62_OUT" "$S62_SAMPLES" "$S62_IN_N" "$S62_OUT_N" "Hard filtering (QD/QUAL/FS/SOR/MQ/MQRankSum/ReadPosRankSum/DP)"
+write_step_row "06.2" "$S62_IN" "$S62_OUT" "$S62_SAMPLES" "$S62_IN_N" "$S62_OUT_N" "Hard filtering (QD/QUAL/FS/SOR/MQ/MQRankSum/ReadPosRankSum)"
 
 if [ -s "$S62_TAGGED" ]; then
     bcftools query -f '%FILTER\n' "$S62_TAGGED" | tr ';' '\n' | sort | uniq -c | while read -r c filt; do
@@ -169,26 +174,41 @@ if [ "$S65_IN_N" != "NA" ] && [ "$S65_OUT_N" != "NA" ]; then
 fi
 
 # -----------------------------
-# 06.6
+# 06.6a — LD decay (diagnostic, no variant filtering)
 # -----------------------------
-S66_IN="${BASE}/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
-S66_OUT="${BASE}/06.6-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
-S66_LOG="${BASE}/06.6-ld_pruning/logs/06.6-ld_pruning.log"
-S66_IN_N="$(count_variants "$S66_IN")"
-S66_OUT_N="$(count_variants "$S66_OUT")"
-S66_SAMPLES="$(count_samples_vcf "$S66_IN")"
+S66A_IN="${BASE}/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
+S66A_LD="${BASE}/06.6a-ld_decay/ld_decay.geno.ld"
+S66A_IN_N="$(count_variants "$S66A_IN")"
+S66A_SAMPLES="$(count_samples_vcf "$S66A_IN")"
+if [ -s "$S66A_LD" ]; then
+    N66A_PAIRS=$(tail -n +2 "$S66A_LD" | wc -l)
+    write_step_row "06.6a" "$S66A_IN" "diagnostic only" "$S66A_SAMPLES" "$S66A_IN_N" "$S66A_IN_N" "LD decay estimation (20k SNP subsample, vcftools --geno-r2)"
+    echo -e "06.6a\tld_pairs_computed\t${N66A_PAIRS}\tSNP pairs computed within 1 Mb window" >> "$REASONS_TSV"
+else
+    write_step_row "06.6a" "$S66A_IN" "diagnostic only" "$S66A_SAMPLES" "$S66A_IN_N" "$S66A_IN_N" "LD decay estimation (not yet run)"
+fi
 
-if [ -s "$S66_OUT" ]; then
-    write_step_row "06.6" "$S66_IN" "$S66_OUT" "$S66_SAMPLES" "$S66_IN_N" "$S66_OUT_N" "LD pruning (--indep-pairwise)"
-    if [ "$S66_IN_N" != "NA" ] && [ "$S66_OUT_N" != "NA" ]; then
-        echo -e "06.6\tld_pruned_variants_removed\t$((S66_IN_N - S66_OUT_N))\tVariants removed by LD pruning" >> "$REASONS_TSV"
+# -----------------------------
+# 06.6b — LD pruning
+# -----------------------------
+S66B_IN="${BASE}/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
+S66B_OUT="${BASE}/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
+S66B_LOG="${BASE}/06.6b-ld_pruning/logs/06.6-ld_pruning.log"
+S66B_IN_N="$(count_variants "$S66B_IN")"
+S66B_OUT_N="$(count_variants "$S66B_OUT")"
+S66B_SAMPLES="$(count_samples_vcf "$S66B_IN")"
+
+if [ -s "$S66B_OUT" ]; then
+    write_step_row "06.6b" "$S66B_IN" "$S66B_OUT" "$S66B_SAMPLES" "$S66B_IN_N" "$S66B_OUT_N" "LD pruning (MAF>=5%, --indep-pairwise 10000 5000 0.4)"
+    if [ "$S66B_IN_N" != "NA" ] && [ "$S66B_OUT_N" != "NA" ]; then
+        echo -e "06.6b\tld_pruned_variants_removed\t$((S66B_IN_N - S66B_OUT_N))\tVariants removed by MAF filter + LD pruning" >> "$REASONS_TSV"
     fi
 else
-    write_step_row "06.6" "$S66_IN" "NA" "$S66_SAMPLES" "$S66_IN_N" "NA" "LD pruning not completed"
-    if [ -s "$S66_LOG" ] && rg -q "less than 50 samples" "$S66_LOG"; then
-        echo -e "06.6\tld_pruning_skipped_n_lt_50\t1\tPLINK2 refused LD estimation with <50 samples" >> "$REASONS_TSV"
+    write_step_row "06.6b" "$S66B_IN" "NA" "$S66B_SAMPLES" "$S66B_IN_N" "NA" "LD pruning not completed"
+    if [ -s "$S66B_LOG" ] && grep -q "less than 50 samples" "$S66B_LOG"; then
+        echo -e "06.6b\tld_pruning_skipped_n_lt_50\t1\tPLINK2 refused LD estimation with <50 samples" >> "$REASONS_TSV"
     else
-        echo -e "06.6\tld_pruning_missing_output\t1\tOutput VCF not found" >> "$REASONS_TSV"
+        echo -e "06.6b\tld_pruning_missing_output\t1\tOutput VCF not found" >> "$REASONS_TSV"
     fi
 fi
 
@@ -199,7 +219,7 @@ fi
     echo "Main summary table: $SUMMARY_TSV"
     echo "Reasons table     : $REASONS_TSV"
     echo
-    awk -F'\t' 'NR==1 || $1=="06.1" || $1=="06.2" || $1=="06.3" || $1=="06.4" || $1=="06.5" || $1=="06.6" {print}' "$SUMMARY_TSV"
+    awk -F'\t' 'NR==1 || $1=="06.1" || $1=="06.2" || $1=="06.3" || $1=="06.4" || $1=="06.5" || $1=="06.6a" || $1=="06.6b" {print}' "$SUMMARY_TSV"
 } > "$SUMMARY_TXT"
 
 cat "$SUMMARY_TXT"

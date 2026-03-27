@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p workq
 #SBATCH --time=20:00:00
-#SBATCH -J 06.6-ld_pruning
+#SBATCH -J 06.6b-ld_pruning
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=16G
@@ -26,7 +26,7 @@ IN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filterin
 IN_VCF="${IN_DIR}/snps_TE_filtered.vcf.gz"
 IN_TBI="${IN_VCF}.tbi"
 
-OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.6-ld_pruning"
+OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.6b-ld_pruning"
 LOG_DIR="${OUT_DIR}/logs"
 STATS_DIR="${OUT_DIR}/stats"
 TMP_DIR="${OUT_DIR}/tmp"
@@ -42,10 +42,21 @@ PRUNED_TBI="${PRUNED_VCF}.tbi"
 # Optional sample exclusion file (one sample ID per line).
 EXCLUDE_SAMPLES_FILE="${EXCLUDE_SAMPLES_FILE:-}"
 
-# LD pruning parameters (same idea as your historical script).
+# LD pruning parameters — validated on a previous Dicorynia guianensis study.
+# --indep-pairwise 10000 5000 0.4:
+#   window = 10,000 SNPs (~470 kb at current density of ~47 bp/SNP)
+#   step   = 5,000 SNPs
+#   r²     = 0.4 threshold (removes pairs with r² >= 0.4)
 LD_WINDOW_KB="${LD_WINDOW_KB:-10000}"
 LD_STEP_SNP="${LD_STEP_SNP:-5000}"
 LD_R2="${LD_R2:-0.4}"
+
+# MAF filter applied before LD pruning.
+# MAF >= 5% is the standard threshold for GEA and population structure
+# analyses — removes rare variants that inflate false positive rates.
+# MAC >= 3 was already applied in 06.4; here we enforce the stricter
+# MAF >= 0.05 threshold needed for downstream GEA methods.
+MAF_THRESHOLD="${MAF_THRESHOLD:-0.05}"
 
 # Optional full LD computation output (0: disabled, 1: enabled).
 COMPUTE_LD_R2="${COMPUTE_LD_R2:-0}"
@@ -58,7 +69,7 @@ PLINK_THREADS="${SLURM_CPUS_PER_TASK:-4}"
 STATS_06_5="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.5-transposable_element_filtering/stats/snps_TE_filtered.stats.txt"
 
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$STATS_DIR" "$TMP_DIR"
-echo "START $(date -Iseconds) 06.6 LD pruning" > "$LOG_FILE"
+echo "START $(date -Iseconds) 06.6b LD pruning" > "$LOG_FILE"
 
 if [ ! -s "$IN_VCF" ] || [ ! -s "$IN_TBI" ]; then
     echo "ERROR: input VCF missing: $IN_VCF" | tee -a "$LOG_FILE"
@@ -78,6 +89,8 @@ plink2 \
     --vcf "$IN_VCF" \
     --allow-extra-chr \
     --threads "$PLINK_THREADS" \
+    --maf "$MAF_THRESHOLD" \
+    --set-all-var-ids '@:#:$r:$a' \
     "${REMOVE_ARGS[@]}" \
     --make-bed \
     --out "$WORK_PREFIX" >> "$LOG_FILE" 2>&1
@@ -156,7 +169,7 @@ RAW_N=$(grep "^SN.*number of SNPs:" "$RAW_STATS" | cut -f4)
 PRUNED_N=$(grep "^SN.*number of SNPs:" "$PRUNED_STATS" | cut -f4)
 REMOVED_N=$((RAW_N - PRUNED_N))
 
-echo "DONE $(date -Iseconds) 06.6 completed" | tee -a "$LOG_FILE"
+echo "DONE $(date -Iseconds) 06.6b completed" | tee -a "$LOG_FILE"
 echo "Input VCF         : $IN_VCF"
 echo "Pruned VCF        : $PRUNED_VCF"
 echo "Prune.in          : $PRUNE_IN"

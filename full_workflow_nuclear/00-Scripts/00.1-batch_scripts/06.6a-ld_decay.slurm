@@ -16,6 +16,7 @@ set -euo pipefail
 # -------------------------------------------------------------------
 module purge
 module load bioinfo/PLINK/2.00a4
+module load bioinfo/Bcftools/1.9
 module load bioinfo/VCFtools/0.1.16
 module load bioinfo/samtools/1.23
 module load statistics/R/4.3.0
@@ -84,7 +85,17 @@ if [ ! -s "${SUBSET_VCF}" ]; then
     echo "ERROR: subset VCF missing" | tee -a "$LOG_FILE"
     exit 1
 fi
-echo "INFO: subset VCF created: $(bcftools view -H "$SUBSET_VCF" | wc -l) SNPs" | tee -a "$LOG_FILE"
+
+# plink2 exports VCF v4.3 but vcftools 0.1.16 only supports up to v4.2.
+# Patch the header to v4.2 — the format differences are minor and
+# do not affect the genotype data used by vcftools --geno-r2.
+SUBSET_VCF_V42="${SUBSET_PREFIX}.v42.vcf.gz"
+zcat "$SUBSET_VCF" \
+    | sed 's/##fileformat=VCFv4.3/##fileformat=VCFv4.2/' \
+    | bgzip -c > "$SUBSET_VCF_V42"
+bcftools index --threads "$PLINK_THREADS" -t "$SUBSET_VCF_V42" >> "$LOG_FILE" 2>&1
+
+echo "INFO: subset VCF created: $(bcftools view -H "$SUBSET_VCF_V42" | wc -l) SNPs" | tee -a "$LOG_FILE"
 
 # -------------------------------------------------------------------
 # STEP 3: Compute pairwise r² with vcftools --geno-r2
@@ -105,7 +116,7 @@ echo "INFO: subset VCF created: $(bcftools view -H "$SUBSET_VCF" | wc -l) SNPs" 
 # the full decay curve including the asymptote.
 echo "STEP 3: computing pairwise r² within ${LD_WINDOW_BP} bp" | tee -a "$LOG_FILE"
 vcftools \
-    --gzvcf "$SUBSET_VCF" \
+    --gzvcf "$SUBSET_VCF_V42" \
     --geno-r2 \
     --ld-window-bp "$LD_WINDOW_BP" \
     --min-r2 0.0 \
