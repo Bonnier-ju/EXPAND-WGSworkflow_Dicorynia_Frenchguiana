@@ -9,6 +9,62 @@
 #SBATCH --mail-user=julien.bonnier@inrae.fr
 #SBATCH --mail-type=END,FAIL
 
+# =======================================================================
+# SCRIPT: 06.8 — Data Integrity Audit
+# =======================================================================
+# PURPOSE
+#   Cross-validate all VCF outputs produced by the filtering pipeline
+#   (06.1 → 06.6b) and generate a reproducibility record of the run.
+#   This script does not modify any data; it only reads existing VCFs.
+#
+# CHECKS PERFORMED
+#   01 — Index + readability  : verifies each VCF has a .tbi index and
+#                               that bcftools can open the header.
+#   02 — Sample concordance   : ensures the same sample set is present
+#                               at every filtering step (no accidental
+#                               sample gain/loss between steps).
+#   03 — Variant ID integrity : counts total variants in the final VCF,
+#                               detects missing IDs (ID='.') and
+#                               duplicate variant IDs or duplicate loci
+#                               (same CHROM:POS:REF:ALT).
+#   04 — Allele sanity        : confirms no multiallelic sites remain
+#                               (all sites should be biallelic after
+#                               06.1 SelectVariants), no non-ACGTN
+#                               alleles, and no records without ALT.
+#   06 — Missingness          : computes per-individual (F_MISS) and
+#                               per-site missingness on the final VCF
+#                               using vcftools, to confirm that missing
+#                               data thresholds applied in 06.3 are
+#                               met in the final dataset.
+#   07 — Heterozygosity/depth : computes observed heterozygosity
+#                               (F-statistic via vcftools --het) and
+#                               mean per-individual depth (--depth) on
+#                               the final VCF. Used to flag outlier
+#                               samples (excess heterozygosity may
+#                               indicate contamination; very low depth
+#                               indicates poor sequencing quality).
+#   08 — Reproducibility      : records tool versions, loaded modules,
+#                               and SHA-256 checksums of all VCF files
+#                               to enable future exact reproduction
+#                               and audit of filtering parameters.
+#
+# OUTPUTS
+#   06.8-integrity_report.tsv    : machine-readable check results
+#   06.8-integrity_report.txt    : human-readable formatted report
+#   06.8-runtime_environment.txt : tool versions + pipeline paths
+#   06.8-file_hashes.sha256      : SHA-256 checksums of all VCFs
+#
+# PIPELINE CONTEXT
+#   Input VCFs (checked in order):
+#     06.1 — normalization + biallelic SNP selection
+#     06.2 — technical hard filters (QD/QUAL/FS/SOR/MQ/MQRankSum/ReadPosRankSum)
+#     06.3 — missing data + sample missingness filtering
+#     06.4 — MAC filtering (remove singletons/doubletons, MAC < 3)
+#     06.5 — TE overlap filtering (exclude SNPs in transposable elements)
+#     06.6b — LD pruning + MAF >= 5% filter (final dataset for GEA/structure)
+#   Final VCF: 06.6b if present, otherwise 06.5
+# =======================================================================
+
 set -euo pipefail
 
 module purge
@@ -16,7 +72,7 @@ module load bioinfo/Bcftools/1.9
 module load bioinfo/VCFtools/0.1.16
 module load bioinfo/samtools/1.21
 
-BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test"
+BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full"
 OUT_DIR="${BASE}/06.8-data_integrity_audit"
 LOG_DIR="${OUT_DIR}/logs"
 TMP_DIR="${OUT_DIR}/tmp"
@@ -35,11 +91,11 @@ S62="${BASE}/06.2-technical_hard_filter/snps.hardfiltered.vcf.gz"
 S63="${BASE}/06.3-missing_data_sample_filtering/snps.missing_filtered.vcf.gz"
 S64="${BASE}/06.4-allele_frequency_population_filter/snps_non_informative_filtered.vcf.gz"
 S65="${BASE}/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
-S66="${BASE}/06.6-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
+S66B="${BASE}/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
 
-if [ -s "$S66" ]; then
-    FINAL_VCF="$S66"
-    FINAL_STEP="06.6"
+if [ -s "$S66B" ]; then
+    FINAL_VCF="$S66B"
+    FINAL_STEP="06.6b"
 else
     FINAL_VCF="$S65"
     FINAL_STEP="06.5"
@@ -52,10 +108,12 @@ report_ok()   { echo -e "$1\tPASS\t$2\t$3" >> "$REPORT_TSV"; }
 report_warn() { echo -e "$1\tWARN\t$2\t$3" >> "$REPORT_TSV"; }
 report_fail() { echo -e "$1\tFAIL\t$2\t$3" >> "$REPORT_TSV"; }
 
+# Fast variant counting via tabix index — avoids streaming the full VCF.
+# Falls back to full stream count if index is missing.
 count_variants() {
     local vcf="$1"
     if [ -s "$vcf" ]; then
-        bcftools view -H "$vcf" | wc -l
+        bcftools index -n "$vcf" 2>/dev/null || bcftools view -H "$vcf" | wc -l
     else
         echo "NA"
     fi
@@ -70,8 +128,16 @@ count_samples() {
     fi
 }
 
-# 1) Index + readability checks
-for vcf in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66"; do
+# -------------------------------------------------------------------
+# CHECK 01: Index presence + header readability
+# -------------------------------------------------------------------
+# Each VCF must have a valid .tbi tabix index (required by all
+# downstream tools). bcftools view -h opens only the header — a fast
+# readability check that catches truncated or corrupted bgzip blocks.
+# Result: PASS/FAIL per VCF file.
+# -------------------------------------------------------------------
+echo "CHECK 01: index + readability" | tee -a "$LOG_FILE"
+for vcf in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66B"; do
     [ -s "$vcf" ] || continue
     tbi="${vcf}.tbi"
     tag="$(basename "$vcf")"
@@ -87,11 +153,22 @@ for vcf in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66"; do
     fi
 done
 
-# 2) Sample concordance across steps
+# -------------------------------------------------------------------
+# CHECK 02: Sample concordance across filtering steps
+# -------------------------------------------------------------------
+# Compares the sample list between consecutive VCFs to detect any
+# accidental sample gain or loss during filtering. Each step should
+# preserve the full sample set (164 individuals), except 06.3 which
+# explicitly removes samples with excess missingness.
+# Method: bcftools query -l extracts sample names, comm compares
+# sorted lists to identify added/removed individuals.
+# Result: PASS if identical; WARN if any difference detected.
+# -------------------------------------------------------------------
+echo "CHECK 02: sample concordance" | tee -a "$LOG_FILE"
 prev_vcf=""
-for vcf in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66"; do
+for vcf in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66B"; do
     [ -s "$vcf" ] || continue
-    step="$(echo "$vcf" | sed -E 's#^.*/(06\.[0-9]+)-.*#\1#')"
+    step="$(echo "$vcf" | sed -E 's#^.*/(06\.[0-9]+[a-z]?)-.*#\1#')"
     if [ -z "$prev_vcf" ]; then
         report_ok "02_samples_${step}" "$(count_samples "$vcf")" "baseline sample set"
     else
@@ -110,7 +187,21 @@ for vcf in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66"; do
     prev_vcf="$vcf"
 done
 
-# 3) Variant ID uniqueness and duplicate loci (on final VCF)
+# -------------------------------------------------------------------
+# CHECK 03: Variant ID integrity and duplicate loci (final VCF)
+# -------------------------------------------------------------------
+# Checks performed on the final filtered VCF:
+#   - Total variant count (for reporting).
+#   - Missing IDs (ID='.'): warns if present. Although not a blocking
+#     issue, named IDs are required by some downstream tools (e.g.
+#     plink --extract, GEMMA). LD pruning (06.6b) already assigns
+#     chr:pos:ref:alt IDs via --set-all-var-ids.
+#   - Duplicate variant IDs: warns if two variants share the same ID.
+#   - Duplicate loci (CHROM:POS:REF:ALT): warns if the same site
+#     appears twice — should not occur after 06.1 biallelic selection
+#     and bcftools norm deduplication.
+# -------------------------------------------------------------------
+echo "CHECK 03: variant ID integrity" | tee -a "$LOG_FILE"
 if [ -s "$FINAL_VCF" ]; then
     total_final=$(count_variants "$FINAL_VCF")
     miss_id=$(bcftools query -f '%ID\n' "$FINAL_VCF" | awk '$1=="."{c++} END{print c+0}')
@@ -124,7 +215,21 @@ else
     report_fail "03_final_vcf_missing" "NA" "final VCF not found"
 fi
 
-# 4) Allele sanity checks (on final VCF)
+# -------------------------------------------------------------------
+# CHECK 04: Allele sanity (final VCF)
+# -------------------------------------------------------------------
+# Verifies that the final VCF meets the expectations set by the
+# filtering pipeline:
+#   - No multiallelic sites: 06.1 SelectVariants --restrict-alleles
+#     BIALLELIC should have removed all sites with >1 ALT allele.
+#     Multiallelic sites can cause errors in plink, GEMMA, and BayPass.
+#   - No non-ACGTN alleles: symbolic alleles (<DEL>, <INS>, *) or
+#     ambiguity codes indicate indel or SV records that slipped through
+#     and should not be present in an SNP-only VCF.
+#   - No records without ALT: monomorphic sites should have been
+#     removed by MAC filtering in 06.4 (--mac 3).
+# -------------------------------------------------------------------
+echo "CHECK 04: allele sanity" | tee -a "$LOG_FILE"
 if [ -s "$FINAL_VCF" ]; then
     multi_alt=$(bcftools view -H "$FINAL_VCF" | awk -F'\t' 'index($5,",")>0{c++} END{print c+0}')
     non_acgtn=$(bcftools query -f '%REF\t%ALT\n' "$FINAL_VCF" | \
@@ -141,7 +246,18 @@ if [ -s "$FINAL_VCF" ]; then
     [ "${no_alt:-0}" -eq 0 ] && report_ok "04_no_alt_records" "${no_alt:-0}" "none" || report_warn "04_no_alt_records" "${no_alt:-0}" "records without ALT remain"
 fi
 
-# 6) Missingness on final VCF
+# -------------------------------------------------------------------
+# CHECK 06: Per-individual and per-site missingness (final VCF)
+# -------------------------------------------------------------------
+# Recomputes missing data statistics on the final VCF to confirm that
+# the thresholds applied in 06.3 (--max-missing 0.9 → max 10% missing
+# per site; sample removal if F_MISS > 0.5) are met in the final
+# dataset after all subsequent filtering steps.
+# Output files:
+#   final_missingness.imiss : per-individual missing rate (F_MISS)
+#   final_missingness.lmiss : per-site missing rate (F_MISS)
+# -------------------------------------------------------------------
+echo "CHECK 06: missingness" | tee -a "$LOG_FILE"
 MISS_PREFIX="${OUT_DIR}/final_missingness"
 if [ -s "$FINAL_VCF" ]; then
     vcftools --gzvcf "$FINAL_VCF" --missing-indv --out "$MISS_PREFIX" >> "$LOG_FILE" 2>&1
@@ -158,7 +274,22 @@ if [ -s "$FINAL_VCF" ]; then
     fi
 fi
 
-# 7) Heterozygosity / depth checks
+# -------------------------------------------------------------------
+# CHECK 07: Heterozygosity and sequencing depth per individual
+# -------------------------------------------------------------------
+# Per-individual heterozygosity (F-statistic, vcftools --het):
+#   F = (O_HOM - E_HOM) / (N_sites - E_HOM)
+#   F > 0  → excess homozygosity (inbreeding or poor mapping)
+#   F < 0  → excess heterozygosity (contamination, mapping errors)
+#   Outlier individuals (|F| > 0.15 typically) should be flagged
+#   for manual inspection before GEA or genetic load analyses.
+#
+# Per-individual depth (vcftools --depth):
+#   Reports mean depth across all sites per individual.
+#   Very low-depth individuals (<10x) may introduce genotyping errors
+#   that inflate false positive rates in downstream analyses.
+# -------------------------------------------------------------------
+echo "CHECK 07: heterozygosity + depth" | tee -a "$LOG_FILE"
 HET_PREFIX="${OUT_DIR}/final_heterozygosity"
 DEPTH_PREFIX="${OUT_DIR}/final_depth"
 if [ -s "$FINAL_VCF" ]; then
@@ -183,7 +314,18 @@ if [ -s "$FINAL_VCF" ]; then
     fi
 fi
 
-# 8) Reproducibility audit (versions, params, hashes)
+# -------------------------------------------------------------------
+# CHECK 08: Reproducibility audit — tool versions, paths, checksums
+# -------------------------------------------------------------------
+# Records the exact runtime environment to enable future auditing:
+#   - Tool versions (bcftools, vcftools, samtools)
+#   - Loaded modules (SLURM environment)
+#   - Full paths to all input/output VCFs
+#   - SHA-256 checksums of all VCF files
+# SHA-256 checksums allow verification that files have not been
+# modified or corrupted after the pipeline completed.
+# -------------------------------------------------------------------
+echo "CHECK 08: reproducibility audit" | tee -a "$LOG_FILE"
 {
     echo "Generated: $(date -Iseconds)"
     echo "Host: $(hostname)"
@@ -203,11 +345,11 @@ fi
     echo "S63=${S63}"
     echo "S64=${S64}"
     echo "S65=${S65}"
-    echo "S66=${S66}"
+    echo "S66B=${S66B}"
     echo "FINAL=${FINAL_VCF}"
 } > "$ENV_TXT"
 
-for f in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66" "$FINAL_VCF"; do
+for f in "$S61" "$S62" "$S63" "$S64" "$S65" "$S66B" "$FINAL_VCF"; do
     [ -s "$f" ] || continue
     sha256sum "$f"
 done > "$HASH_TXT"
@@ -224,3 +366,12 @@ report_ok "08_file_hashes" "written" "$HASH_TXT"
 
 cat "$REPORT_TXT"
 echo "DONE $(date -Iseconds) 06.8 integrity audit" | tee -a "$LOG_FILE"
+
+# Summary of checks:
+# Check 01 — Index presence + header readability on all step VCFs
+# Check 02 — Sample concordance across all filtering steps
+# Check 03 — Variant ID uniqueness + duplicate loci on final VCF
+# Check 04 — Allele sanity (biallelic, ACGTN only, no empty ALT)
+# Check 06 — Per-individual and per-site missingness on final VCF
+# Check 07 — Per-individual heterozygosity (F) and depth on final VCF
+# Check 08 — Tool versions, pipeline paths, SHA-256 checksums
