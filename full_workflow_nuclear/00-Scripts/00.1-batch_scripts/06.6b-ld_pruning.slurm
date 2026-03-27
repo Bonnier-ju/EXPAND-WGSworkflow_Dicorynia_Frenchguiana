@@ -22,11 +22,11 @@ module load bioinfo/samtools/1.23
 # -------------------------------------------------------------------
 # STEP 1: Define inputs/outputs
 # -------------------------------------------------------------------
-IN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.5-transposable_element_filtering"
+IN_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.5-transposable_element_filtering"
 IN_VCF="${IN_DIR}/snps_TE_filtered.vcf.gz"
 IN_TBI="${IN_VCF}.tbi"
 
-OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_test/06.6-ld_pruning"
+OUT_DIR="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.6-ld_pruning"
 LOG_DIR="${OUT_DIR}/logs"
 STATS_DIR="${OUT_DIR}/stats"
 TMP_DIR="${OUT_DIR}/tmp"
@@ -53,6 +53,10 @@ COMPUTE_LD_R2="${COMPUTE_LD_R2:-0}"
 RAW_STATS="${STATS_DIR}/snps_TE_filtered.stats.txt"
 PRUNED_STATS="${STATS_DIR}/snps_TE_filtered.ld_pruned.stats.txt"
 
+BCFTOOLS_THREADS="${SLURM_CPUS_PER_TASK:-4}"
+PLINK_THREADS="${SLURM_CPUS_PER_TASK:-4}"
+STATS_06_5="/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.5-transposable_element_filtering/stats/snps_TE_filtered.stats.txt"
+
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$STATS_DIR" "$TMP_DIR"
 echo "START $(date -Iseconds) 06.6 LD pruning" > "$LOG_FILE"
 
@@ -73,6 +77,7 @@ fi
 plink2 \
     --vcf "$IN_VCF" \
     --allow-extra-chr \
+    --threads "$PLINK_THREADS" \
     "${REMOVE_ARGS[@]}" \
     --make-bed \
     --out "$WORK_PREFIX" >> "$LOG_FILE" 2>&1
@@ -88,6 +93,7 @@ fi
 plink2 \
     --bfile "$WORK_PREFIX" \
     --allow-extra-chr \
+    --threads "$PLINK_THREADS" \
     --indep-pairwise "$LD_WINDOW_KB" "$LD_STEP_SNP" "$LD_R2" \
     --out "$PRUNE_PREFIX" >> "$LOG_FILE" 2>&1
 
@@ -102,6 +108,7 @@ fi
 plink2 \
     --bfile "$WORK_PREFIX" \
     --allow-extra-chr \
+    --threads "$PLINK_THREADS" \
     --extract "$PRUNE_IN" \
     --make-bed \
     --out "$PRUNE_PREFIX" >> "$LOG_FILE" 2>&1
@@ -109,10 +116,11 @@ plink2 \
 plink2 \
     --bfile "$PRUNE_PREFIX" \
     --allow-extra-chr \
+    --threads "$PLINK_THREADS" \
     --export vcf bgz \
     --out "$PRUNE_PREFIX" >> "$LOG_FILE" 2>&1
 
-bcftools index -t "$PRUNED_VCF" >> "$LOG_FILE" 2>&1
+bcftools index --threads "$BCFTOOLS_THREADS" -t "$PRUNED_VCF" >> "$LOG_FILE" 2>&1
 
 if [ ! -s "$PRUNED_VCF" ] || [ ! -s "$PRUNED_TBI" ]; then
     echo "ERROR: pruned VCF output missing: $PRUNED_VCF" | tee -a "$LOG_FILE"
@@ -128,6 +136,7 @@ if [ "$COMPUTE_LD_R2" -eq 1 ]; then
         --bfile "$WORK_PREFIX" \
         --allow-extra-chr \
         --r2 \
+        --threads "$PLINK_THREADS" \
         --ld-window-kb 100000 \
         --out "$LD_OUT" >> "$LOG_FILE" 2>&1 || true
 
@@ -139,11 +148,12 @@ fi
 # -------------------------------------------------------------------
 # STEP 6: Stats before/after pruning
 # -------------------------------------------------------------------
-bcftools stats "$IN_VCF" > "$RAW_STATS"
-bcftools stats "$PRUNED_VCF" > "$PRUNED_STATS"
+ln -sf "$STATS_06_5" "$RAW_STATS"
+echo "INFO: raw TE-filtered stats symlinked from 06.5" | tee -a "$LOG_FILE"
+bcftools stats --threads "$BCFTOOLS_THREADS" "$PRUNED_VCF" > "$PRUNED_STATS"
 
-RAW_N=$(bcftools view -H "$IN_VCF" | wc -l)
-PRUNED_N=$(bcftools view -H "$PRUNED_VCF" | wc -l)
+RAW_N=$(grep "^SN.*number of SNPs:" "$RAW_STATS" | cut -f4)
+PRUNED_N=$(grep "^SN.*number of SNPs:" "$PRUNED_STATS" | cut -f4)
 REMOVED_N=$((RAW_N - PRUNED_N))
 
 echo "DONE $(date -Iseconds) 06.6 completed" | tee -a "$LOG_FILE"
