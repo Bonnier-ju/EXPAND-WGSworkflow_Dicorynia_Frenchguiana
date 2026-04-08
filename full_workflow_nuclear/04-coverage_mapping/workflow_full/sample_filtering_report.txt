@@ -1,0 +1,10 @@
+Sample filtering report
+Date: 2026-03-11 12:21:50
+Input sample sheet: 
+Mapping summary: /home/jbonnier/work/chapitre_5/full_workflow_nuclear/04-coverage_mapping/workflow_full/mapping_coverage_summary.tsv
+Thresholds: mapped_percent >= 60, avg_depth_q20 >= 5
+Total samples: 180
+Kept samples: 164
+Removed samples: 16
+Kept sample sheet: /home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete_filtered.csv
+Removed sample sheet: /home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sample_sheet_complete.removed_low_quality.csv
