@@ -4,11 +4,26 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
+theme_set(theme_minimal() + theme(
+  plot.background  = element_rect(fill = "white", color = NA),
+  panel.background = element_rect(fill = "white", color = NA)
+))
+
+# Site-specific color palette (consistent across all population graphics)
+SITE_COLORS_FILE <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/metadata/sites_couleurs.csv"
+site_colors <- if (file.exists(SITE_COLORS_FILE)) {
+  pal <- read.csv(SITE_COLORS_FILE, stringsAsFactors = FALSE)
+  setNames(pal$couleur_hex, pal$site)
+} else {
+  warning("Site color file not found: ", SITE_COLORS_FILE, " — using ggplot2 defaults")
+  c()
+}
+
 args <- commandArgs(trailingOnly = TRUE)
 
-base_dir_default <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/07-population_structure/workflow_test/07.2-structure"
-fam_file_default <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/07-population_structure/workflow_test/07.1-pca_ibd_fst/genotypes.fam"
-pop_map_default <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/07-population_structure/workflow_test/07.1-pca_ibd_fst/sample_population_map.tsv"
+base_dir_default <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/07-population_structure/workflow_full/07.2-structure"
+fam_file_default <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/07-population_structure/workflow_full/07.1-pca_ibd_fst/genotypes.fam"
+pop_map_default <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear/07-population_structure/workflow_full/07.1-pca_ibd_fst/sample_population_map.tsv"
 
 base_dir <- if (length(args) >= 1) args[1] else base_dir_default
 fam_file <- if (length(args) >= 2) args[2] else fam_file_default
@@ -117,6 +132,44 @@ sample_order <- unique(plot_df[order(plot_df$population, plot_df$sample_id), "sa
 plot_df$sample_id <- factor(plot_df$sample_id, levels = sample_order)
 plot_df$K <- factor(plot_df$K, levels = paste0("K", sort(unique(meta$k))))
 
+# Population annotation strip: one colored tile per individual showing site membership.
+# Built as a separate thin ggplot and combined with the ancestry barplot via gridExtra.
+# Falls back to saving ancestry plot only if gridExtra is unavailable.
+make_pop_strip <- function(sample_lvls, pop_by_sample, color_values) {
+  strip_df <- data.frame(
+    sample_id = factor(sample_lvls, levels = sample_lvls),
+    population = pop_by_sample[sample_lvls],
+    y = 1,
+    stringsAsFactors = FALSE
+  )
+  strip_df$population[is.na(strip_df$population) | strip_df$population == ""] <- "UNKNOWN"
+  p <- ggplot(strip_df, aes(x = sample_id, y = y, fill = population)) +
+    geom_col(width = 1) +
+    theme_void() +
+    theme(
+      plot.background  = element_rect(fill = "white", color = NA),
+      legend.position  = "none"
+    )
+  if (length(color_values) > 0) {
+    p <- p + scale_fill_manual(values = color_values, na.value = "grey80")
+  }
+  p
+}
+
+save_with_strip <- function(p_ancestry, p_strip, filepath_base, width, height) {
+  # Try gridExtra for combining ancestry barplot + population strip
+  if (requireNamespace("gridExtra", quietly = TRUE)) {
+    g <- gridExtra::arrangeGrob(p_ancestry, p_strip, nrow = 2, heights = c(10, 0.6))
+    ggplot2::ggsave(paste0(filepath_base, ".png"), g, width = width, height = height + 0.5, dpi = 300)
+    ggplot2::ggsave(paste0(filepath_base, ".pdf"), g, width = width, height = height + 0.5)
+  } else {
+    # gridExtra not available: save ancestry barplot only
+    ggsave(paste0(filepath_base, ".png"), p_ancestry, width = width, height = height, dpi = 300)
+    ggsave(paste0(filepath_base, ".pdf"), p_ancestry, width = width, height = height)
+    ggsave(paste0(filepath_base, "_pop_strip.png"), p_strip, width = width, height = 0.6, dpi = 300)
+  }
+}
+
 # Global multi-K plot
 p_all <- ggplot(plot_df, aes(x = sample_id, y = ancestry, fill = cluster)) +
   geom_col(width = 1) +
@@ -138,14 +191,16 @@ p_all <- ggplot(plot_df, aes(x = sample_id, y = ancestry, fill = cluster)) +
 ggsave(file.path(out_dir, "structure_barplot_allK_best_rep.png"), p_all, width = 14, height = 10, dpi = 300)
 ggsave(file.path(out_dir, "structure_barplot_allK_best_rep.pdf"), p_all, width = 14, height = 10)
 
-# Per-K plots
+# Per-K plots with population annotation strip
 for (k in levels(plot_df$K)) {
   d <- plot_df[plot_df$K == k, , drop = FALSE]
+  k_sample_order <- levels(droplevels(d$sample_id))
+
   p_k <- ggplot(d, aes(x = sample_id, y = ancestry, fill = cluster)) +
     geom_col(width = 1) +
     labs(
       title = paste0("STRUCTURE Barplot - ", k, " (best replicate)"),
-      x = "Individuals",
+      x = NULL,
       y = "Ancestry proportion"
     ) +
     theme_bw(base_size = 11) +
@@ -155,9 +210,10 @@ for (k in levels(plot_df$K)) {
       panel.grid.minor = element_blank(),
       plot.title = element_text(face = "bold")
     )
-  fn <- paste0("structure_barplot_", k, "_best_rep")
-  ggsave(file.path(out_dir, paste0(fn, ".png")), p_k, width = 12, height = 5, dpi = 300)
-  ggsave(file.path(out_dir, paste0(fn, ".pdf")), p_k, width = 12, height = 5)
+
+  p_strip_k <- make_pop_strip(k_sample_order, pop_by_sample, site_colors)
+  fn <- file.path(out_dir, paste0("structure_barplot_", k, "_best_rep"))
+  save_with_strip(p_k, p_strip_k, fn, width = 12, height = 5)
 }
 
 write.table(

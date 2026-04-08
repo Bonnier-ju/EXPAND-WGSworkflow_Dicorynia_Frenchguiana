@@ -231,7 +231,10 @@ fi
 # -------------------------------------------------------------------
 echo "CHECK 04: allele sanity" | tee -a "$LOG_FILE"
 if [ -s "$FINAL_VCF" ]; then
-    multi_alt=$(bcftools view -H "$FINAL_VCF" | awk -F'\t' 'index($5,",")>0{c++} END{print c+0}')
+    # Use bcftools query to extract only REF and ALT columns — avoids
+    # streaming 164 genotype columns through a pipe (which can cause
+    # SIGPIPE with set -o pipefail on large VCFs).
+    multi_alt=$(bcftools query -f '%ALT\n' "$FINAL_VCF" | awk 'index($0,",")>0{c++} END{print c+0}')
     non_acgtn=$(bcftools query -f '%REF\t%ALT\n' "$FINAL_VCF" | \
         awk -F'\t' '
             {
@@ -240,10 +243,34 @@ if [ -s "$FINAL_VCF" ]; then
                 for(i=1;i<=n;i++) if (a[i] !~ /^[ACGTN]+$/) {bad++; break}
             }
             END{print bad+0}')
-    no_alt=$(bcftools stats "$FINAL_VCF" | awk -F'\t' '/^SN/ && $3=="number of no-ALTs:"{print $4+0}')
+    # Use bcftools query rather than bcftools stats to avoid the full
+    # per-sample statistics computation (slow on 164-sample VCFs).
+    no_alt=$(bcftools query -f '%ALT\n' "$FINAL_VCF" | awk '$1=="."{c++} END{print c+0}')
     [ "$multi_alt" -eq 0 ] && report_ok "04_multiallelic_sites" "$multi_alt" "none" || report_warn "04_multiallelic_sites" "$multi_alt" "multiallelic sites remain"
     [ "$non_acgtn" -eq 0 ] && report_ok "04_non_acgtn_alleles" "$non_acgtn" "none" || report_warn "04_non_acgtn_alleles" "$non_acgtn" "non-ACGTN alleles detected"
     [ "${no_alt:-0}" -eq 0 ] && report_ok "04_no_alt_records" "${no_alt:-0}" "none" || report_warn "04_no_alt_records" "${no_alt:-0}" "records without ALT remain"
+fi
+
+# -------------------------------------------------------------------
+# VCFv4.3 → v4.2 patch for vcftools compatibility
+# -------------------------------------------------------------------
+# plink2 --export vcf bgz produces VCFv4.3 headers. vcftools 0.1.16
+# only supports up to v4.2 and exits with an error on v4.3 files.
+# The format differences between v4.2 and v4.3 do not affect the
+# genotype data used by vcftools checks (missingness, het, depth).
+# A patched copy is created once in TMP_DIR and reused for all
+# vcftools calls (checks 06 and 07).
+# -------------------------------------------------------------------
+VCFTOOLS_VCF="$FINAL_VCF"
+if [ -s "$FINAL_VCF" ]; then
+    VCF_VERSION=$(zcat "$FINAL_VCF" | grep -m1 "^##fileformat=" | sed 's/##fileformat=//')
+    if [ "$VCF_VERSION" = "VCFv4.3" ]; then
+        VCFTOOLS_VCF="${TMP_DIR}/final_v42.vcf.gz"
+        zcat "$FINAL_VCF" \
+            | sed 's/##fileformat=VCFv4.3/##fileformat=VCFv4.2/' \
+            | bgzip -c > "$VCFTOOLS_VCF"
+        echo "INFO: VCFv4.3 patched to v4.2 for vcftools: $VCFTOOLS_VCF" | tee -a "$LOG_FILE"
+    fi
 fi
 
 # -------------------------------------------------------------------
@@ -259,9 +286,9 @@ fi
 # -------------------------------------------------------------------
 echo "CHECK 06: missingness" | tee -a "$LOG_FILE"
 MISS_PREFIX="${OUT_DIR}/final_missingness"
-if [ -s "$FINAL_VCF" ]; then
-    vcftools --gzvcf "$FINAL_VCF" --missing-indv --out "$MISS_PREFIX" >> "$LOG_FILE" 2>&1
-    vcftools --gzvcf "$FINAL_VCF" --missing-site --out "$MISS_PREFIX" >> "$LOG_FILE" 2>&1
+if [ -s "$VCFTOOLS_VCF" ]; then
+    vcftools --gzvcf "$VCFTOOLS_VCF" --missing-indv --out "$MISS_PREFIX" >> "$LOG_FILE" 2>&1
+    vcftools --gzvcf "$VCFTOOLS_VCF" --missing-site --out "$MISS_PREFIX" >> "$LOG_FILE" 2>&1
     if [ -s "${MISS_PREFIX}.imiss" ]; then
         max_imiss=$(awk 'NR>1{if($5>m)m=$5} END{print m+0}' "${MISS_PREFIX}.imiss")
         mean_imiss=$(awk 'NR>1{s+=$5;n++} END{if(n>0) printf "%.6f", s/n; else print "0"}' "${MISS_PREFIX}.imiss")
@@ -292,8 +319,8 @@ fi
 echo "CHECK 07: heterozygosity + depth" | tee -a "$LOG_FILE"
 HET_PREFIX="${OUT_DIR}/final_heterozygosity"
 DEPTH_PREFIX="${OUT_DIR}/final_depth"
-if [ -s "$FINAL_VCF" ]; then
-    vcftools --gzvcf "$FINAL_VCF" --het --out "$HET_PREFIX" >> "$LOG_FILE" 2>&1 || true
+if [ -s "$VCFTOOLS_VCF" ]; then
+    vcftools --gzvcf "$VCFTOOLS_VCF" --het --out "$HET_PREFIX" >> "$LOG_FILE" 2>&1 || true
     if [ -s "${HET_PREFIX}.het" ]; then
         mean_f=$(awk 'NR>1{s+=$6;n++} END{if(n>0) printf "%.6f", s/n; else print "NA"}' "${HET_PREFIX}.het")
         min_f=$(awk 'NR>1{if(NR==2||$6<m)m=$6} END{if(NR>1) print m; else print "NA"}' "${HET_PREFIX}.het")
@@ -303,7 +330,7 @@ if [ -s "$FINAL_VCF" ]; then
         report_warn "07_heterozygosity_F" "NA" "vcftools --het output not produced"
     fi
 
-    vcftools --gzvcf "$FINAL_VCF" --depth --out "$DEPTH_PREFIX" >> "$LOG_FILE" 2>&1 || true
+    vcftools --gzvcf "$VCFTOOLS_VCF" --depth --out "$DEPTH_PREFIX" >> "$LOG_FILE" 2>&1 || true
     if [ -s "${DEPTH_PREFIX}.idepth" ]; then
         mean_dp=$(awk 'NR>1{s+=$3;n++} END{if(n>0) printf "%.3f", s/n; else print "NA"}' "${DEPTH_PREFIX}.idepth")
         min_dp=$(awk 'NR>1{if(NR==2||$3<m)m=$3} END{if(NR>1) print m; else print "NA"}' "${DEPTH_PREFIX}.idepth")

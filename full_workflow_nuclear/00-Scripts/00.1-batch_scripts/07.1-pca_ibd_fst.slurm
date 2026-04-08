@@ -14,17 +14,16 @@ set -euo pipefail
 module purge
 module load bioinfo/Bcftools/1.9
 module load bioinfo/PLINK/1.90b7
-# Optional for automatic PCA plotting (Genotoul FAQ: prefer statistics/R/4.3.0)
-module load statistics/R/4.3.0 >/dev/null 2>&1 || module load devel/R >/dev/null 2>&1 || true
+module load statistics/R/4.3.0
 
 BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
-VCF_66="${BASE}/06-variant_filtering/workflow_test/06.6-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
-VCF_65="${BASE}/06-variant_filtering/workflow_test/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
+VCF_66="${BASE}/06-variant_filtering/workflow_full/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
+VCF_65="${BASE}/06-variant_filtering/workflow_full/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
 
-SAMPLE_SHEET="${SAMPLE_SHEET:-${BASE}/metadata/sample_sheet_test.csv}"
+SAMPLE_SHEET="${SAMPLE_SHEET:-${BASE}/metadata/sample_sheet_complete_filtered.csv}"
 POP_COLUMN="${POP_COLUMN:-site}"   # ex: site or project
 
-OUT_DIR="${BASE}/07-population_structure/workflow_test/07.1-pca_ibd_fst"
+OUT_DIR="${BASE}/07-population_structure/workflow_full/07.1-pca_ibd_fst"
 LOG_DIR="${OUT_DIR}/logs"
 TMP_DIR="${OUT_DIR}/tmp"
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$TMP_DIR"
@@ -35,7 +34,7 @@ SUMMARY_TXT="${OUT_DIR}/07.1-summary.txt"
 
 if [ -s "$VCF_66" ]; then
     INPUT_VCF="$VCF_66"
-    INPUT_STEP="06.6"
+    INPUT_STEP="06.6b"
 else
     INPUT_VCF="$VCF_65"
     INPUT_STEP="06.5"
@@ -138,7 +137,7 @@ plink \
 FST_PREFIX="${OUT_DIR}/fst"
 FST_STATUS="SKIPPED"
 if [ "$N_POPS" -ge 2 ]; then
-    echo "STEP: FST" | tee -a "$LOG_FILE"
+    echo "STEP: global FST (all populations)" | tee -a "$LOG_FILE"
     plink \
         --bfile "$PLINK_PREFIX" \
         --allow-extra-chr \
@@ -148,6 +147,67 @@ if [ "$N_POPS" -ge 2 ]; then
     FST_STATUS="DONE"
 else
     echo "WARN: FST skipped (<2 populations)" | tee -a "$LOG_FILE"
+fi
+
+# Pairwise FST between all site pairs (Weir-Cockerham, via plink --fst).
+# For each pair (i,j), a 2-population CLUSTER file is built and plink is run
+# on the subset of samples. The weighted FST estimate is extracted from the
+# plink log and collected into a summary TSV read by the R plotting script.
+# With N populations, this produces N*(N-1)/2 plink runs.
+FST_PAIR_DIR="${OUT_DIR}/fst_pairwise"
+FST_PAIR_STATUS="SKIPPED"
+if [ "$N_POPS" -ge 2 ]; then
+    mkdir -p "$FST_PAIR_DIR"
+    FST_PAIR_TSV="${FST_PAIR_DIR}/fst_pairwise_summary.tsv"
+    echo -e "pop1\tpop2\tn_pop1\tn_pop2\tfst_weighted\tfst_mean" > "$FST_PAIR_TSV"
+    echo "STEP: pairwise FST (${N_POPS} populations → $((N_POPS*(N_POPS-1)/2)) pairs)" | tee -a "$LOG_FILE"
+
+    # Create one keep file per population (FID IID format required by plink --keep)
+    while IFS= read -r pop; do
+        safe_pop=$(echo "$pop" | tr -cs 'A-Za-z0-9' '_')
+        awk -v p="$pop" '$3==p{print $1"\t"$2}' "$CLUSTER_FILE" \
+            > "${FST_PAIR_DIR}/keep_${safe_pop}.txt"
+    done < "$POPS_LIST"
+
+    # All pairwise combinations (lower triangle only — no self-comparisons)
+    mapfile -t POPS_ARR < "$POPS_LIST"
+    N_POPS_ARR=${#POPS_ARR[@]}
+    for (( i=0; i<N_POPS_ARR; i++ )); do
+        for (( j=i+1; j<N_POPS_ARR; j++ )); do
+            pop1="${POPS_ARR[i]}"
+            pop2="${POPS_ARR[j]}"
+            safe1=$(echo "$pop1" | tr -cs 'A-Za-z0-9' '_')
+            safe2=$(echo "$pop2" | tr -cs 'A-Za-z0-9' '_')
+            keep1="${FST_PAIR_DIR}/keep_${safe1}.txt"
+            keep2="${FST_PAIR_DIR}/keep_${safe2}.txt"
+            n1=$(wc -l < "$keep1")
+            n2=$(wc -l < "$keep2")
+            # Combined keep file + 2-population cluster file
+            pair_keep="${FST_PAIR_DIR}/keep_${safe1}_vs_${safe2}.txt"
+            pair_cluster="${FST_PAIR_DIR}/cluster_${safe1}_vs_${safe2}.txt"
+            cat "$keep1" "$keep2" > "$pair_keep"
+            awk -v p="$pop1" '{print $1"\t"$2"\t"p}' "$keep1" >  "$pair_cluster"
+            awk -v p="$pop2" '{print $1"\t"$2"\t"p}' "$keep2" >> "$pair_cluster"
+            pair_prefix="${FST_PAIR_DIR}/fst_${safe1}_vs_${safe2}"
+            plink \
+                --bfile "$PLINK_PREFIX" \
+                --allow-extra-chr \
+                --keep "$pair_keep" \
+                --within "$pair_cluster" \
+                --fst \
+                --out "$pair_prefix" >> "$LOG_FILE" 2>&1
+            fst_weighted=$(grep "Weighted Fst estimate:" "${pair_prefix}.log" 2>/dev/null \
+                | awk '{print $NF}')
+            fst_mean=$(grep "Mean Fst estimate:" "${pair_prefix}.log" 2>/dev/null \
+                | awk '{print $NF}')
+            echo -e "${pop1}\t${pop2}\t${n1}\t${n2}\t${fst_weighted:-NA}\t${fst_mean:-NA}" \
+                >> "$FST_PAIR_TSV"
+        done
+    done
+    FST_PAIR_STATUS="DONE ($((N_POPS_ARR*(N_POPS_ARR-1)/2)) pairs)"
+    echo "Pairwise FST summary: $FST_PAIR_TSV" | tee -a "$LOG_FILE"
+else
+    echo "WARN: pairwise FST skipped (<2 populations)" | tee -a "$LOG_FILE"
 fi
 
 # Optional: automatic PCA plotting with R
@@ -173,7 +233,8 @@ fi
     echo "Outputs:"
     echo "  PCA: ${PCA_PREFIX}.eigenvec ; ${PCA_PREFIX}.eigenval"
     echo "  IBD: ${IBD_PREFIX}.genome"
-    echo "  FST: ${FST_PREFIX}.* (${FST_STATUS})"
+    echo "  FST global: ${FST_PREFIX}.* (${FST_STATUS})"
+    echo "  FST pairwise: ${FST_PAIR_DIR}/fst_pairwise_summary.tsv (${FST_PAIR_STATUS})"
     echo "  PLINK: ${PLINK_PREFIX}.bed/.bim/.fam"
     echo "  PCA plots (R): ${OUT_DIR}/plots/* (if RUN_R_PLOT=1 and R available)"
 } > "$SUMMARY_TXT"

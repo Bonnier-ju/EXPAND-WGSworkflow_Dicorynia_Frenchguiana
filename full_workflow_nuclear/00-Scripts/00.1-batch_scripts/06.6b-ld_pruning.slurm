@@ -42,13 +42,26 @@ PRUNED_TBI="${PRUNED_VCF}.tbi"
 # Optional sample exclusion file (one sample ID per line).
 EXCLUDE_SAMPLES_FILE="${EXCLUDE_SAMPLES_FILE:-}"
 
-# LD pruning parameters — validated on a previous Dicorynia guianensis study.
-# --indep-pairwise 10000 5000 0.4:
-#   window = 10,000 SNPs (~470 kb at current density of ~47 bp/SNP)
-#   step   = 5,000 SNPs
-#   r²     = 0.4 threshold (removes pairs with r² >= 0.4)
-LD_WINDOW_KB="${LD_WINDOW_KB:-10000}"
-LD_STEP_SNP="${LD_STEP_SNP:-5000}"
+# LD pruning parameters — derived from the 06.6a LD decay analysis.
+#
+# 06.6a results (median r², physical LD indicator):
+#   0–1 kb   : median r² = 0.099  → LD already near background
+#   1–5 kb   : median r² = 0.040  → near zero physical LD
+#   5–10 kb  : median r² = 0.031  → background level
+#   Note: mean r² plateau at ~0.24 is background LD from population
+#   structure (stratification), not physical LD — not used for windowing.
+#
+# Physical LD decays within 1–5 kb. Window set to 100 kb to cover all
+# physically linked pairs with a ×20 safety margin.
+# Window specified in kb (--indep-pairwise <N>kb in plink2) so that the
+# physical distance is fixed regardless of local SNP density.
+#
+# --indep-pairwise 100kb 1 0.4:
+#   window = 100 kb  (physical, anchored to 06.6a LD decay results)
+#   step   = 1       (required by plink2 when window size is in kb units)
+#   r²     = 0.4     (standard threshold for GEA and population structure)
+LD_WINDOW_KB="${LD_WINDOW_KB:-50}"
+LD_STEP_SNP="${LD_STEP_SNP:-1}"
 LD_R2="${LD_R2:-0.4}"
 
 # MAF filter applied before LD pruning.
@@ -107,7 +120,7 @@ plink2 \
     --bfile "$WORK_PREFIX" \
     --allow-extra-chr \
     --threads "$PLINK_THREADS" \
-    --indep-pairwise "$LD_WINDOW_KB" "$LD_STEP_SNP" "$LD_R2" \
+    --indep-pairwise "${LD_WINDOW_KB}kb" "$LD_STEP_SNP" "$LD_R2" \
     --out "$PRUNE_PREFIX" >> "$LOG_FILE" 2>&1
 
 if [ ! -s "$PRUNE_IN" ]; then

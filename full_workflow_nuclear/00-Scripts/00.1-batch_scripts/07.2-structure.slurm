@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -p workq
-#SBATCH --time=08:00:00
+#SBATCH -p unlimitq
+#SBATCH --time=5-00:00:00
 #SBATCH -J 07.2-structure
 #SBATCH --array=1-12
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
@@ -17,11 +17,11 @@ echo "Starting 07.2 STRUCTURE runs"
 module purge
 module load bioinfo/PLINK/1.90b7
 module load bioinfo/Structure/v2.3.4_console
-module load statistics/R/4.3.0 >/dev/null 2>&1 || module load devel/R >/dev/null 2>&1 || true
+module load statistics/R/4.3.0
 
 BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
-IN_071_DIR="${BASE}/07-population_structure/workflow_test/07.1-pca_ibd_fst"
-OUT_DIR="${BASE}/07-population_structure/workflow_test/07.2-structure"
+IN_071_DIR="${BASE}/07-population_structure/workflow_full/07.1-pca_ibd_fst"
+OUT_DIR="${BASE}/07-population_structure/workflow_full/07.2-structure"
 LOG_DIR="${OUT_DIR}/logs"
 mkdir -p "$OUT_DIR" "$LOG_DIR"
 
@@ -47,6 +47,13 @@ N_REPS="${N_REPS:-3}"
 BASE_SEED="${BASE_SEED:-1000}"
 BURNIN="${BURNIN:-50000}"
 NUMREPS="${NUMREPS:-500000}"
+# Number of SNPs randomly subsampled from the LD-pruned BED for STRUCTURE.
+# STRUCTURE is single-threaded and processes all loci at every MCMC iteration;
+# running it on 400k SNPs is computationally infeasible (~200h per run).
+# 5,000–10,000 LD-pruned SNPs is the standard practice for STRUCTURE analyses.
+# The random seed for subsampling is fixed for reproducibility.
+N_SNPS="${N_SNPS:-20000}"
+SUBSAMPLE_SEED="${SUBSAMPLE_SEED:-42}"
 
 echo "START $(date -Iseconds) 07.2 STRUCTURE" > "$LOG_FILE"
 echo "Input 07.1 bed prefix: $BFILE_PREFIX" | tee -a "$LOG_FILE"
@@ -60,11 +67,35 @@ if [ ! -s "${BFILE_PREFIX}.bed" ] || [ ! -s "${BFILE_PREFIX}.bim" ] || [ ! -s "$
     exit 1
 fi
 
-# Build STRUCTURE input from 07.1 PLINK files if not provided
+# Subsample SNPs for STRUCTURE (shared across all array tasks).
+# STRUCTURE is single-threaded and processes all loci at every MCMC iteration;
+# running it on 400k SNPs is computationally infeasible (~200h per run).
+# 20,000 LD-pruned SNPs is a workable compromise for 164 individuals.
+# The fixed seed ensures reproducibility across runs.
+SUBSET_PREFIX="${OUT_DIR}/structure_input_${N_SNPS}snps"
+if [ ! -s "${SUBSET_PREFIX}.bed" ]; then
+    echo "Subsampling ${N_SNPS} SNPs from ${BFILE_PREFIX} (seed=${SUBSAMPLE_SEED})" | tee -a "$LOG_FILE"
+    plink \
+        --bfile "$BFILE_PREFIX" \
+        --allow-extra-chr \
+        --thin-count "$N_SNPS" \
+        --seed "$SUBSAMPLE_SEED" \
+        --make-bed \
+        --out "$SUBSET_PREFIX" >> "$LOG_FILE" 2>&1
+    if [ ! -s "${SUBSET_PREFIX}.bed" ]; then
+        echo "ERROR: subsampling failed" | tee -a "$LOG_FILE"
+        exit 1
+    fi
+    echo "Subsampled BED: $(wc -l < "${SUBSET_PREFIX}.bim") SNPs retained" | tee -a "$LOG_FILE"
+else
+    echo "Reusing existing subsampled BED: ${SUBSET_PREFIX}" | tee -a "$LOG_FILE"
+fi
+
+# Build STRUCTURE input from subsampled BED if not already present
 if [ ! -s "$STRUCT_IN" ]; then
     echo "Creating STRUCTURE input with PLINK --recode structure" | tee -a "$LOG_FILE"
     plink \
-        --bfile "$BFILE_PREFIX" \
+        --bfile "$SUBSET_PREFIX" \
         --allow-extra-chr \
         --recode structure \
         --out "$STRUCT_PREFIX" >> "$LOG_FILE" 2>&1
@@ -75,8 +106,8 @@ if [ ! -s "$STRUCT_IN" ]; then
     exit 1
 fi
 
-NUMINDS=$(wc -l < "${BFILE_PREFIX}.fam")
-NUMLOCI=$(wc -l < "${BFILE_PREFIX}.bim")
+NUMINDS=$(wc -l < "${SUBSET_PREFIX}.fam")
+NUMLOCI=$(wc -l < "${SUBSET_PREFIX}.bim")
 
 # Auto-generate parameter files (overwrite by default to avoid stale mismatches)
 if [ "${USE_EXISTING_PARAMS:-0}" != "1" ] || [ ! -s "$MAIN_PARA" ]; then
