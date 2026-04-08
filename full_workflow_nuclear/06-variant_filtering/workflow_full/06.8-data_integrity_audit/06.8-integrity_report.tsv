@@ -1,0 +1,32 @@
+check_id	status	value	detail
+01_index_joint.norm.biallelic.snps.vcf.gz	PASS	present	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.1-normalization_selection/joint.norm.biallelic.snps.vcf.gz.tbi
+01_read_joint.norm.biallelic.snps.vcf.gz	PASS	readable	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.1-normalization_selection/joint.norm.biallelic.snps.vcf.gz
+01_index_snps.hardfiltered.vcf.gz	PASS	present	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.2-technical_hard_filter/snps.hardfiltered.vcf.gz.tbi
+01_read_snps.hardfiltered.vcf.gz	PASS	readable	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.2-technical_hard_filter/snps.hardfiltered.vcf.gz
+01_index_snps.missing_filtered.vcf.gz	PASS	present	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.3-missing_data_sample_filtering/snps.missing_filtered.vcf.gz.tbi
+01_read_snps.missing_filtered.vcf.gz	PASS	readable	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.3-missing_data_sample_filtering/snps.missing_filtered.vcf.gz
+01_index_snps_non_informative_filtered.vcf.gz	PASS	present	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.4-allele_frequency_population_filter/snps_non_informative_filtered.vcf.gz.tbi
+01_read_snps_non_informative_filtered.vcf.gz	PASS	readable	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.4-allele_frequency_population_filter/snps_non_informative_filtered.vcf.gz
+01_index_snps_TE_filtered.vcf.gz	PASS	present	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz.tbi
+01_read_snps_TE_filtered.vcf.gz	PASS	readable	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz
+01_index_snps_TE_filtered.ld_pruned.vcf.gz	PASS	present	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz.tbi
+01_read_snps_TE_filtered.ld_pruned.vcf.gz	PASS	readable	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz
+02_samples_06.1	PASS	164	baseline sample set
+02_samples_06.2	PASS	164	identical sample set to previous step
+02_samples_06.3	PASS	164	identical sample set to previous step
+02_samples_06.4	PASS	164	identical sample set to previous step
+02_samples_06.5	PASS	164	identical sample set to previous step
+02_samples_06.6b	PASS	164	identical sample set to previous step
+03_total_variants_final	PASS	433942	final step=06.6b
+03_missing_ids	PASS	0	no missing IDs
+03_duplicate_ids	PASS	0	unique variant IDs
+03_duplicate_loci	PASS	0	unique CHROM:POS:REF:ALT
+04_multiallelic_sites	PASS	0	none
+04_non_acgtn_alleles	PASS	0	none
+04_no_alt_records	PASS	0	none
+06_missingness_individual	PASS	0.001477	max=0.00271004
+06_missingness_site	PASS	0.001477	max=0.189024
+07_heterozygosity_F	PASS	0.000000	min=;max=
+07_depth_individual	PASS	-nan	min=-nan;max=-nan
+08_runtime_environment	PASS	written	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.8-data_integrity_audit/06.8-runtime_environment.txt
+08_file_hashes	PASS	written	/home/jbonnier/work/chapitre_5/full_workflow_nuclear/06-variant_filtering/workflow_full/06.8-data_integrity_audit/06.8-file_hashes.sha256
