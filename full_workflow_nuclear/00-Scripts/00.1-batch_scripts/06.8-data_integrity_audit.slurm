@@ -263,7 +263,7 @@ fi
 # -------------------------------------------------------------------
 VCFTOOLS_VCF="$FINAL_VCF"
 if [ -s "$FINAL_VCF" ]; then
-    VCF_VERSION=$(zcat "$FINAL_VCF" | grep -m1 "^##fileformat=" | sed 's/##fileformat=//')
+    VCF_VERSION=$(bcftools view -h "$FINAL_VCF" | grep "^##fileformat=" | sed 's/##fileformat=//')
     if [ "$VCF_VERSION" = "VCFv4.3" ]; then
         VCFTOOLS_VCF="${TMP_DIR}/final_v42.vcf.gz"
         zcat "$FINAL_VCF" \

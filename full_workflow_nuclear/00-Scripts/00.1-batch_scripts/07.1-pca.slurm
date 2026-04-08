@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p workq
 #SBATCH --time=24:00:00
-#SBATCH -J 07.1-pca_ibd_fst
+#SBATCH -J 07.1-pca
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=24G
@@ -40,7 +40,7 @@ else
     INPUT_STEP="06.5"
 fi
 
-echo "START $(date -Iseconds) 07.1 PCA/IBD/FST" > "$LOG_FILE"
+echo "START $(date -Iseconds) 07.1 PCA" > "$LOG_FILE"
 echo "Input VCF: $INPUT_VCF (from $INPUT_STEP)" | tee -a "$LOG_FILE"
 echo "Sample sheet: $SAMPLE_SHEET (POP_COLUMN=$POP_COLUMN)" | tee -a "$LOG_FILE"
 
@@ -59,8 +59,6 @@ bcftools query -l "$INPUT_VCF" | sort -u > "$VCF_SAMPLES"
 MAP_RAW="${TMP_DIR}/sample_population_raw.tsv"
 MAP_FINAL="${OUT_DIR}/sample_population_map.tsv"
 KEEP_FILE="${TMP_DIR}/keep.samples.txt"
-CLUSTER_FILE="${TMP_DIR}/plink.cluster.txt"
-POPS_LIST="${TMP_DIR}/populations.list"
 
 awk -F',' -v popcol="$POP_COLUMN" '
 NR==1 {
@@ -94,11 +92,9 @@ if [ ! -s "$MAP_FINAL" ]; then
 fi
 
 awk -F'\t' '{print $1"\t"$1}' "$MAP_FINAL" > "$KEEP_FILE"
-awk -F'\t' '{print $1"\t"$1"\t"$2}' "$MAP_FINAL" > "$CLUSTER_FILE"
-awk -F'\t' '{print $2}' "$MAP_FINAL" | sort -u > "$POPS_LIST"
 
 N_SAMPLES=$(wc -l < "$MAP_FINAL")
-N_POPS=$(wc -l < "$POPS_LIST")
+N_POPS=$(awk -F'\t' '{print $2}' "$MAP_FINAL" | sort -u | wc -l)
 echo "Samples kept: $N_SAMPLES" | tee -a "$LOG_FILE"
 echo "Populations detected: $N_POPS" | tee -a "$LOG_FILE"
 
@@ -126,91 +122,6 @@ plink \
     --pca 20 header tabs \
     --out "$PCA_PREFIX" >> "$LOG_FILE" 2>&1
 
-IBD_PREFIX="${OUT_DIR}/ibd"
-echo "STEP: IBD (pairwise genome)" | tee -a "$LOG_FILE"
-plink \
-    --bfile "$PLINK_PREFIX" \
-    --allow-extra-chr \
-    --genome full \
-    --out "$IBD_PREFIX" >> "$LOG_FILE" 2>&1
-
-FST_PREFIX="${OUT_DIR}/fst"
-FST_STATUS="SKIPPED"
-if [ "$N_POPS" -ge 2 ]; then
-    echo "STEP: global FST (all populations)" | tee -a "$LOG_FILE"
-    plink \
-        --bfile "$PLINK_PREFIX" \
-        --allow-extra-chr \
-        --within "$CLUSTER_FILE" \
-        --fst \
-        --out "$FST_PREFIX" >> "$LOG_FILE" 2>&1
-    FST_STATUS="DONE"
-else
-    echo "WARN: FST skipped (<2 populations)" | tee -a "$LOG_FILE"
-fi
-
-# Pairwise FST between all site pairs (Weir-Cockerham, via plink --fst).
-# For each pair (i,j), a 2-population CLUSTER file is built and plink is run
-# on the subset of samples. The weighted FST estimate is extracted from the
-# plink log and collected into a summary TSV read by the R plotting script.
-# With N populations, this produces N*(N-1)/2 plink runs.
-FST_PAIR_DIR="${OUT_DIR}/fst_pairwise"
-FST_PAIR_STATUS="SKIPPED"
-if [ "$N_POPS" -ge 2 ]; then
-    mkdir -p "$FST_PAIR_DIR"
-    FST_PAIR_TSV="${FST_PAIR_DIR}/fst_pairwise_summary.tsv"
-    echo -e "pop1\tpop2\tn_pop1\tn_pop2\tfst_weighted\tfst_mean" > "$FST_PAIR_TSV"
-    echo "STEP: pairwise FST (${N_POPS} populations → $((N_POPS*(N_POPS-1)/2)) pairs)" | tee -a "$LOG_FILE"
-
-    # Create one keep file per population (FID IID format required by plink --keep)
-    while IFS= read -r pop; do
-        safe_pop=$(echo "$pop" | tr -cs 'A-Za-z0-9' '_')
-        awk -v p="$pop" '$3==p{print $1"\t"$2}' "$CLUSTER_FILE" \
-            > "${FST_PAIR_DIR}/keep_${safe_pop}.txt"
-    done < "$POPS_LIST"
-
-    # All pairwise combinations (lower triangle only — no self-comparisons)
-    mapfile -t POPS_ARR < "$POPS_LIST"
-    N_POPS_ARR=${#POPS_ARR[@]}
-    for (( i=0; i<N_POPS_ARR; i++ )); do
-        for (( j=i+1; j<N_POPS_ARR; j++ )); do
-            pop1="${POPS_ARR[i]}"
-            pop2="${POPS_ARR[j]}"
-            safe1=$(echo "$pop1" | tr -cs 'A-Za-z0-9' '_')
-            safe2=$(echo "$pop2" | tr -cs 'A-Za-z0-9' '_')
-            keep1="${FST_PAIR_DIR}/keep_${safe1}.txt"
-            keep2="${FST_PAIR_DIR}/keep_${safe2}.txt"
-            n1=$(wc -l < "$keep1")
-            n2=$(wc -l < "$keep2")
-            # Combined keep file + 2-population cluster file
-            pair_keep="${FST_PAIR_DIR}/keep_${safe1}_vs_${safe2}.txt"
-            pair_cluster="${FST_PAIR_DIR}/cluster_${safe1}_vs_${safe2}.txt"
-            cat "$keep1" "$keep2" > "$pair_keep"
-            awk -v p="$pop1" '{print $1"\t"$2"\t"p}' "$keep1" >  "$pair_cluster"
-            awk -v p="$pop2" '{print $1"\t"$2"\t"p}' "$keep2" >> "$pair_cluster"
-            pair_prefix="${FST_PAIR_DIR}/fst_${safe1}_vs_${safe2}"
-            plink \
-                --bfile "$PLINK_PREFIX" \
-                --allow-extra-chr \
-                --keep "$pair_keep" \
-                --within "$pair_cluster" \
-                --fst \
-                --out "$pair_prefix" >> "$LOG_FILE" 2>&1
-            fst_weighted=$(grep "Weighted Fst estimate:" "${pair_prefix}.log" 2>/dev/null \
-                | awk '{print $NF}')
-            fst_mean=$(grep "Mean Fst estimate:" "${pair_prefix}.log" 2>/dev/null \
-                | awk '{print $NF}')
-            echo -e "${pop1}\t${pop2}\t${n1}\t${n2}\t${fst_weighted:-NA}\t${fst_mean:-NA}" \
-                >> "$FST_PAIR_TSV"
-        done
-    done
-    FST_PAIR_STATUS="DONE ($((N_POPS_ARR*(N_POPS_ARR-1)/2)) pairs)"
-    echo "Pairwise FST summary: $FST_PAIR_TSV" | tee -a "$LOG_FILE"
-else
-    echo "WARN: pairwise FST skipped (<2 populations)" | tee -a "$LOG_FILE"
-fi
-
-# Optional: automatic PCA plotting with R
 if [ "${RUN_R_PLOT:-1}" = "1" ]; then
     if [ -s "$R_PLOT_SCRIPT" ] && command -v Rscript >/dev/null 2>&1; then
         echo "STEP: PCA plotting in R" | tee -a "$LOG_FILE"
@@ -222,7 +133,7 @@ if [ "${RUN_R_PLOT:-1}" = "1" ]; then
 fi
 
 {
-    echo "07.1 PCA / IBD / FST summary"
+    echo "07.1 PCA summary"
     echo "Date: $(date -Iseconds)"
     echo "Input step: $INPUT_STEP"
     echo "Input VCF: $INPUT_VCF"
@@ -232,9 +143,6 @@ fi
     echo
     echo "Outputs:"
     echo "  PCA: ${PCA_PREFIX}.eigenvec ; ${PCA_PREFIX}.eigenval"
-    echo "  IBD: ${IBD_PREFIX}.genome"
-    echo "  FST global: ${FST_PREFIX}.* (${FST_STATUS})"
-    echo "  FST pairwise: ${FST_PAIR_DIR}/fst_pairwise_summary.tsv (${FST_PAIR_STATUS})"
     echo "  PLINK: ${PLINK_PREFIX}.bed/.bim/.fam"
     echo "  PCA plots (R): ${OUT_DIR}/plots/* (if RUN_R_PLOT=1 and R available)"
 } > "$SUMMARY_TXT"
