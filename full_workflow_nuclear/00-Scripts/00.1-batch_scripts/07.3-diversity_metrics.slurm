@@ -108,10 +108,21 @@ NR==1 {
     - <(awk '{print $1"\t"$1}' "$VCF_SAMPLES" | sort -k1,1) \
     | awk -F'\t' '{print $1"\t"$2}' | sort -k1,1 > "$MAP_FILE"
 
+# Exclude outgroup populations and treemutation project samples
+# Outgroup populations: Cameroun_Benin, Venezuela
+# Treemutation individual IDs: DBR_AGJ DBR_AGK DBR_AGL DBR_AGM
+EXCLUDE_POPS="Cameroun_Benin Venezuela"
+TREEMUTATION_IDS="DBR_AGJ DBR_AGK DBR_AGL DBR_AGM"
+POP_EXCL_PAT=$(echo "$EXCLUDE_POPS"    | tr ' ' '\n' | awk '{print "^"$0"$"}' | paste -sd'|')
+ID_EXCL_PAT=$(echo  "$TREEMUTATION_IDS" | tr ' ' '\n' | awk '{print "^"$0"$"}' | paste -sd'|')
+awk -v epop="$POP_EXCL_PAT" -v eid="$ID_EXCL_PAT" \
+    '$2 !~ epop && $1 !~ eid' "$MAP_FILE" > "${TMP_DIR}/map_guiana_only.tsv"
+mv "${TMP_DIR}/map_guiana_only.tsv" "$MAP_FILE"
+
 POPS_LIST="${TMP_DIR}/populations.list"
 awk -F'\t' '{print $2}' "$MAP_FILE" | sort -u > "$POPS_LIST"
 N_POPS=$(wc -l < "$POPS_LIST")
-echo "INFO: ${N_POPS} populations detected" | tee -a "$LOG_FILE"
+echo "INFO: ${N_POPS} populations detected (outgroups and treemutation excluded)" | tee -a "$LOG_FILE"
 
 # Per-population keep files (sample_id  sample_id for vcftools)
 while IFS= read -r pop; do

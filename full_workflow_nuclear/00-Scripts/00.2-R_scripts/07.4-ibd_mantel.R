@@ -55,6 +55,32 @@ if (!"sites" %in% colnames(geoloc) && "site" %in% colnames(geoloc))
 if (!file.exists(fst_file)) stop("FST summary file not found: ", fst_file)
 fst_df <- read.table(fst_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 
+# If summary file has NA FST values, recompute from .weir.fst files directly
+weir_dir <- file.path(out_dir, "fst_vcftools", group)
+n_na <- sum(fst_df$weighted_fst == "NA" | is.na(fst_df$weighted_fst))
+if (n_na > 0) {
+  cat(sprintf("INFO: %d NA FST values in summary — reading from .weir.fst files\n", n_na))
+  for (k in seq_len(nrow(fst_df))) {
+    if (!is.na(fst_df$weighted_fst[k]) && fst_df$weighted_fst[k] != "NA") next
+    s1 <- gsub("[^A-Za-z0-9._-]", "_", fst_df$pop1[k])
+    s2 <- gsub("[^A-Za-z0-9._-]", "_", fst_df$pop2[k])
+    wf <- file.path(weir_dir, sprintf("%s_vs_%s.weir.fst", s1, s2))
+    if (!file.exists(wf)) next
+    wdat <- tryCatch(
+      read.table(wf, header = TRUE, stringsAsFactors = FALSE),
+      error = function(e) NULL
+    )
+    if (is.null(wdat) || !"WEIR_AND_COCKERHAM_FST" %in% colnames(wdat)) next
+    vals <- suppressWarnings(as.numeric(wdat$WEIR_AND_COCKERHAM_FST))
+    vals <- vals[!is.na(vals)]
+    if (length(vals) == 0) next
+    fst_df$mean_fst[k]     <- round(mean(vals), 6)
+    fst_df$weighted_fst[k] <- round(mean(vals), 6)
+  }
+  n_still_na <- sum(fst_df$weighted_fst == "NA" | is.na(fst_df$weighted_fst))
+  cat(sprintf("INFO: %d NA FST values remaining after .weir.fst fallback\n", n_still_na))
+}
+
 # -------------------------------------------------------------------
 # Outgroups excluded from guiana_only (same as SLURM)
 # -------------------------------------------------------------------
@@ -122,6 +148,93 @@ fst_mat <- fst_mat[complete_pops, complete_pops]
 geo_mat <- geo_mat[complete_pops, complete_pops]
 n_pops  <- length(complete_pops)
 cat(sprintf("Populations with complete FST: %d\n", n_pops))
+
+# -------------------------------------------------------------------
+# Bootstrap significance of pairwise FST
+# -------------------------------------------------------------------
+# For each pair, read per-site FST values from the .weir.fst file,
+# resample sites with replacement (nboot=1000), compute bootstrap mean.
+# p-value = proportion of bootstrap means <= 0 (one-sided: H0: FST <= 0).
+# Also report 95% bootstrap CI (lower, upper).
+# -------------------------------------------------------------------
+NBOOT <- 1000L
+cat(sprintf("Bootstrap pairwise FST significance (nboot=%d)...\n", NBOOT))
+
+pval_mat  <- matrix(NA_real_, n_pops, n_pops, dimnames = list(complete_pops, complete_pops))
+lower_mat <- matrix(NA_real_, n_pops, n_pops, dimnames = list(complete_pops, complete_pops))
+upper_mat <- matrix(NA_real_, n_pops, n_pops, dimnames = list(complete_pops, complete_pops))
+diag(pval_mat) <- diag(lower_mat) <- diag(upper_mat) <- 0
+
+set.seed(42L)
+for (i in seq_len(n_pops)) {
+  for (j in seq_len(n_pops)) {
+    if (j <= i) next
+    p1 <- complete_pops[i]; p2 <- complete_pops[j]
+    s1 <- gsub("[^A-Za-z0-9._-]", "_", p1)
+    s2 <- gsub("[^A-Za-z0-9._-]", "_", p2)
+    wf <- file.path(weir_dir, sprintf("%s_vs_%s.weir.fst", s1, s2))
+    if (!file.exists(wf)) next
+    wdat <- tryCatch(read.table(wf, header = TRUE, stringsAsFactors = FALSE),
+                     error = function(e) NULL)
+    if (is.null(wdat) || !"WEIR_AND_COCKERHAM_FST" %in% colnames(wdat)) next
+    vals <- suppressWarnings(as.numeric(wdat$WEIR_AND_COCKERHAM_FST))
+    vals <- vals[!is.na(vals)]
+    if (length(vals) < 2) next
+
+    # Bootstrap: resample sites with replacement
+    boot_means <- replicate(NBOOT, mean(sample(vals, length(vals), replace = TRUE)))
+    pval  <- mean(boot_means <= 0)   # proportion of bootstraps with mean FST <= 0
+    lower <- quantile(boot_means, 0.025)
+    upper <- quantile(boot_means, 0.975)
+
+    pval_mat[p1, p2]  <- pval_mat[p2, p1]  <- pval
+    lower_mat[p1, p2] <- lower_mat[p2, p1] <- round(lower, 6)
+    upper_mat[p1, p2] <- upper_mat[p2, p1] <- round(upper, 6)
+  }
+}
+
+# --- Export 1: FST matrix (weighted FST, rounded) ---
+fst_out  <- round(fst_mat, 6)
+diag(fst_out) <- 0
+out_fst_mat <- file.path(out_dir, "07.4-pairwise_fst_matrix.tsv")
+write.table(
+  cbind(population = rownames(fst_out), as.data.frame(fst_out)),
+  file = out_fst_mat, sep = "\t", quote = FALSE, row.names = FALSE
+)
+cat("FST matrix written:", out_fst_mat, "\n")
+
+# --- Export 2: p-value matrix ---
+out_pval_mat <- file.path(out_dir, "07.4-pairwise_fst_pvalue_matrix.tsv")
+write.table(
+  cbind(population = rownames(pval_mat), as.data.frame(round(pval_mat, 4))),
+  file = out_pval_mat, sep = "\t", quote = FALSE, row.names = FALSE
+)
+cat("FST p-value matrix written:", out_pval_mat, "\n")
+
+# --- Export 3: long-format table with FST + CI + p-value + significance ---
+sig_pairs <- do.call(rbind, lapply(seq_len(n_pops), function(i) {
+  do.call(rbind, lapply(seq_len(n_pops), function(j) {
+    if (j <= i) return(NULL)
+    data.frame(
+      pop1        = complete_pops[i],
+      pop2        = complete_pops[j],
+      weighted_fst = round(fst_mat[i, j], 6),
+      FST_lower95 = lower_mat[i, j],
+      FST_upper95 = upper_mat[i, j],
+      pval        = pval_mat[i, j],
+      significant = !is.na(pval_mat[i, j]) & pval_mat[i, j] < 0.05,
+      stringsAsFactors = FALSE
+    )
+  }))
+}))
+sig_pairs <- sig_pairs[order(sig_pairs$pval, -sig_pairs$weighted_fst), ]
+out_sig <- file.path(out_dir, "07.4-pairwise_fst_significance.tsv")
+write.table(sig_pairs, file = out_sig, sep = "\t", quote = FALSE, row.names = FALSE)
+cat(sprintf("FST significance table written (%d pairs, %d significant at p<0.05): %s\n",
+            nrow(sig_pairs),
+            sum(sig_pairs$significant, na.rm = TRUE),
+            out_sig))
+cat(sprintf("INFO: bootstrap method — p-value = proportion of %d bootstrap means <= 0\n", NBOOT))
 
 # Linearised FST and log distance
 fst_lin <- fst_mat / (1 - fst_mat)

@@ -161,20 +161,27 @@ run_fst_group() {
             local pair_prefix="${group_dir}/${s1}_vs_${s2}"
 
             echo "  FST: ${p1} vs ${p2}" | tee -a "$LOG_FILE"
+            local pair_vcflog="${pair_prefix}.vcftools.log"
+            # Capture vcftools stderr separately to parse FST summary lines
             vcftools \
                 --gzvcf "$VCFTOOLS_VCF" \
                 --keep "${pop_list_dir}/${s1}.txt" \
                 --keep "${pop_list_dir}/${s2}.txt" \
                 --weir-fst-pop "${pop_list_dir}/${s1}.txt" \
                 --weir-fst-pop "${pop_list_dir}/${s2}.txt" \
-                --out "$pair_prefix" >> "$LOG_FILE" 2>&1
+                --out "$pair_prefix" 2>"$pair_vcflog" || true
+            cat "$pair_vcflog" >> "$LOG_FILE"
 
-            # Extract mean and weighted FST from log
+            # vcftools prints to stderr:
+            #   "Weir and Cockerham mean Fst estimate: X"
+            #   "Weir and Cockerham weighted Fst estimate: X"
             local mean_fst weighted_fst
-            mean_fst=$(grep "^Mean Fst" "${pair_prefix}.log" 2>/dev/null \
-                | awk '{print $NF}' || echo "NA")
-            weighted_fst=$(grep "^Weighted Fst" "${pair_prefix}.log" 2>/dev/null \
-                | awk '{print $NF}' || echo "NA")
+            mean_fst=$(grep -i "mean Fst estimate" "$pair_vcflog" 2>/dev/null \
+                | awk '{print $NF}')
+            weighted_fst=$(grep -i "weighted Fst estimate" "$pair_vcflog" 2>/dev/null \
+                | awk '{print $NF}')
+            [ -z "$mean_fst" ]     && mean_fst="NA"
+            [ -z "$weighted_fst" ] && weighted_fst="NA"
 
             echo -e "${p1}\t${p2}\t${mean_fst}\t${weighted_fst}" >> "$fst_summary"
         done

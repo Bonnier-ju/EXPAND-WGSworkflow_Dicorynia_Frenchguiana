@@ -105,6 +105,16 @@ ho_per_pop  <- colMeans(bs$Ho,  na.rm = TRUE)
 he_per_pop  <- colMeans(bs$Hs,  na.rm = TRUE)
 fis_per_pop <- colMeans(bs$Fis, na.rm = TRUE)
 
+# --- FIS significance: bootstrap CI via boot.ppfis ---
+# If 0 is outside the 95% bootstrap CI, FIS is significantly != 0
+cat("INFO: running hierfstat::boot.ppfis() for FIS significance (nboot=500)...\n")
+fis_boot    <- hierfstat::boot.ppfis(hf_df, nboot = 500)
+# fis_boot$ll and fis_boot$ul: named vectors (one per population)
+fis_ll      <- as.numeric(fis_boot$ll[as.character(pop_levels)])
+fis_ul      <- as.numeric(fis_boot$ul[as.character(pop_levels)])
+# Significant if 0 not in CI: both bounds same sign
+fis_sig     <- !(fis_ll <= 0 & fis_ul >= 0)
+
 # --- allelic.richness ---
 cat(sprintf("INFO: running hierfstat::allelic.richness(min.n=%d)...\n", min_n_ar))
 ar_res     <- hierfstat::allelic.richness(hf_df, min.n = min_n_ar)
@@ -112,15 +122,18 @@ ar_per_pop <- colMeans(ar_res$Ar, na.rm = TRUE)
 
 # Assemble hierfstat results aligned on pop_levels
 hf_metrics <- data.frame(
-  population = pop_levels,
-  Ho         = as.numeric(ho_per_pop[as.character(pop_levels)]),
-  He         = as.numeric(he_per_pop[as.character(pop_levels)]),
-  FIS        = as.numeric(fis_per_pop[as.character(pop_levels)]),
-  Ar         = as.numeric(ar_per_pop[as.character(pop_levels)]),
+  population  = pop_levels,
+  Ho          = as.numeric(ho_per_pop[as.character(pop_levels)]),
+  He          = as.numeric(he_per_pop[as.character(pop_levels)]),
+  FIS         = as.numeric(fis_per_pop[as.character(pop_levels)]),
+  FIS_lower95 = round(fis_ll, 6),
+  FIS_upper95 = round(fis_ul, 6),
+  FIS_sig     = fis_sig,
+  Ar          = as.numeric(ar_per_pop[as.character(pop_levels)]),
   stringsAsFactors = FALSE
 )
 
-rm(hf_df, bs, ar_res); gc()
+rm(hf_df, bs, ar_res, fis_boot); gc()
 cat("INFO: hierfstat metrics done\n")
 
 # -------------------------------------------------------------------
@@ -135,12 +148,20 @@ vcftools_metrics <- lapply(pops, function(pop) {
   pi_mean  <- if (!is.null(pi_dat) && "PI" %in% colnames(pi_dat))
     mean(pi_dat$PI, na.rm = TRUE) else NA_real_
 
-  taj_dat  <- read_vcftools(file.path(pop_d, "tajima.Tajima.D"))
-  taj_mean <- if (!is.null(taj_dat) && "TajimaD" %in% colnames(taj_dat))
-    mean(taj_dat$TajimaD, na.rm = TRUE) else NA_real_
+  taj_dat   <- read_vcftools(file.path(pop_d, "tajima.Tajima.D"))
+  taj_vals  <- if (!is.null(taj_dat) && "TajimaD" %in% colnames(taj_dat))
+    taj_dat$TajimaD[!is.na(taj_dat$TajimaD)] else numeric(0)
+  taj_mean  <- if (length(taj_vals) > 0) mean(taj_vals) else NA_real_
+  # Wilcoxon signed-rank test against 0 (H0: median Tajima's D = 0)
+  # Requires at least 5 non-NA windows for a meaningful test
+  taj_pval  <- if (length(taj_vals) >= 5)
+    tryCatch(wilcox.test(taj_vals, mu = 0, exact = FALSE)$p.value,
+             error = function(e) NA_real_)
+  else NA_real_
 
   data.frame(population = pop, n_individuals = n_ind,
              pi_mean = pi_mean, TajimaD_mean = taj_mean,
+             TajimaD_pval = taj_pval,
              stringsAsFactors = FALSE)
 })
 vcftools_df <- do.call(rbind, vcftools_metrics)
@@ -190,8 +211,13 @@ if (length(valid_pops) >= 2) {
 final_df <- Reduce(function(a, b) merge(a, b, by = "population", all = TRUE),
                    list(vcftools_df, hf_metrics, private_df))
 
-num_cols <- c("pi_mean", "Ho", "He", "FIS", "TajimaD_mean", "Ar")
-final_df[num_cols] <- lapply(final_df[num_cols], function(x) round(x, 6))
+num_cols <- c("pi_mean", "Ho", "He", "FIS", "FIS_lower95", "FIS_upper95",
+              "TajimaD_mean", "TajimaD_pval", "Ar")
+num_cols <- num_cols[num_cols %in% colnames(final_df)]
+final_df[num_cols] <- lapply(final_df[num_cols], function(x) round(as.numeric(x), 6))
+# Add significance flag for Tajima's D (p < 0.05)
+if ("TajimaD_pval" %in% colnames(final_df))
+  final_df$TajimaD_sig <- !is.na(final_df$TajimaD_pval) & final_df$TajimaD_pval < 0.05
 final_df <- final_df[order(final_df$population), ]
 
 out_tsv <- file.path(out_dir, "07.3-diversity_metrics_summary.tsv")
@@ -203,33 +229,69 @@ print(final_df)
 # STEP 5: Barplots per metric
 # -------------------------------------------------------------------
 metrics_to_plot <- list(
-  list(col = "pi_mean",         label = "Mean nucleotide diversity (\u03c0)"),
-  list(col = "Ho",              label = "Observed heterozygosity (Ho)"),
-  list(col = "He",              label = "Expected heterozygosity (He)"),
-  list(col = "FIS",             label = "Inbreeding coefficient (FIS)"),
-  list(col = "TajimaD_mean",    label = "Mean Tajima's D"),
-  list(col = "Ar",              label = sprintf("Allelic richness rarefied (n=%d ind.)", min_n_ar)),
-  list(col = "private_alleles", label = "Number of private alleles")
+  list(col = "pi_mean",         label = "Mean nucleotide diversity (\u03c0)",
+       sig_col = NULL),
+  list(col = "Ho",              label = "Observed heterozygosity (Ho)",
+       sig_col = NULL),
+  list(col = "He",              label = "Expected heterozygosity (He)",
+       sig_col = NULL),
+  list(col = "FIS",             label = "Inbreeding coefficient (FIS)",
+       sig_col = "FIS_sig"),
+  list(col = "TajimaD_mean",    label = "Mean Tajima's D",
+       sig_col = "TajimaD_sig"),
+  list(col = "Ar",              label = sprintf("Allelic richness rarefied (n=%d ind.)", min_n_ar),
+       sig_col = NULL),
+  list(col = "private_alleles", label = "Number of private alleles",
+       sig_col = NULL)
 )
 
 for (m in metrics_to_plot) {
-  col   <- m$col
-  label <- m$label
-  df_p  <- final_df[!is.na(final_df[[col]]), ]
+  col     <- m$col
+  label   <- m$label
+  sig_col <- m$sig_col
+  df_p    <- final_df[!is.na(final_df[[col]]), ]
   if (nrow(df_p) == 0) next
-  df_p  <- df_p[order(-df_p[[col]]), ]
+  df_p    <- df_p[order(-df_p[[col]]), ]
   df_p$population <- factor(df_p$population, levels = df_p$population)
 
-  p <- ggplot(df_p, aes_string(x = "population", y = col, fill = "population")) +
+  # Value labels (numeric) — position at top of bar (positive or negative)
+  df_p$.val_label <- sprintf("%.4g", df_p[[col]])
+  df_p$.vjust_val <- ifelse(df_p[[col]] >= 0, -0.4, 1.4)
+
+  p <- ggplot(df_p, aes(x = population, y = .data[[col]], fill = population)) +
     geom_col(width = 0.7) +
-    geom_text(aes_string(label = sprintf('sprintf("%%.4g", %s)', col)),
-              vjust = -0.4, size = 2.6) +
+    geom_text(aes(label = .val_label, vjust = .vjust_val), size = 2.6) +
     labs(title = label, x = NULL, y = label) +
     theme(
       axis.text.x     = element_text(angle = 45, hjust = 1, size = 8),
       plot.title      = element_text(face = "bold"),
       legend.position = "none"
     )
+
+  # Add significance asterisk (* p < 0.05) above bars when available
+  if (!is.null(sig_col) && sig_col %in% colnames(df_p)) {
+    df_sig <- df_p[!is.na(df_p[[sig_col]]) & df_p[[sig_col]], ]
+    if (nrow(df_sig) > 0) {
+      # Place asterisk just above the value label
+      sig_offset <- diff(range(df_p[[col]], na.rm = TRUE)) * 0.06
+      df_sig$.star_y <- ifelse(df_sig[[col]] >= 0,
+                               df_sig[[col]] + sig_offset,
+                               df_sig[[col]] - sig_offset)
+      df_sig$.star_vjust <- ifelse(df_sig[[col]] >= 0, 0, 1)
+      p <- p + geom_text(data = df_sig,
+                         aes(x = population, y = .star_y, vjust = .star_vjust),
+                         label = "*", size = 5, color = "red", inherit.aes = FALSE)
+    }
+    # Subtitle: describe significance test
+    sig_subtitle <- if (sig_col == "FIS_sig")
+      "* p < 0.05 (bootstrap 95% CI excludes 0, nboot = 500)"
+    else if (sig_col == "TajimaD_sig")
+      "* p < 0.05 (Wilcoxon signed-rank test vs. 0)"
+    else NULL
+    if (!is.null(sig_subtitle))
+      p <- p + labs(subtitle = sig_subtitle) +
+               theme(plot.subtitle = element_text(size = 7.5, color = "red"))
+  }
 
   if (length(site_colors) > 0)
     p <- p + scale_fill_manual(values = site_colors, na.value = "grey50")
