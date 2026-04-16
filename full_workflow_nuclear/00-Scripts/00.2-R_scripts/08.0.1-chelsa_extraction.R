@@ -48,15 +48,27 @@ cat(sprintf("INFO: %d sites x %d BIO variables loaded\n", nrow(raw), length(bio_
 # -------------------------------------------------------------------
 # STEP 2: Apply CHELSA v2.1 scale factors
 # -------------------------------------------------------------------
-# Temperature variables stored as integer * 10 (unit: 0.1 °C)
-# BIO1, BIO2, BIO5-BIO11 -> divide by 10 to get °C
-temp_vars <- c("BIO1","BIO2","BIO5","BIO6","BIO7","BIO8","BIO9","BIO10","BIO11")
-for (v in temp_vars) raw[[v]] <- raw[[v]] / 10
+# All UInt16 variables: actual = raw × 0.1 (+ offset where applicable)
+# confirmed via gdalinfo on the downloaded GeoTIFFs.
+#
+# Absolute temperature (UInt16, Scale=0.1, Offset=-273.15): °C = raw×0.1 - 273.15
+temp_abs_vars <- c("BIO1","BIO5","BIO6","BIO8","BIO9","BIO10","BIO11")
+for (v in temp_abs_vars) raw[[v]] <- raw[[v]] / 10 - 273.15
 
-# BIO4 (temperature seasonality) stored as CV * 100 -> divide by 100
-raw[["BIO4"]] <- raw[["BIO4"]] / 100
+# Temperature range/difference (UInt16, Scale=0.1, Offset=0): °C = raw×0.1
+temp_diff_vars <- c("BIO2","BIO7")
+for (v in temp_diff_vars) raw[[v]] <- raw[[v]] / 10
 
-# BIO3 (isothermality, %), BIO12-BIO19 (precipitation, mm) — no scaling needed
+# BIO4 (temperature seasonality, SD×100): UInt16, Scale=0.1, Offset=0
+raw[["BIO4"]] <- raw[["BIO4"]] / 10
+
+# BIO3 (isothermality, %): Float32 — gdallocationinfo applies Scale=0.1 automatically,
+# so the extracted value = actual_% × 0.1; multiply back by 10 to recover true %
+raw[["BIO3"]] <- raw[["BIO3"]] * 10
+
+# BIO12-BIO19 (precipitation, mm): UInt16, Scale=0.1, Offset=0
+precip_vars <- paste0("BIO", 12:19)
+for (v in precip_vars) raw[[v]] <- raw[[v]] / 10
 
 env_df <- raw
 colnames(env_df)[colnames(env_df) == "site"] <- "site"

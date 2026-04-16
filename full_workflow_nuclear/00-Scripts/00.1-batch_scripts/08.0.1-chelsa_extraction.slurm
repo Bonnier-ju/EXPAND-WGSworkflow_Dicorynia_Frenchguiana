@@ -25,9 +25,17 @@ export R_LIBS_USER="${HOME}/R/R"
 BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
 GEOLOC="${BASE}/metadata/geoloc_site.csv"
 
-OUT_DIR="${BASE}/08-gea/workflow_full/08.0-env_variables"
+# Sites to exclude from extraction:
+#   - Outgroup sites outside French Guiana (Cameroun_Benin, Venezuela)
+#   - Sites with NA coordinates (Herbier — herbarium specimens without precise geoloc)
+# Note: St_georges is kept — it is a French Guiana site.
+#   The 4 Angela/treemutation individuals (DBR_AGJ/K/L/M) assigned to St_georges
+#   are excluded at the individual level in all downstream GEA analyses.
+EXCLUDE_SITES="Cameroun_Benin"
+
+OUT_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/chelsa"
 CHELSA_DIR="${OUT_DIR}/chelsa_rasters"
-LOG_DIR="${OUT_DIR}/logs"
+LOG_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/logs"
 LOG_FILE="${LOG_DIR}/08.0.1-chelsa_extraction.log"
 
 R_SCRIPT="${BASE}/00-Scripts/00.2-R_scripts/08.0.1-chelsa_extraction.R"
@@ -35,7 +43,12 @@ R_SCRIPT="${BASE}/00-Scripts/00.2-R_scripts/08.0.1-chelsa_extraction.R"
 # Raw GDAL extraction output (tab-separated: site lat long BIO1 ... BIO19)
 EXTRACTED_TSV="${OUT_DIR}/chelsa_raw_extracted.tsv"
 
-mkdir -p "$OUT_DIR" "$CHELSA_DIR" "$LOG_DIR"
+# R post-processing outputs go to the 08.1 root for downstream use
+R_OUT_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection"
+
+mkdir -p "$OUT_DIR" "$CHELSA_DIR" "$LOG_DIR" \
+         "${R_OUT_DIR}/correlation_analysis" \
+         "${R_OUT_DIR}/plots"
 echo "START $(date -Iseconds) 08.0.1 CHELSA extraction" > "$LOG_FILE"
 
 if [ ! -s "$GEOLOC" ]; then
@@ -85,6 +98,16 @@ tail -n +2 "$GEOLOC" | while IFS=',' read -r site lat lon; do
     lat=$(echo "$lat"   | tr -d '\r' | xargs)
     lon=$(echo "$lon"   | tr -d '\r' | xargs)
 
+    # Skip outgroup sites and sites with missing coordinates
+    if echo "$EXCLUDE_SITES" | grep -qw "$site"; then
+        echo "  Skipping: ${site} (outgroup site)" | tee -a "$LOG_FILE"
+        continue
+    fi
+    if [ "$lat" = "NA" ] || [ "$lon" = "NA" ] || [ -z "$lat" ] || [ -z "$lon" ]; then
+        echo "  Skipping: ${site} (missing coordinates)" | tee -a "$LOG_FILE"
+        continue
+    fi
+
     row="${site}\t${lat}\t${lon}"
     for N in $(seq 1 19); do
         fname="${CHELSA_DIR}/CHELSA_bio${N}_1981-2010_V.2.1.tif"
@@ -105,7 +128,7 @@ echo "STEP 3 completed: $EXTRACTED_TSV" | tee -a "$LOG_FILE"
 echo "STEP 4: R post-processing" | tee -a "$LOG_FILE"
 Rscript --vanilla "$R_SCRIPT" \
     "$EXTRACTED_TSV" \
-    "$OUT_DIR" >> "$LOG_FILE" 2>&1
+    "$R_OUT_DIR" >> "$LOG_FILE" 2>&1
 
 echo "DONE $(date -Iseconds) 08.0.1 CHELSA extraction completed" | tee -a "$LOG_FILE"
 echo "Outputs: $OUT_DIR"
