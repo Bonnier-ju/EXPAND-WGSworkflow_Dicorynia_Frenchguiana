@@ -65,7 +65,7 @@ cat(sprintf("INFO: dummy coding threshold: >= %d sites per category\n", min_site
 # -------------------------------------------------------------------
 cat("Loading combined table:", input_tsv, "\n")
 df <- read.table(input_tsv, header = TRUE, sep = "\t",
-                 stringsAsFactors = FALSE, check.names = FALSE)
+                 quote = "", stringsAsFactors = FALSE, check.names = FALSE)
 df$forest_habitat_code <- as.character(as.integer(df$forest_habitat_code))
 df$elevation           <- suppressWarnings(as.numeric(df$elevation))
 cat(sprintf("INFO: %d sites loaded\n", nrow(df)))

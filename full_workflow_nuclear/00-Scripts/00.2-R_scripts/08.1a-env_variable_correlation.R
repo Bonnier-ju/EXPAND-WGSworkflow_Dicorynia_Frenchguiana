@@ -147,24 +147,28 @@ temp_diff_vars <- c("BIO2","BIO7")
 bio1_median <- median(chelsa_vals[["BIO1"]], na.rm = TRUE)
 cat(sprintf("  BIO1 median raw value from terra: %.2f\n", bio1_median))
 
-if (bio1_median > 200) {
-  # terra applied Scale=0.1 → values in K (~298 for French Guiana)
-  cat("  Detected: terra applied Int16 scale (values in K) → subtracting 273.15\n")
-  for (v in temp_abs_vars)  chelsa_vals[[v]] <- chelsa_vals[[v]] - 273.15
-  for (v in temp_diff_vars) {}  # already in °C
-  chelsa_vals[["BIO4"]] <- chelsa_vals[["BIO4"]]   # SD×100, already correct
-  for (v in paste0("BIO", 12:19)) {}                # already in mm
+if (bio1_median < 50) {
+  # terra returned values already in physical units (°C for temps, mm for precip)
+  cat("  Detected: terra returned physical units directly — no scaling needed\n")
+} else if (bio1_median > 200 & bio1_median < 500) {
+  # terra applied Scale=0.1 but not offset → values in K (~298)
+  cat("  Detected: values in K → subtracting 273.15\n")
+  for (v in temp_abs_vars) chelsa_vals[[v]] <- chelsa_vals[[v]] - 273.15
 } else {
-  # terra did NOT apply scale → raw Int16 integers
-  cat("  Detected: terra returned raw Int16 → applying /10 corrections\n")
+  # terra returned raw Int16 integers (~2986)
+  cat("  Detected: raw Int16 integers → applying /10 corrections\n")
   for (v in temp_abs_vars)  chelsa_vals[[v]] <- chelsa_vals[[v]] / 10 - 273.15
   for (v in temp_diff_vars) chelsa_vals[[v]] <- chelsa_vals[[v]] / 10
   chelsa_vals[["BIO4"]] <- chelsa_vals[["BIO4"]] / 10
   for (v in paste0("BIO", 12:19)) chelsa_vals[[v]] <- chelsa_vals[[v]] / 10
 }
 
-# BIO3 (isothermality, Float32, Scale=0.1 in metadata → terra returns val×0.1)
-chelsa_vals[["BIO3"]] <- chelsa_vals[["BIO3"]] * 10
+# BIO3 (isothermality %): only multiply ×10 if terra returned val×0.1 (i.e. not already in %)
+if (bio1_median < 50) {
+  # terra returned physical units directly — BIO3 already in %
+} else {
+  chelsa_vals[["BIO3"]] <- chelsa_vals[["BIO3"]] * 10
+}
 
 # -------------------------------------------------------------------
 # STEP 5: Validate CHELSA scale factors against site-level CSV

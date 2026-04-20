@@ -269,6 +269,10 @@ PYEOF
 
 echo "STEP 4 completed: $COMBINED_TSV" | tee -a "$LOG_FILE"
 
+# Strip Windows CRLF line endings written by Python's csv module
+sed -i 's/\r$//' "$COMBINED_TSV"
+echo "INFO: CRLF stripped from $COMBINED_TSV" | tee -a "$LOG_FILE"
+
 # -------------------------------------------------------------------
 # STEP 5: R — dummy coding for forest habitat and pedology
 # -------------------------------------------------------------------
