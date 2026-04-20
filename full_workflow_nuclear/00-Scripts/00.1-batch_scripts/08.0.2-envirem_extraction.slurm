@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=03:00:00
+#SBATCH --time=02:00:00
 #SBATCH -J 08.0.2-envirem_extraction
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
@@ -17,7 +17,7 @@ set -euo pipefail
 module purge
 module load statistics/R/4.3.0
 export R_LIBS_USER="${HOME}/R/R"
-# gdallocationinfo and python3 are available system-wide
+# gdallocationinfo available system-wide
 
 # -------------------------------------------------------------------
 # STEP 1: Define paths
@@ -33,9 +33,6 @@ SET3="${ENVIREM_ROOT}/SAmerica_current_30arcsec_geotiff_set3"
 SET4="${ENVIREM_ROOT}/SAmerica_current_30arcsec_geotiff_set4"
 ELEV_SET="${ENVIREM_ROOT}/elev_SAmerica_current_30arcsec_geotiff"
 
-# Copernicus DEM GLO-30 tiles (downloaded here, 30 m resolution, Float32, metres)
-DEM_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/elevation/copernicus_dem30"
-
 LOG_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/logs"
 LOG_FILE="${LOG_DIR}/08.0.2-envirem_extraction.log"
 R_SCRIPT="${BASE}/00-Scripts/00.2-R_scripts/08.0.2-envirem_extraction.R"
@@ -45,8 +42,8 @@ R_OUT_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection"
 # Sites to exclude (outgroup and NA coordinates — see 08.0.1 for rationale)
 EXCLUDE_SITES="Cameroun_Benin"
 
-mkdir -p "$DEM_DIR" "$LOG_DIR"
-echo "START $(date -Iseconds) 08.0.2 ENVIREM + elevation extraction" > "$LOG_FILE"
+mkdir -p "$LOG_DIR"
+echo "START $(date -Iseconds) 08.0.2 ENVIREM extraction" > "$LOG_FILE"
 
 if [ ! -s "$GEOLOC" ]; then
     echo "ERROR: geoloc file not found: $GEOLOC" | tee -a "$LOG_FILE"
@@ -106,42 +103,13 @@ echo "  18/18 ENVIREM rasters verified" | tee -a "$LOG_FILE"
 echo "STEP 2 completed" | tee -a "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 3: Download Copernicus DEM GLO-30 tiles for French Guiana sites
+# STEP 3: Extract ENVIREM values at site coordinates
 # -------------------------------------------------------------------
-# Resolution: ~30 m (1 arcsec), Float32, values in metres (EGM2008 geoid).
-# Tiles needed for French Guiana sites (lat 3–6°N, lon 52–55°W): 7 tiles.
-# Source: AWS Open Data — https://registry.opendata.aws/copernicus-dem/
-# URL: https://copernicus-dem-30m.s3.amazonaws.com/<TILENAME>/<TILENAME>.tif
-# Tile naming: Copernicus_DSM_COG_10_N{lat:02d}_00_W{lon:03d}_00_DEM
-echo "STEP 3: downloading Copernicus DEM GLO-30 tiles" | tee -a "$LOG_FILE"
+# Output columns: site  lat  long  <18 ENVIREM vars>
+echo "STEP 3: extracting ENVIREM values at site coordinates" | tee -a "$LOG_FILE"
 
-COPERNICUS_BASE="https://copernicus-dem-30m.s3.amazonaws.com"
-
-for TILE in N03_W053 N03_W054 N04_W052 N04_W053 N04_W054 N05_W054 N05_W055; do
-    TILENAME="Copernicus_DSM_COG_10_${TILE}_00_DEM"
-    TILEPATH="${DEM_DIR}/${TILENAME}.tif"
-    if [ -s "$TILEPATH" ]; then
-        echo "  ${TILE}: already present, skipping" | tee -a "$LOG_FILE"
-    else
-        echo "  ${TILE}: downloading..." | tee -a "$LOG_FILE"
-        curl -fsSL --retry 3 --retry-delay 5 \
-            "${COPERNICUS_BASE}/${TILENAME}/${TILENAME}.tif" \
-            -o "$TILEPATH" >> "$LOG_FILE" 2>&1
-        echo "  ${TILE}: done ($(du -sh "$TILEPATH" | cut -f1))" | tee -a "$LOG_FILE"
-    fi
-done
-echo "STEP 3 completed" | tee -a "$LOG_FILE"
-
-# -------------------------------------------------------------------
-# STEP 4: Extract ENVIREM + elevation values at site coordinates
-# -------------------------------------------------------------------
-# Output columns: site  lat  long  <18 ENVIREM vars>  elevation
-echo "STEP 4: extracting values at site coordinates" | tee -a "$LOG_FILE"
-
-# Build TSV header
 HEADER="site\tlat\tlong"
 for var in $ENVIREM_VARS; do HEADER="${HEADER}\t${var}"; done
-HEADER="${HEADER}\televation"
 echo -e "$HEADER" > "$EXTRACTED_TSV"
 
 tail -n +2 "$GEOLOC" | while IFS=',' read -r site lat lon; do
@@ -149,7 +117,6 @@ tail -n +2 "$GEOLOC" | while IFS=',' read -r site lat lon; do
     lat=$(echo  "$lat"  | tr -d '\r' | xargs)
     lon=$(echo  "$lon"  | tr -d '\r' | xargs)
 
-    # Skip outgroup sites and sites with missing coordinates
     if echo "$EXCLUDE_SITES" | grep -qw "$site"; then
         echo "  Skipping: ${site} (outgroup site)" | tee -a "$LOG_FILE"
         continue
@@ -160,8 +127,6 @@ tail -n +2 "$GEOLOC" | while IFS=',' read -r site lat lon; do
     fi
 
     row="${site}\t${lat}\t${lon}"
-
-    # Extract 18 ENVIREM variables
     for var in $ENVIREM_VARS; do
         val=$(gdallocationinfo -valonly -wgs84 "${RASTERS[$var]}" "$lon" "$lat" 2>/dev/null \
               | tr -d '[:space:]')
@@ -169,36 +134,19 @@ tail -n +2 "$GEOLOC" | while IFS=',' read -r site lat lon; do
         row="${row}\t${val}"
     done
 
-    # Determine Copernicus DEM tile for this site, then extract elevation
-    # Tile lat = floor(lat), tile lon = abs(floor(lon)) for Western hemisphere
-    TILE_LAT=$(python3 -c "import math; print(int(math.floor($lat)))")
-    TILE_LON=$(python3 -c "import math; print(int(abs(math.floor($lon))))")
-    TILENAME=$(printf "Copernicus_DSM_COG_10_N%02d_00_W%03d_00_DEM" "$TILE_LAT" "$TILE_LON")
-    TILEPATH="${DEM_DIR}/${TILENAME}.tif"
-
-    if [ -s "$TILEPATH" ]; then
-        elev=$(gdallocationinfo -valonly -wgs84 "$TILEPATH" "$lon" "$lat" 2>/dev/null \
-               | tr -d '[:space:]')
-        [ -z "$elev" ] && elev="NA"
-    else
-        echo "  WARN: DEM tile not found for ${site}: ${TILENAME}" | tee -a "$LOG_FILE"
-        elev="NA"
-    fi
-    row="${row}\t${elev}"
-
     echo -e "$row" >> "$EXTRACTED_TSV"
-    echo "  Extracted: ${site} (elev=${elev} m)" | tee -a "$LOG_FILE"
+    echo "  Extracted: ${site}" | tee -a "$LOG_FILE"
 done
 
-echo "STEP 4 completed: $EXTRACTED_TSV" | tee -a "$LOG_FILE"
+echo "STEP 3 completed: $EXTRACTED_TSV" | tee -a "$LOG_FILE"
 
 # -------------------------------------------------------------------
-# STEP 5: R post-processing — scale factors, standardisation, plots
+# STEP 4: R post-processing — scale factors, standardisation, plots
 # -------------------------------------------------------------------
-echo "STEP 5: R post-processing" | tee -a "$LOG_FILE"
+echo "STEP 4: R post-processing" | tee -a "$LOG_FILE"
 Rscript --vanilla "$R_SCRIPT" \
     "$EXTRACTED_TSV" \
     "$R_OUT_DIR" >> "$LOG_FILE" 2>&1
 
-echo "DONE $(date -Iseconds) 08.0.2 ENVIREM + elevation extraction completed" | tee -a "$LOG_FILE"
+echo "DONE $(date -Iseconds) 08.0.2 ENVIREM extraction completed" | tee -a "$LOG_FILE"
 echo "Outputs: ${R_OUT_DIR}/data/envirem/"

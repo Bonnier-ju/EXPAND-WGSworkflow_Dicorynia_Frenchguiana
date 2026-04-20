@@ -65,7 +65,7 @@ env_cols <- c("annualPET", "aridityIndexThornthwaite", "climaticMoistureIndex",
               "maxTempColdest", "minTempWarmest", "monthCountByTemp10",
               "PETColdestQuarter", "PETDriestQuarter", "PETseasonality",
               "PETWarmestQuarter", "PETWettestQuarter", "thermicityIndex",
-              "topoWet", "tri", "elevation")
+              "topoWet", "tri")
 
 for (col in env_cols) {
   raw[[col]] <- suppressWarnings(as.numeric(raw[[col]]))
@@ -85,9 +85,6 @@ raw[["minTempWarmest"]] <- raw[["minTempWarmest"]] / 10
 env_df <- raw
 
 # Sanity checks
-cat(sprintf("INFO: elevation range: %.0f – %.0f m\n",
-            min(env_df$elevation, na.rm = TRUE),
-            max(env_df$elevation, na.rm = TRUE)))
 cat(sprintf("INFO: maxTempColdest range: %.1f – %.1f °C\n",
             min(env_df$maxTempColdest, na.rm = TRUE),
             max(env_df$maxTempColdest, na.rm = TRUE)))
@@ -145,7 +142,7 @@ p_cor <- ggplot(cor_long, aes(x = Var2, y = Var1, fill = Correlation)) +
     colours = c("#d73027", "#ffffff", "#4575b4"),
     limits  = c(-1, 1), name = "Pearson r"
   ) +
-  labs(title = "ENVIREM + elevation — Pearson correlation matrix (site level)",
+  labs(title = "ENVIREM — Pearson correlation matrix (site level)",
        x = NULL, y = NULL) +
   theme(
     axis.text.x       = element_text(angle = 45, hjust = 1, size = 7.5),
@@ -203,8 +200,7 @@ var_labels <- c(
   PETWettestQuarter        = "PET wettest quarter (mm)",
   thermicityIndex          = "Rivas-Mart\u00ednez thermicity index",
   topoWet                  = "Topographic wetness index",
-  tri                      = "Terrain ruggedness index",
-  elevation                = "Elevation (m, Copernicus DEM GLO-30)"
+  tri                      = "Terrain ruggedness index"
 )
 
 for (v in env_cols) {
