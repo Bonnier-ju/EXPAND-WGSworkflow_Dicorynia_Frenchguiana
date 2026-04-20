@@ -16,7 +16,7 @@ set -euo pipefail
 # -------------------------------------------------------------------
 module purge
 module load statistics/R/4.3.0
-export R_LIBS_USER="${HOME}/R/R"
+export R_LIBS_USER="${HOME}/R/x86_64-pc-linux-gnu-library/4.3"
 
 # -------------------------------------------------------------------
 # STEP 1: Define paths
