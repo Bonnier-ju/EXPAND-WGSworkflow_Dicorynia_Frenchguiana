@@ -1,0 +1,446 @@
+#!/usr/bin/env Rscript
+# 08.1a-env_variable_correlation.R
+# Landscape-level pairwise correlation between all continuous environmental
+# variables (CHELSA BIO1-19, ENVIREM 18 vars, elevation Copernicus DEM).
+#
+# Approach: terra samples N random points within French Guiana (~3°N–6°N,
+# 55°W–51°W), extracts raster values, applies CHELSA/ENVIREM scale factors,
+# and computes Pearson correlations across the landscape.
+# Scale factors are validated against the already-computed site-level CSVs.
+#
+# Inputs:
+#   chelsa_dir       — directory with CHELSA_bio{N}_1981-2010_V.2.1.tif
+#   envirem_root     — ENVIREM raster root directory
+#   dem_dir          — Copernicus DEM GLO-30 tile directory
+#   chelsa_site_csv  — chelsa_env_per_site.csv (physical units, 08.0.1 output)
+#   envirem_site_csv — envirem_env_per_site.csv (physical units, 08.0.2 output)
+#   manual_site_csv  — manual_variables_per_site.csv (08.0.3 output)
+#   out_dir          — output root (08.1-env_variable_selection/)
+#   n_points         — number of random landscape points (default 5000)
+#   cor_threshold    — |r| threshold for flagging high correlations (default 0.7)
+#
+# Outputs:
+#   correlation_analysis/landscape_correlation_matrix.csv
+#   correlation_analysis/landscape_high_correlations.tsv
+#   correlation_analysis/variable_summary.tsv
+#   correlation_analysis/variables_to_keep_template.txt
+#   plots/landscape_correlation_heatmap.png
+#   plots/landscape_correlation_heatmap.pdf
+
+suppressPackageStartupMessages({
+  if (!requireNamespace("terra", quietly = TRUE))
+    stop("Package 'terra' is required. Install with: install.packages('terra')")
+  library(terra)
+  library(ggplot2)
+})
+
+theme_set(theme_minimal() + theme(
+  plot.background  = element_rect(fill = "white", color = NA),
+  panel.background = element_rect(fill = "white", color = NA)
+))
+
+# -------------------------------------------------------------------
+# Arguments
+# -------------------------------------------------------------------
+args           <- commandArgs(trailingOnly = TRUE)
+chelsa_dir     <- args[1]
+envirem_root   <- args[2]
+dem_dir        <- args[3]
+chelsa_site_csv  <- args[4]
+envirem_site_csv <- args[5]
+manual_site_csv  <- args[6]
+out_dir        <- args[7]
+n_points       <- if (length(args) >= 8) as.integer(args[8]) else 5000L
+cor_threshold  <- if (length(args) >= 9) as.numeric(args[9]) else 0.7
+
+cor_dir  <- file.path(out_dir, "correlation_analysis")
+plot_dir <- file.path(out_dir, "plots")
+dir.create(cor_dir,  recursive = TRUE, showWarnings = FALSE)
+dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
+
+cat(sprintf("INFO: n_points = %d, cor_threshold = %.2f\n", n_points, cor_threshold))
+
+# -------------------------------------------------------------------
+# STEP 1: Define raster paths
+# -------------------------------------------------------------------
+set1     <- file.path(envirem_root, "SAmerica_current_30arcsec_geotiff_set1")
+set2     <- file.path(envirem_root, "SAmerica_current_30arcsec_geotiff_set2")
+set3     <- file.path(envirem_root, "SAmerica_current_30arcsec_geotiff_set3")
+set4     <- file.path(envirem_root, "SAmerica_current_30arcsec_geotiff_set4")
+elev_set <- file.path(envirem_root, "elev_SAmerica_current_30arcsec_geotiff")
+
+chelsa_paths <- setNames(
+  file.path(chelsa_dir, paste0("CHELSA_bio", 1:19, "_1981-2010_V.2.1.tif")),
+  paste0("BIO", 1:19)
+)
+
+envirem_paths <- c(
+  annualPET                = file.path(set1, "current_30arcsec_annualPET.tif"),
+  aridityIndexThornthwaite = file.path(set1, "current_30arcsec_aridityIndexThornthwaite.tif"),
+  climaticMoistureIndex    = file.path(set1, "current_30arcsec_climaticMoistureIndex.tif"),
+  continentality           = file.path(set1, "current_30arcsec_continentality.tif"),
+  embergerQ                = file.path(set2, "current_30arcsec_embergerQ.tif"),
+  growingDegDays0          = file.path(set2, "current_30arcsec_growingDegDays0.tif"),
+  growingDegDays5          = file.path(set2, "current_30arcsec_growingDegDays5.tif"),
+  maxTempColdest           = file.path(set2, "current_30arcsec_maxTempColdest.tif"),
+  minTempWarmest           = file.path(set3, "current_30arcsec_minTempWarmest.tif"),
+  monthCountByTemp10       = file.path(set3, "current_30arcsec_monthCountByTemp10.tif"),
+  PETColdestQuarter        = file.path(set3, "current_30arcsec_PETColdestQuarter.tif"),
+  PETDriestQuarter         = file.path(set3, "current_30arcsec_PETDriestQuarter.tif"),
+  PETseasonality           = file.path(set4, "current_30arcsec_PETseasonality.tif"),
+  PETWarmestQuarter        = file.path(set4, "current_30arcsec_PETWarmestQuarter.tif"),
+  PETWettestQuarter        = file.path(set4, "current_30arcsec_PETWettestQuarter.tif"),
+  thermicityIndex          = file.path(set4, "current_30arcsec_thermicityIndex.tif"),
+  topoWet                  = file.path(elev_set, "current_30arcsec_topoWet.tif"),
+  tri                      = file.path(elev_set, "current_30arcsec_tri.tif")
+)
+
+# Verify all rasters exist
+missing <- c(chelsa_paths, envirem_paths)[!file.exists(c(chelsa_paths, envirem_paths))]
+if (length(missing) > 0)
+  stop("Missing rasters:\n", paste(" ", names(missing), collapse = "\n"))
+
+# -------------------------------------------------------------------
+# STEP 2: Sample random landscape points within French Guiana
+# -------------------------------------------------------------------
+# Extent covers mainland French Guiana (land only, avoids Atlantic coast noise)
+guyane_ext <- terra::ext(-55, -51, 3, 6)
+
+cat("STEP 2: sampling landscape points\n")
+# Use BIO1 as reference raster for sampling (define valid land pixels)
+ref_rast <- terra::rast(chelsa_paths["BIO1"])
+ref_crop  <- terra::crop(ref_rast, guyane_ext)
+
+set.seed(42)
+pts    <- terra::spatSample(ref_crop, size = n_points, method = "random",
+                             na.rm = TRUE, xy = TRUE)
+pts_sv <- terra::vect(pts[, c("x", "y")], geom = c("x", "y"), crs = "EPSG:4326")
+cat(sprintf("INFO: %d valid landscape points sampled\n", nrow(pts)))
+
+# -------------------------------------------------------------------
+# STEP 3: Extract CHELSA values
+# -------------------------------------------------------------------
+cat("STEP 3: extracting CHELSA values\n")
+chelsa_vals <- data.frame(matrix(NA_real_, nrow = nrow(pts), ncol = 19))
+colnames(chelsa_vals) <- paste0("BIO", 1:19)
+
+for (v in paste0("BIO", 1:19)) {
+  r   <- terra::rast(chelsa_paths[v])
+  ex  <- terra::extract(r, pts_sv, ID = FALSE)
+  chelsa_vals[[v]] <- ex[[1]]
+}
+cat("  CHELSA extraction done\n")
+
+# -------------------------------------------------------------------
+# STEP 4: Apply CHELSA v2.1 scale factors
+# -------------------------------------------------------------------
+# terra applies the internal Int16 Scale=0.1 automatically:
+# → absolute temp vars returned in K; precip in mm; differences in °C.
+# BIO3 (Float32, Scale=0.1 in metadata): terra returns value×0.1 → multiply ×10.
+# Validation against site-level CSV is performed below.
+cat("STEP 4: applying CHELSA scale factors\n")
+
+temp_abs_vars  <- c("BIO1","BIO5","BIO6","BIO8","BIO9","BIO10","BIO11")
+temp_diff_vars <- c("BIO2","BIO7")
+
+# Detect whether terra applied the Int16 scale (returned in K) or not (raw integers)
+bio1_median <- median(chelsa_vals[["BIO1"]], na.rm = TRUE)
+cat(sprintf("  BIO1 median raw value from terra: %.2f\n", bio1_median))
+
+if (bio1_median > 200) {
+  # terra applied Scale=0.1 → values in K (~298 for French Guiana)
+  cat("  Detected: terra applied Int16 scale (values in K) → subtracting 273.15\n")
+  for (v in temp_abs_vars)  chelsa_vals[[v]] <- chelsa_vals[[v]] - 273.15
+  for (v in temp_diff_vars) {}  # already in °C
+  chelsa_vals[["BIO4"]] <- chelsa_vals[["BIO4"]]   # SD×100, already correct
+  for (v in paste0("BIO", 12:19)) {}                # already in mm
+} else {
+  # terra did NOT apply scale → raw Int16 integers
+  cat("  Detected: terra returned raw Int16 → applying /10 corrections\n")
+  for (v in temp_abs_vars)  chelsa_vals[[v]] <- chelsa_vals[[v]] / 10 - 273.15
+  for (v in temp_diff_vars) chelsa_vals[[v]] <- chelsa_vals[[v]] / 10
+  chelsa_vals[["BIO4"]] <- chelsa_vals[["BIO4"]] / 10
+  for (v in paste0("BIO", 12:19)) chelsa_vals[[v]] <- chelsa_vals[[v]] / 10
+}
+
+# BIO3 (isothermality, Float32, Scale=0.1 in metadata → terra returns val×0.1)
+chelsa_vals[["BIO3"]] <- chelsa_vals[["BIO3"]] * 10
+
+# -------------------------------------------------------------------
+# STEP 5: Validate CHELSA scale factors against site-level CSV
+# -------------------------------------------------------------------
+cat("STEP 5: validating CHELSA scale factors\n")
+site_chelsa <- read.csv(chelsa_site_csv, stringsAsFactors = FALSE)
+# Extract BIO1 at site coordinates using terra
+site_sv <- terra::vect(site_chelsa[, c("long", "lat")],
+                       geom = c("long", "lat"), crs = "EPSG:4326")
+r_bio1  <- terra::rast(chelsa_paths["BIO1"])
+bio1_terra_sites <- terra::extract(r_bio1, site_sv, ID = FALSE)[[1]]
+
+# Apply same scaling as above
+if (bio1_median > 200) {
+  bio1_terra_sites <- bio1_terra_sites - 273.15
+} else {
+  bio1_terra_sites <- bio1_terra_sites / 10 - 273.15
+}
+
+bio1_ref  <- site_chelsa[["BIO1"]]
+max_delta <- max(abs(bio1_terra_sites - bio1_ref), na.rm = TRUE)
+cat(sprintf("  BIO1 max abs. diff (terra vs site CSV): %.4f°C\n", max_delta))
+if (max_delta > 1) {
+  warning(sprintf(
+    "BIO1 scale validation: max delta = %.3f°C (>1°C threshold).\n",
+    max_delta), "Check CHELSA scale factors in the script.")
+} else {
+  cat("  Scale validation passed (max delta <= 1°C)\n")
+}
+
+# -------------------------------------------------------------------
+# STEP 6: Extract ENVIREM values
+# -------------------------------------------------------------------
+cat("STEP 6: extracting ENVIREM values\n")
+envirem_vals <- data.frame(matrix(NA_real_, nrow = nrow(pts),
+                                  ncol = length(envirem_paths)))
+colnames(envirem_vals) <- names(envirem_paths)
+
+for (v in names(envirem_paths)) {
+  r  <- terra::rast(envirem_paths[v])
+  ex <- terra::extract(r, pts_sv, ID = FALSE)
+  envirem_vals[[v]] <- ex[[1]]
+}
+
+# ENVIREM scale factors: maxTempColdest and minTempWarmest are Int16 ÷10 → °C
+# terra applies Scale=0.1 automatically if present; same detection logic:
+maxT_median <- median(envirem_vals[["maxTempColdest"]], na.rm = TRUE)
+if (maxT_median > 100) {
+  # terra applied scale → already in °C
+  cat("  ENVIREM maxTempColdest: terra applied scale (already °C)\n")
+} else {
+  # raw Int16 → apply ÷10
+  cat("  ENVIREM maxTempColdest: applying /10\n")
+  envirem_vals[["maxTempColdest"]] <- envirem_vals[["maxTempColdest"]] / 10
+  envirem_vals[["minTempWarmest"]] <- envirem_vals[["minTempWarmest"]] / 10
+}
+cat("  ENVIREM extraction done\n")
+
+# -------------------------------------------------------------------
+# STEP 7: Extract elevation (Copernicus DEM, mosaic of tiles)
+# -------------------------------------------------------------------
+cat("STEP 7: extracting elevation\n")
+dem_files <- list.files(dem_dir, pattern = "\\.tif$", full.names = TRUE)
+elev_vals <- rep(NA_real_, nrow(pts))
+
+if (length(dem_files) > 0) {
+  dem_mosaic <- tryCatch({
+    if (length(dem_files) == 1) {
+      terra::rast(dem_files)
+    } else {
+      terra::mosaic(terra::sprc(lapply(dem_files, terra::rast)))
+    }
+  }, error = function(e) {
+    cat(sprintf("  WARN: could not mosaic DEM tiles: %s\n", conditionMessage(e)))
+    NULL
+  })
+  if (!is.null(dem_mosaic)) {
+    ex_elev  <- terra::extract(dem_mosaic, pts_sv, ID = FALSE)
+    elev_vals <- ex_elev[[1]]
+    cat(sprintf("  Elevation range: %.0f – %.0f m\n",
+                min(elev_vals, na.rm = TRUE), max(elev_vals, na.rm = TRUE)))
+  }
+} else {
+  cat("  WARN: no DEM tiles found — elevation will be NA\n")
+}
+
+# -------------------------------------------------------------------
+# STEP 8: Assemble landscape data frame
+# -------------------------------------------------------------------
+land_df <- cbind(
+  pts[, c("x", "y")],
+  chelsa_vals,
+  envirem_vals,
+  elevation = elev_vals
+)
+colnames(land_df)[1:2] <- c("lon", "lat")
+
+# Remove rows with all-NA environmental values
+env_cols_all <- c(paste0("BIO", 1:19), names(envirem_paths), "elevation")
+n_before <- nrow(land_df)
+land_df   <- land_df[rowSums(!is.na(land_df[, env_cols_all])) > 0, ]
+cat(sprintf("INFO: %d/%d points retained after NA filtering\n", nrow(land_df), n_before))
+
+# Drop variables with zero variance (constant across all landscape points)
+variances <- sapply(land_df[, env_cols_all], var, na.rm = TRUE)
+zero_var  <- names(variances)[variances == 0 | is.na(variances)]
+if (length(zero_var) > 0) {
+  cat(sprintf("  Dropping zero-variance variables: %s\n", paste(zero_var, collapse = ", ")))
+  env_cols_all <- setdiff(env_cols_all, zero_var)
+}
+
+# -------------------------------------------------------------------
+# STEP 9: Correlation matrix
+# -------------------------------------------------------------------
+cat("STEP 9: computing correlation matrix\n")
+cor_mat  <- cor(land_df[, env_cols_all], use = "pairwise.complete.obs")
+
+out_cor_csv <- file.path(cor_dir, "landscape_correlation_matrix.csv")
+write.csv(round(cor_mat, 4), file = out_cor_csv, quote = FALSE)
+cat("Correlation matrix written:", out_cor_csv, "\n")
+
+# -------------------------------------------------------------------
+# STEP 10: Identify high-correlation pairs
+# -------------------------------------------------------------------
+high_idx <- which(abs(cor_mat) >= cor_threshold & upper.tri(cor_mat), arr.ind = TRUE)
+if (nrow(high_idx) > 0) {
+  hc_df <- data.frame(
+    Var1   = rownames(cor_mat)[high_idx[, 1]],
+    Var2   = colnames(cor_mat)[high_idx[, 2]],
+    r      = round(cor_mat[high_idx], 4),
+    source1 = ifelse(grepl("^BIO", rownames(cor_mat)[high_idx[, 1]]), "CHELSA", "ENVIREM/elev"),
+    source2 = ifelse(grepl("^BIO", colnames(cor_mat)[high_idx[, 2]]), "CHELSA", "ENVIREM/elev"),
+    stringsAsFactors = FALSE
+  )
+  hc_df <- hc_df[order(-abs(hc_df$r)), ]
+  out_hc <- file.path(cor_dir, "landscape_high_correlations.tsv")
+  write.table(hc_df, file = out_hc, sep = "\t", quote = FALSE, row.names = FALSE)
+  cat(sprintf("INFO: %d pairs with |r| >= %.2f written to %s\n",
+              nrow(hc_df), cor_threshold, out_hc))
+  print(hc_df)
+} else {
+  cat(sprintf("INFO: no pairs with |r| >= %.2f detected\n", cor_threshold))
+}
+
+# -------------------------------------------------------------------
+# STEP 11: Variable summary table
+# -------------------------------------------------------------------
+source_map <- c(
+  setNames(rep("CHELSA", 19), paste0("BIO", 1:19)),
+  setNames(rep("ENVIREM", 18), names(envirem_paths)),
+  elevation = "manual (Copernicus DEM GLO-30)"
+)
+units_map <- c(
+  BIO1="°C", BIO2="°C", BIO3="%", BIO4="SD×100", BIO5="°C", BIO6="°C",
+  BIO7="°C", BIO8="°C", BIO9="°C", BIO10="°C", BIO11="°C",
+  BIO12="mm", BIO13="mm", BIO14="mm", BIO15="CV", BIO16="mm",
+  BIO17="mm", BIO18="mm", BIO19="mm",
+  annualPET="mm/yr", aridityIndexThornthwaite="index",
+  climaticMoistureIndex="index", continentality="index",
+  embergerQ="index", growingDegDays0="°C·days", growingDegDays5="°C·days",
+  maxTempColdest="°C", minTempWarmest="°C", monthCountByTemp10="months",
+  PETColdestQuarter="mm", PETDriestQuarter="mm", PETseasonality="SD×100",
+  PETWarmestQuarter="mm", PETWettestQuarter="mm", thermicityIndex="index",
+  topoWet="index", tri="index", elevation="m"
+)
+
+summ_df <- data.frame(
+  variable = env_cols_all,
+  source   = source_map[env_cols_all],
+  units    = units_map[env_cols_all],
+  n_valid  = colSums(!is.na(land_df[, env_cols_all])),
+  mean     = round(colMeans(land_df[, env_cols_all], na.rm = TRUE), 3),
+  sd       = round(apply(land_df[, env_cols_all], 2, sd, na.rm = TRUE), 3),
+  stringsAsFactors = FALSE,
+  row.names = NULL
+)
+out_summ <- file.path(cor_dir, "variable_summary.tsv")
+write.table(summ_df, file = out_summ, sep = "\t", quote = FALSE, row.names = FALSE)
+cat("Variable summary written:", out_summ, "\n")
+print(summ_df)
+
+# -------------------------------------------------------------------
+# STEP 12: Correlation heatmap
+# -------------------------------------------------------------------
+cat("STEP 12: generating correlation heatmap\n")
+cor_long <- as.data.frame(as.table(cor_mat))
+colnames(cor_long) <- c("Var1", "Var2", "r")
+cor_long$Var1 <- factor(cor_long$Var1, levels = env_cols_all)
+cor_long$Var2 <- factor(cor_long$Var2, levels = env_cols_all)
+
+# Source annotation for axis labels (CHELSA vs ENVIREM)
+label_colors <- ifelse(env_cols_all %in% paste0("BIO", 1:19), "#1a6696",
+                ifelse(env_cols_all == "elevation", "#8B4513", "#2e8b57"))
+
+p_cor <- ggplot(cor_long, aes(x = Var2, y = Var1, fill = r)) +
+  geom_tile(color = "white", linewidth = 0.25) +
+  geom_text(aes(label = sprintf("%.2f", r)), size = 1.4, color = "black") +
+  scale_fill_gradientn(
+    colours = c("#d73027", "#f7f7f7", "#4575b4"),
+    limits  = c(-1, 1), name = "Pearson r"
+  ) +
+  labs(title = "Landscape-level Pearson correlation — CHELSA + ENVIREM + elevation",
+       subtitle = sprintf("n = %d random points, French Guiana (3-6°N, 55-51°W)",
+                          nrow(land_df)),
+       x = NULL, y = NULL) +
+  theme(
+    axis.text.x       = element_text(angle = 45, hjust = 1, size = 6,
+                                     colour = label_colors),
+    axis.text.y       = element_text(size = 6, colour = label_colors),
+    plot.title        = element_text(face = "bold", size = 9),
+    plot.subtitle     = element_text(size = 7),
+    legend.key.height = unit(0.8, "cm")
+  )
+
+ggsave(file.path(plot_dir, "landscape_correlation_heatmap.png"),
+       p_cor, width = 16, height = 15, dpi = 300)
+ggsave(file.path(plot_dir, "landscape_correlation_heatmap.pdf"),
+       p_cor, width = 16, height = 15)
+cat("Heatmap written\n")
+
+# -------------------------------------------------------------------
+# STEP 13: Generate variable selection template for user
+# -------------------------------------------------------------------
+cat("STEP 13: generating variable selection template\n")
+
+tmpl_path <- file.path(cor_dir, "variables_to_keep_template.txt")
+tmpl_lines <- c(
+  "# 08.1a — Variable selection template",
+  "# =====================================",
+  "# Instructions:",
+  "#   1. Review the correlation heatmap: plots/landscape_correlation_heatmap.png",
+  "#   2. Review high-correlation pairs:  correlation_analysis/landscape_high_correlations.tsv",
+  "#   3. For each group of highly correlated variables (|r| >= threshold),",
+  "#      keep ONE variable based on ecological relevance.",
+  "#   4. Edit this file: uncomment (remove #) the variables you want to KEEP.",
+  "#   5. Save as 'variables_to_keep.txt' (same directory).",
+  "#   6. This file feeds 08.1b (RDA forward selection + VIF).",
+  "#",
+  "# Note: elevation, forest habitat dummies, and pedology dummies are treated",
+  "#       separately in 08.1b — do not list them here.",
+  "#",
+  sprintf("# Generated: %s", Sys.time()),
+  sprintf("# Landscape n = %d points | Correlation threshold |r| >= %.2f",
+          nrow(land_df), cor_threshold),
+  "#",
+  "# --- CHELSA BIO variables ---"
+)
+
+for (v in paste0("BIO", 1:19)) {
+  if (!v %in% env_cols_all) next
+  n_hc <- if (exists("hc_df") && nrow(hc_df) > 0)
+    sum(hc_df$Var1 == v | hc_df$Var2 == v) else 0
+  flag <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
+  tmpl_lines <- c(tmpl_lines, sprintf("# %s%s", v, flag))
+}
+
+tmpl_lines <- c(tmpl_lines, "#", "# --- ENVIREM variables ---")
+for (v in names(envirem_paths)) {
+  if (!v %in% env_cols_all) next
+  n_hc <- if (exists("hc_df") && nrow(hc_df) > 0)
+    sum(hc_df$Var1 == v | hc_df$Var2 == v) else 0
+  flag <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
+  tmpl_lines <- c(tmpl_lines, sprintf("# %s%s", v, flag))
+}
+
+tmpl_lines <- c(tmpl_lines, "#", "# --- Continuous manual variable ---",
+                "# elevation")
+writeLines(tmpl_lines, tmpl_path)
+cat("Variable selection template written:", tmpl_path, "\n")
+
+cat(sprintf(
+  "\nSUMMARY\n-------\n  Variables analysed : %d\n  Landscape points   : %d\n",
+  length(env_cols_all), nrow(land_df)))
+cat(sprintf("  High-corr pairs (|r|>=%.2f): %d\n",
+            cor_threshold, if (exists("hc_df")) nrow(hc_df) else 0))
+cat(sprintf("  Zero-variance dropped      : %s\n",
+            if (length(zero_var) > 0) paste(zero_var, collapse = ", ") else "none"))
+
+cat("\nDONE 08.1a landscape correlation analysis completed\n")
