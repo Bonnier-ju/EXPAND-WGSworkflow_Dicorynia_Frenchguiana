@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p workq
 #SBATCH --time=12:00:00
-#SBATCH -J 07.10-diversity_cluster
+#SBATCH -J 07.7-diversity_cluster
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=32G
@@ -11,8 +11,8 @@
 
 # -------------------------------------------------------------------
 # USAGE
-#   K_GLOBAL=2 sbatch 07.10-diversity_cluster.slurm
-#   K_GLOBAL=3 sbatch 07.10-diversity_cluster.slurm
+#   K_GLOBAL=2 sbatch 07.7-diversity_cluster.slurm
+#   K_GLOBAL=3 sbatch 07.7-diversity_cluster.slurm
 #
 # Parameters:
 #   K_GLOBAL      — global ADMIXTURE K defining the populations (2, 3 or 4)
@@ -61,10 +61,10 @@ TMP_DIR="${OUT_DIR}/tmp"
 POP_DIR="${OUT_DIR}/per_cluster"
 MAP_FILE="${OUT_DIR}/sample_cluster_map.tsv"
 POPS_LIST="${TMP_DIR}/clusters.list"
-LOG_FILE="${LOG_DIR}/07.10-diversity_K${K_GLOBAL}.log"
+LOG_FILE="${LOG_DIR}/07.7-diversity_K${K_GLOBAL}.log"
 
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$TMP_DIR" "$POP_DIR"
-echo "START $(date -Iseconds) 07.10 diversity by cluster K=${K_GLOBAL}" > "$LOG_FILE"
+echo "START $(date -Iseconds) 07.7 diversity by cluster K=${K_GLOBAL}" > "$LOG_FILE"
 echo "Input VCF : $INPUT_VCF" | tee -a "$LOG_FILE"
 echo "Cluster assignments: $CLUSTER_ASSIGNMENTS" | tee -a "$LOG_FILE"
 
@@ -175,5 +175,5 @@ Rscript --vanilla "$R_SCRIPT" \
     "$VCF_66" >> "$LOG_FILE" 2>&1 \
     || echo "WARN: R script returned non-zero — check log" | tee -a "$LOG_FILE"
 
-echo "DONE $(date -Iseconds) 07.10 diversity K=${K_GLOBAL} completed" | tee -a "$LOG_FILE"
+echo "DONE $(date -Iseconds) 07.7 diversity K=${K_GLOBAL} completed" | tee -a "$LOG_FILE"
 echo "Outputs: ${OUT_DIR}/"
