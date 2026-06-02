@@ -35,8 +35,8 @@ map_file    <- if (length(args) >= 2) args[2] else stop("map_file required")
 pops_file   <- if (length(args) >= 3) args[3] else stop("pops_file required")
 min_n_ar    <- if (length(args) >= 4) as.integer(args[4]) else 4L
 vcf_hf_file <- if (length(args) >= 5) args[5] else stop("vcf_hf_file required (LD-pruned VCF)")
+pop_dir     <- if (length(args) >= 6) args[6] else file.path(out_dir, "per_population")
 
-pop_dir  <- file.path(out_dir, "per_population")
 plot_dir <- file.path(out_dir, "plots")
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -99,37 +99,77 @@ rm(geno_dos, geno_hf, x, x_hf); gc()
 cat("INFO: running hierfstat::basic.stats()...\n")
 bs <- hierfstat::basic.stats(hf_df)
 
-# bs$Ho, bs$Hs, bs$Fis are loci x populations matrices
-# Column names match the population factor levels
+# bs$Ho, bs$Hs, bs$Fis: loci x populations matrices
+# Columns are ordered by factor integer code (1, 2, …) = same order as pop_levels
 ho_per_pop  <- colMeans(bs$Ho,  na.rm = TRUE)
 he_per_pop  <- colMeans(bs$Hs,  na.rm = TRUE)
 fis_per_pop <- colMeans(bs$Fis, na.rm = TRUE)
+cat(sprintf("DEBUG basic.stats: %d populations detected, col names: %s\n",
+            length(ho_per_pop), paste(names(ho_per_pop), collapse = ",")))
 
 # --- FIS significance: bootstrap CI via boot.ppfis ---
 # If 0 is outside the 95% bootstrap CI, FIS is significantly != 0
 cat("INFO: running hierfstat::boot.ppfis() for FIS significance (nboot=500)...\n")
 fis_boot    <- hierfstat::boot.ppfis(hf_df, nboot = 500)
-# fis_boot$ll and fis_boot$ul: named vectors (one per population)
-fis_ll      <- as.numeric(fis_boot$ll[as.character(pop_levels)])
-fis_ul      <- as.numeric(fis_boot$ul[as.character(pop_levels)])
+fis_ll      <- as.numeric(unlist(fis_boot$ll))  # unlist: $ll/$ul may be lists in some hierfstat versions
+fis_ul      <- as.numeric(unlist(fis_boot$ul))
+# Fallback: if $ll/$ul extraction failed, compute CI directly from bootstrapped $fis matrix
+if (length(fis_ll) != length(pop_levels) || length(fis_ul) != length(pop_levels)) {
+  cat(sprintf("WARN: boot.ppfis $ll/$ul extraction failed (len=%d) — inspecting $fis matrix\n",
+              length(fis_ll)))
+  if (!is.null(fis_boot$fis)) {
+    fis_mat <- as.matrix(fis_boot$fis)
+    cat(sprintf("INFO: $fis matrix structure: %d rows x %d cols (npops=%d)\n",
+                nrow(fis_mat), ncol(fis_mat), length(pop_levels)))
+    if (ncol(fis_mat) == 2 && nrow(fis_mat) == length(pop_levels)) {
+      # This hierfstat version stores CI directly as [npops x c(ll, ul)]
+      fis_ll <- fis_mat[, 1]
+      fis_ul <- fis_mat[, 2]
+      cat("INFO: CI extracted directly from $fis [npops x 2] matrix\n")
+    } else if (ncol(fis_mat) == length(pop_levels)) {
+      # Standard bootstrap matrix [nboot x npops]: compute quantiles per population
+      fis_ll <- apply(fis_mat, 2, quantile, probs = 0.025, na.rm = TRUE)
+      fis_ul <- apply(fis_mat, 2, quantile, probs = 0.975, na.rm = TRUE)
+      cat("INFO: CI recomputed from $fis bootstrap matrix [nboot x npops]\n")
+    } else {
+      cat(sprintf("WARN: unrecognised $fis structure (%d x %d) — FIS CI set to NA\n",
+                  nrow(fis_mat), ncol(fis_mat)))
+      fis_ll <- rep(NA_real_, length(pop_levels))
+      fis_ul <- rep(NA_real_, length(pop_levels))
+    }
+  } else {
+    cat("WARN: $fis matrix not available — FIS CI set to NA\n")
+    fis_ll <- rep(NA_real_, length(pop_levels))
+    fis_ul <- rep(NA_real_, length(pop_levels))
+  }
+}
+cat(sprintf("DEBUG boot.ppfis: fis_ll length=%d (%s)\n",
+            length(fis_ll), paste(round(fis_ll, 4), collapse = ",")))
 # Significant if 0 not in CI: both bounds same sign
 fis_sig     <- !(fis_ll <= 0 & fis_ul >= 0)
+fis_sig[is.na(fis_ll) | is.na(fis_ul)] <- NA
 
 # --- allelic.richness ---
 cat(sprintf("INFO: running hierfstat::allelic.richness(min.n=%d)...\n", min_n_ar))
 ar_res     <- hierfstat::allelic.richness(hf_df, min.n = min_n_ar)
 ar_per_pop <- colMeans(ar_res$Ar, na.rm = TRUE)
+cat(sprintf("DEBUG allelic.richness: %d populations\n", length(ar_per_pop)))
 
-# Assemble hierfstat results aligned on pop_levels
+# Assemble — all vectors are positionally aligned with pop_levels
+# (hierfstat outputs columns in factor level order = same as pop_levels)
+if (length(ho_per_pop) != length(pop_levels))
+  stop(sprintf("hierfstat returned %d pop columns but pop_levels has %d: %s",
+               length(ho_per_pop), length(pop_levels), paste(pop_levels, collapse = ",")))
+
 hf_metrics <- data.frame(
   population  = pop_levels,
-  Ho          = as.numeric(ho_per_pop[as.character(pop_levels)]),
-  He          = as.numeric(he_per_pop[as.character(pop_levels)]),
-  FIS         = as.numeric(fis_per_pop[as.character(pop_levels)]),
+  Ho          = as.numeric(ho_per_pop),
+  He          = as.numeric(he_per_pop),
+  FIS         = as.numeric(fis_per_pop),
   FIS_lower95 = round(fis_ll, 6),
   FIS_upper95 = round(fis_ul, 6),
   FIS_sig     = fis_sig,
-  Ar          = as.numeric(ar_per_pop[as.character(pop_levels)]),
+  Ar          = as.numeric(ar_per_pop),
   stringsAsFactors = FALSE
 )
 
@@ -174,10 +214,17 @@ cat("INFO: computing private alleles from vcftools freq tables...\n")
 freq_tables <- lapply(pops, function(pop) {
   safe   <- gsub("[^A-Za-z0-9._-]", "_", pop)
   freq_f <- file.path(pop_dir, safe, "freq.frq")
-  d <- read_vcftools(freq_f, comment.char = "", sep = "\t")
-  if (is.null(d) || ncol(d) < 6) return(NULL)
-  d$locus_id   <- paste0(d[[1]], ":", d[[2]])
-  d$freq_minor <- as.numeric(d[[6]])
+  if (!file.exists(freq_f) || file.info(freq_f)$size == 0) return(NULL)
+  # vcftools --freq2 header has 5 tokens but data has 6 columns ({FREQ} = 2 freq values)
+  d <- tryCatch(
+    read.table(freq_f, header = FALSE, skip = 1, sep = "\t",
+               col.names = c("CHROM", "POS", "N_ALLELES", "N_CHR", "FREQ1", "FREQ2"),
+               stringsAsFactors = FALSE),
+    error = function(e) { cat(sprintf("WARN: could not read %s: %s\n", freq_f, e$message)); NULL }
+  )
+  if (is.null(d)) return(NULL)
+  d$locus_id   <- paste0(d$CHROM, ":", d$POS)
+  d$freq_minor <- as.numeric(d$FREQ2)
   d[, c("locus_id", "freq_minor")]
 })
 names(freq_tables) <- pops

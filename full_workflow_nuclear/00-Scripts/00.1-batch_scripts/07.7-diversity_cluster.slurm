@@ -44,7 +44,7 @@ export R_LIBS_USER="${HOME}/R/R"
 # -------------------------------------------------------------------
 # STEP 1: Parameters and paths
 # -------------------------------------------------------------------
-K_GLOBAL="${K_GLOBAL:-2}"
+K_GLOBAL="${K_GLOBAL:-4}"
 TAJIMA_WINDOW="${TAJIMA_WINDOW:-10000}"
 MIN_N_AR="${MIN_N_AR:-4}"
 
@@ -157,22 +157,17 @@ done < "$POPS_LIST"
 #   arg3 = pops_list     (list of cluster names)
 #   arg4 = min_n_ar      (min N for Ar rarefaction)
 #   arg5 = vcf_ld_pruned (LD-pruned VCF for hierfstat)
-# The R script reads per_population/ subdirectories — we pass POP_DIR
-# via a symlink so the script finds them under the expected path.
+#   arg6 = pop_dir       (per_cluster/ — directory with vcftools outputs)
 # -------------------------------------------------------------------
 echo "STEP 5: R diversity metrics compilation" | tee -a "$LOG_FILE"
-
-# Expose per-cluster stats under the path the R script expects
-POP_SYMLINK="${OUT_DIR}/per_population"
-[ -L "$POP_SYMLINK" ] && rm "$POP_SYMLINK"
-ln -s "$POP_DIR" "$POP_SYMLINK"
 
 Rscript --vanilla "$R_SCRIPT" \
     "$OUT_DIR" \
     "$MAP_FILE" \
     "$POPS_LIST" \
     "$MIN_N_AR" \
-    "$VCF_66" >> "$LOG_FILE" 2>&1 \
+    "$VCF_66" \
+    "$POP_DIR" >> "$LOG_FILE" 2>&1 \
     || echo "WARN: R script returned non-zero — check log" | tee -a "$LOG_FILE"
 
 echo "DONE $(date -Iseconds) 07.7 diversity K=${K_GLOBAL} completed" | tee -a "$LOG_FILE"

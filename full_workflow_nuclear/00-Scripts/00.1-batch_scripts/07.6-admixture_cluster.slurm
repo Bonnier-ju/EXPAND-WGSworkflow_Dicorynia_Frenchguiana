@@ -41,8 +41,8 @@ export R_LIBS_USER="${HOME}/R/R"
 # -------------------------------------------------------------------
 # STEP 1: Parameters and paths
 # -------------------------------------------------------------------
-K_GLOBAL="${K_GLOBAL:-2}"
-POP_ID="${POP_ID:-1}"
+K_GLOBAL="${K_GLOBAL:-4}"
+POP_ID="${POP_ID:-4}"
 POP_LABEL="Pop_${POP_ID}"
 K_MIN="${K_MIN:-1}"
 K_MAX="${K_MAX:-5}"

@@ -35,7 +35,7 @@ VCF_66="${BASE}/06-variant_filtering/workflow_full/06.6b-ld_pruning/snps_TE_filt
 SAMPLE_SHEET="${SAMPLE_SHEET:-${BASE}/metadata/sample_sheet_complete_filtered.csv}"
 POP_COLUMN="${POP_COLUMN:-site}"
 
-OUT_DIR="${BASE}/07-population_structure/workflow_full/07.3-diversity_metrics"
+OUT_DIR="${BASE}/07-population_structure/workflow_full/07.3-diversity_metrics/07.3.1-metrics_by_sites"
 LOG_DIR="${OUT_DIR}/logs"
 TMP_DIR="${OUT_DIR}/tmp"
 POP_DIR="${OUT_DIR}/per_population"

@@ -8,6 +8,7 @@
 BASE            <- "/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
 SITES_CLUSTERS  <- file.path(BASE, "metadata/sites_by_clusters.csv")
 METADATA        <- file.path(BASE, "metadata/complete_metadata.csv")
+SAMPLE_SHEET_DG <- file.path(BASE, "metadata/sample_sheet_dg_only.csv")
 OUT_FILE        <- file.path(BASE, "metadata/cluster_assignments.tsv")
 
 EXCLUDE_SITES   <- c("Cameroun_Benin", "Herbier")
@@ -35,11 +36,18 @@ meta <- meta[, c("id_genoscope", "sites")]
 colnames(meta) <- c("id_genoscope", "site")
 meta[] <- lapply(meta, trimws)
 
+dg_ids <- read.csv(SAMPLE_SHEET_DG, stringsAsFactors = FALSE)$sample_id
+cat(sprintf("Reference sample sheet (dg_only): %d individuals\n", length(dg_ids)))
+
 # -------------------------------------------------------------------
-# 2. Filter: remove outgroups and treemutation individuals
+# 2. Filter: keep only DG French Guiana individuals in the workflow
+#    (removes outgroups, Herbier, Angela/treemutation, DSW and extra
+#    DBR individuals absent from the sequencing batch)
 # -------------------------------------------------------------------
-meta_filt <- meta[!meta$site %in% EXCLUDE_SITES & !meta$id_genoscope %in% EXCLUDE_IDS, ]
-cat(sprintf("Individuals retained (guiana_only): %d\n", nrow(meta_filt)))
+meta_filt <- meta[!meta$site %in% EXCLUDE_SITES &
+                  !meta$id_genoscope %in% EXCLUDE_IDS &
+                  meta$id_genoscope %in% dg_ids, ]
+cat(sprintf("Individuals retained (dg_only): %d\n", nrow(meta_filt)))
 
 # -------------------------------------------------------------------
 # 3. Join on site name
@@ -77,16 +85,26 @@ for (item in ANALYSIS_DIRS) {
   base_dir <- item$dir
   prefix   <- item$prefix
 
-  # K=1 subdir — placeholder for existing global analysis
-  dir.create(file.path(base_dir, sprintf("%s.1-K=1", prefix)),
-             recursive = TRUE, showWarnings = FALSE)
+  # K=1 placeholder: metrics_by_sites for diversity, K=1 for PCA/Admixture
+  k1_name <- if (grepl("07.3-diversity", base_dir)) "07.3.1-metrics_by_sites" else sprintf("%s.1-K=1", prefix)
+  dir.create(file.path(base_dir, k1_name), recursive = TRUE, showWarnings = FALSE)
 
   for (k in K_VALUES) {
     sub_dir <- file.path(base_dir, sprintf("%s.%d-K=%d", prefix, k, k))
     pops    <- sort(unique(assignments[[paste0("K", k)]]))
+    is_diversity <- grepl("07.3-diversity", base_dir)
     for (pop in pops) {
-      for (subf in c("plots", "logs", "tmp")) {
-        dir.create(file.path(sub_dir, pop, subf), recursive = TRUE, showWarnings = FALSE)
+      if (is_diversity) {
+        # diversity: only per_cluster/<pop>/ + plots/ + logs/ + tmp/ at root level
+        dir.create(file.path(sub_dir, "per_cluster", pop), recursive = TRUE, showWarnings = FALSE)
+        for (subf in c("plots", "logs", "tmp")) {
+          dir.create(file.path(sub_dir, subf), recursive = TRUE, showWarnings = FALSE)
+        }
+      } else {
+        # PCA / Admixture: keep Pop_X/plots/logs/tmp structure
+        for (subf in c("plots", "logs", "tmp")) {
+          dir.create(file.path(sub_dir, pop, subf), recursive = TRUE, showWarnings = FALSE)
+        }
       }
     }
     cat(sprintf("  %s  [%s]\n", sub_dir, paste(pops, collapse = ", ")))
