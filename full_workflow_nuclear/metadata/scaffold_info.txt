@@ -1,0 +1,120 @@
+========================================================
+SCAFFOLD CHARACTERISATION — Dgu_HS1_HYBRID_SCAFFOLD.fa
+Dicorynia guianensis — Nuclear reference genome
+Generated from: Dgu_HS1_HYBRID_SCAFFOLD.fa.fai
+========================================================
+
+------------------------------------------------------
+GLOBAL STATISTICS
+------------------------------------------------------
+Total scaffolds       : 54
+Total genome size     : 550,242,080 bp (~550 Mb)
+N50                   : 38,450,403 bp (Super-Scaffold_4)
+L50                   : 7 scaffolds
+Largest scaffold      : 43,610,879 bp (Super-Scaffold_2)
+Smallest scaffold     :     83,647 bp (Super-Scaffold_100086)
+
+------------------------------------------------------
+SCAFFOLD SIZE CLASSES
+------------------------------------------------------
+≥ 30 Mb  (chromosome-level)  :  13 scaffolds — 498,262,493 bp (90.6% of genome)
+ 5 – 30 Mb (intermediate)    :   3 scaffolds —  32,307,784 bp ( 5.9% of genome)
+ 1 –  5 Mb                   :   4 scaffolds —   5,030,113 bp ( 0.9% of genome)
+ < 1 Mb  (minor fragments)   :  34 scaffolds —  14,641,690 bp ( 2.7% of genome)
+
+------------------------------------------------------
+CHROMOSOME-LEVEL SCAFFOLDS (≥ 30 Mb) — ranked by length
+------------------------------------------------------
+ 1. Super-Scaffold_2    43,610,879 bp
+ 2. Super-Scaffold_13   41,045,391 bp
+ 3. Super-Scaffold_1    41,062,991 bp
+ 4. Super-Scaffold_12   40,647,968 bp
+ 5. Super-Scaffold_5    40,225,412 bp
+ 6. Super-Scaffold_8    39,463,349 bp
+ 7. Super-Scaffold_4    38,450,403 bp   ← N50
+ 8. Super-Scaffold_6    37,865,487 bp
+ 9. Super-Scaffold_7    37,763,175 bp
+10. Super-Scaffold_17   36,622,932 bp
+11. Super-Scaffold_14   34,837,072 bp
+12. Super-Scaffold_21   33,998,326 bp
+13. Super-Scaffold_16   32,669,108 bp
+
+------------------------------------------------------
+INTERMEDIATE SCAFFOLDS (5–30 Mb)
+------------------------------------------------------
+14. Super-Scaffold_10   19,283,044 bp
+15. Super-Scaffold_100023  7,753,264 bp
+16. Super-Scaffold_9     5,271,476 bp
+
+------------------------------------------------------
+MINOR SCAFFOLDS (< 5 Mb) — 38 scaffolds
+------------------------------------------------------
+Super-Scaffold_100061   1,400,554 bp
+Super-Scaffold_62       1,352,184 bp
+Super-Scaffold_182      1,157,653 bp
+Super-Scaffold_90       1,120,722 bp
+Super-Scaffold_100109     964,969 bp
+Super-Scaffold_100515     820,128 bp
+Super-Scaffold_24         810,929 bp
+Super-Scaffold_100446     794,786 bp
+Super-Scaffold_67         782,926 bp
+Super-Scaffold_100143     754,822 bp
+Super-Scaffold_35         689,009 bp
+Super-Scaffold_100140     681,862 bp
+Super-Scaffold_100141     656,206 bp
+Super-Scaffold_100160     651,306 bp
+Super-Scaffold_100138     563,728 bp
+Super-Scaffold_100148     555,837 bp
+Super-Scaffold_100230     551,910 bp
+Super-Scaffold_54         498,538 bp
+Super-Scaffold_100152     496,422 bp
+Super-Scaffold_100229     423,497 bp
+Super-Scaffold_100219     412,860 bp
+Super-Scaffold_100227     342,293 bp
+Super-Scaffold_100209     282,456 bp
+Super-Scaffold_100173     265,039 bp
+Super-Scaffold_100170     260,215 bp
+Super-Scaffold_100258     243,876 bp
+Super-Scaffold_100205     243,231 bp
+Super-Scaffold_100276     236,992 bp
+Super-Scaffold_100088     226,799 bp
+Super-Scaffold_100282     216,915 bp
+Super-Scaffold_100268     182,408 bp
+Super-Scaffold_100215     171,361 bp
+Super-Scaffold_100175     163,862 bp
+Super-Scaffold_100254     162,391 bp
+Super-Scaffold_100180     156,475 bp
+Super-Scaffold_100340     151,135 bp
+Super-Scaffold_100189     140,660 bp
+Super-Scaffold_100086      83,647 bp
+
+------------------------------------------------------
+IMPLICATIONS FOR Ne ESTIMATION — GONE & currentNe
+------------------------------------------------------
+
+GONE
+  Recommended strategy : use only the 13 chromosome-level scaffolds (≥30 Mb)
+    → 90.6% of genome covered, consistent with chromosome-based LD estimation
+    → Rename to integer IDs (1–13) for PLINK MAP format compatibility
+    → PLINK flag: --chr-set 13 --allow-extra-chr (or rename scaffolds)
+    → Exclude all 41 smaller scaffolds to avoid LD inflation from fragments
+  Alternative         : use top-16 (≥5 Mb, 96.4% genome coverage)
+    → Includes SS_10 (19 Mb), SS_100023 (7.7 Mb), SS_9 (5.2 Mb)
+
+currentNe
+  --chr parameter     : recommended value = 13 (chromosome-level scaffolds)
+                        or 16 if the 3 intermediate scaffolds are included
+  No chromosomal map needed; works in non-chromosomal mode too
+  Recommend using all SNPs from TE-filtered VCF (not LD-pruned)
+
+SCAFFOLD RENAME MAP (Super-Scaffold → integer, for GONE/PLINK)
+  Super-Scaffold_1   → 1     Super-Scaffold_8   → 7
+  Super-Scaffold_2   → 2     Super-Scaffold_12  → 8
+  Super-Scaffold_4   → 3     Super-Scaffold_13  → 9
+  Super-Scaffold_5   → 4     Super-Scaffold_14  → 10
+  Super-Scaffold_6   → 5     Super-Scaffold_16  → 11
+  Super-Scaffold_7   → 6     Super-Scaffold_17  → 12
+                              Super-Scaffold_21  → 13
+
+NOTE: Super-Scaffold_3, _11, _15, _18-20, _22-23 are absent from the assembly
+(likely unplaced or merged into adjacent scaffolds during hybrid scaffolding).
