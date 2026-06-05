@@ -166,12 +166,14 @@ while IFS= read -r pop; do
     echo "--- ${pop} (n=${n_ind}) ---" | tee -a "$LOG_FILE"
 
     # ------------------------------------------------------------------
-    # 4a: PLINK — VCF -> BED (for QC stats)
-    #     then BED -> MAP/PED (required by currentNe and GONE)
+    # 4a: PLINK — VCF -> BED
+    #     then BED -> MAP/PED for GONE (full SNP set; GONE subsamples
+    #     to maxNSNP=2000/chr internally)
     # ------------------------------------------------------------------
-    echo "  [${pop}] PLINK conversion" | tee -a "$LOG_FILE"
+    echo "  [${pop}] PLINK conversion (BED + full MAP/PED)" | tee -a "$LOG_FILE"
 
     plink --vcf "$VCF_CHR13" \
+          --double-id \
           --keep "$keep_file" \
           --chr-set ${N_CHR} \
           --make-bed \
@@ -187,6 +189,20 @@ while IFS= read -r pop; do
           --out "${plink_dir}/${pop}" \
           >> "$LOG_FILE" 2>&1
 
+    # Subsampled MAP/PED for currentNe (hard limit: MAXLOCI=2,000,000)
+    # ~16.4M SNPs x 0.06 ≈ 980k SNPs — sufficient and well within the limit
+    echo "  [${pop}] PLINK thinning for currentNe (~1M SNPs)" | tee -a "$LOG_FILE"
+
+    plink --bfile "${plink_dir}/${pop}" \
+          --chr-set ${N_CHR} \
+          --thin 0.06 \
+          --recode \
+          --out "${plink_dir}/${pop}_cne" \
+          >> "$LOG_FILE" 2>&1
+
+    N_SNP_CNE=$(wc -l < "${plink_dir}/${pop}_cne.map")
+    echo "  [${pop}] subsampled: ${N_SNP_CNE} SNPs for currentNe" | tee -a "$LOG_FILE"
+
     # ------------------------------------------------------------------
     # 4b: currentNe
     #     Must run from plink_dir so the MAP file is co-located with PED
@@ -201,7 +217,7 @@ while IFS= read -r pop; do
             -t "${CPUS}" \
             -k 0 \
             -o "${cne_dir}/${pop}_currentNe" \
-            "${pop}.ped" ${N_CHR} >> "$LOG_FILE" 2>&1
+            "${pop}_cne.ped" ${N_CHR} >> "$LOG_FILE" 2>&1
     )
     echo "  [${pop}] currentNe done" | tee -a "$LOG_FILE"
 
