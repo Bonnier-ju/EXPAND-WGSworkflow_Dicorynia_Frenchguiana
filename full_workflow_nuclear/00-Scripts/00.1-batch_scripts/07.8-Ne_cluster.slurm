@@ -172,16 +172,24 @@ while IFS= read -r pop; do
     # ------------------------------------------------------------------
     echo "  [${pop}] PLINK conversion (BED + full MAP/PED)" | tee -a "$LOG_FILE"
 
+    # Sample size warning: currentNe and GONE require >= 25 individuals for reliable estimates
+    if [ "$n_ind" -lt 25 ]; then
+        echo "  WARN: [${pop}] n=${n_ind} < 25 — currentNe and GONE estimates will be unstable (wide CI)" \
+            | tee -a "$LOG_FILE"
+    fi
+
     plink --vcf "$VCF_CHR13" \
           --double-id \
           --keep "$keep_file" \
           --chr-set ${N_CHR} \
+          --maf 0.05 \
+          --geno 0.1 \
           --make-bed \
           --out "${plink_dir}/${pop}" \
           >> "$LOG_FILE" 2>&1
 
     N_SNP=$(wc -l < "${plink_dir}/${pop}.bim")
-    echo "  [${pop}] BED: ${n_ind} individuals, ${N_SNP} SNPs" | tee -a "$LOG_FILE"
+    echo "  [${pop}] BED: ${n_ind} individuals, ${N_SNP} SNPs (MAF>=0.05, geno<=10%)" | tee -a "$LOG_FILE"
 
     plink --bfile "${plink_dir}/${pop}" \
           --chr-set ${N_CHR} \
@@ -239,7 +247,7 @@ cMMb=1
 DIST=1
 NGEN=2000
 NBIN=400
-MAF=0.0
+MAF=0.05
 ZERO=1
 maxNCHROM=-99
 maxNSNP=2000
