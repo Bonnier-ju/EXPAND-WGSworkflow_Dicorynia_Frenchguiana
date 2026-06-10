@@ -170,72 +170,82 @@ while IFS= read -r pop; do
     #     then BED -> MAP/PED for GONE (full SNP set; GONE subsamples
     #     to maxNSNP=2000/chr internally)
     # ------------------------------------------------------------------
-    echo "  [${pop}] PLINK conversion (BED + full MAP/PED)" | tee -a "$LOG_FILE"
-
     # Sample size warning: currentNe and GONE require >= 25 individuals for reliable estimates
     if [ "$n_ind" -lt 25 ]; then
         echo "  WARN: [${pop}] n=${n_ind} < 25 — currentNe and GONE estimates will be unstable (wide CI)" \
             | tee -a "$LOG_FILE"
     fi
 
-    plink --vcf "$VCF_CHR13" \
-          --double-id \
-          --keep "$keep_file" \
-          --chr-set ${N_CHR} \
-          --maf 0.05 \
-          --geno 0.1 \
-          --make-bed \
-          --out "${plink_dir}/${pop}" \
-          >> "$LOG_FILE" 2>&1
+    # ------------------------------------------------------------------
+    # 4a: PLINK — VCF -> BED (skip if BED already exists)
+    # ------------------------------------------------------------------
+    if [ -s "${plink_dir}/${pop}.bed" ]; then
+        N_SNP=$(wc -l < "${plink_dir}/${pop}.bim")
+        echo "  [${pop}] reusing existing BED: ${n_ind} individuals, ${N_SNP} SNPs" | tee -a "$LOG_FILE"
+    else
+        echo "  [${pop}] PLINK conversion (BED + full MAP/PED)" | tee -a "$LOG_FILE"
+        plink --vcf "$VCF_CHR13" \
+              --double-id \
+              --keep "$keep_file" \
+              --chr-set ${N_CHR} \
+              --maf 0.05 \
+              --geno 0.1 \
+              --make-bed \
+              --out "${plink_dir}/${pop}" \
+              >> "$LOG_FILE" 2>&1
+        N_SNP=$(wc -l < "${plink_dir}/${pop}.bim")
+        echo "  [${pop}] BED: ${n_ind} individuals, ${N_SNP} SNPs (MAF>=0.05, geno<=10%)" | tee -a "$LOG_FILE"
 
-    N_SNP=$(wc -l < "${plink_dir}/${pop}.bim")
-    echo "  [${pop}] BED: ${n_ind} individuals, ${N_SNP} SNPs (MAF>=0.05, geno<=10%)" | tee -a "$LOG_FILE"
+        plink --bfile "${plink_dir}/${pop}" \
+              --chr-set ${N_CHR} \
+              --recode \
+              --out "${plink_dir}/${pop}" \
+              >> "$LOG_FILE" 2>&1
 
-    plink --bfile "${plink_dir}/${pop}" \
-          --chr-set ${N_CHR} \
-          --recode \
-          --out "${plink_dir}/${pop}" \
-          >> "$LOG_FILE" 2>&1
-
-    # Subsampled MAP/PED for currentNe (hard limit: MAXLOCI=2,000,000)
-    # ~16.4M SNPs x 0.06 ≈ 980k SNPs — sufficient and well within the limit
-    echo "  [${pop}] PLINK thinning for currentNe (~1M SNPs)" | tee -a "$LOG_FILE"
-
-    plink --bfile "${plink_dir}/${pop}" \
-          --chr-set ${N_CHR} \
-          --thin 0.06 \
-          --recode \
-          --out "${plink_dir}/${pop}_cne" \
-          >> "$LOG_FILE" 2>&1
-
-    N_SNP_CNE=$(wc -l < "${plink_dir}/${pop}_cne.map")
-    echo "  [${pop}] subsampled: ${N_SNP_CNE} SNPs for currentNe" | tee -a "$LOG_FILE"
+        # Subsampled MAP/PED for currentNe (hard limit: MAXLOCI=2,000,000)
+        # ~16.4M SNPs x 0.06 ≈ 980k SNPs — sufficient and well within the limit
+        echo "  [${pop}] PLINK thinning for currentNe (~1M SNPs)" | tee -a "$LOG_FILE"
+        plink --bfile "${plink_dir}/${pop}" \
+              --chr-set ${N_CHR} \
+              --thin 0.06 \
+              --recode \
+              --out "${plink_dir}/${pop}_cne" \
+              >> "$LOG_FILE" 2>&1
+        N_SNP_CNE=$(wc -l < "${plink_dir}/${pop}_cne.map")
+        echo "  [${pop}] subsampled: ${N_SNP_CNE} SNPs for currentNe" | tee -a "$LOG_FILE"
+    fi
 
     # ------------------------------------------------------------------
-    # 4b: currentNe
+    # 4b: currentNe (skip if output already exists)
     #     Must run from plink_dir so the MAP file is co-located with PED
     #     -k 0 : each offspring from a new random pairing
     #     -t    : number of threads (= SLURM cpus-per-task)
     # ------------------------------------------------------------------
-    echo "  [${pop}] currentNe" | tee -a "$LOG_FILE"
-
-    (
-        cd "$plink_dir"
-        currentNe \
-            -t "${CPUS}" \
-            -k 0 \
-            -o "${cne_dir}/${pop}_currentNe" \
-            "${pop}_cne.ped" ${N_CHR} >> "$LOG_FILE" 2>&1
-    )
-    echo "  [${pop}] currentNe done" | tee -a "$LOG_FILE"
+    if [ -s "${cne_dir}/${pop}_currentNe" ]; then
+        echo "  [${pop}] reusing existing currentNe output" | tee -a "$LOG_FILE"
+    else
+        echo "  [${pop}] currentNe" | tee -a "$LOG_FILE"
+        (
+            cd "$plink_dir"
+            currentNe \
+                -t "${CPUS}" \
+                -k 0 \
+                -o "${cne_dir}/${pop}_currentNe" \
+                "${pop}_cne.ped" ${N_CHR} >> "$LOG_FILE" 2>&1
+        )
+        echo "  [${pop}] currentNe done" | tee -a "$LOG_FILE"
+    fi
 
     # ------------------------------------------------------------------
-    # 4c: GONE
+    # 4c: GONE (skip if output already exists)
     #     Must run from gone_dir (working directory for temp files +
     #     output). Symlink MAP/PED so GONE can find them by basename.
     #     INPUT_PARAMETERS_FILE is generated with threads=${CPUS}.
     #     maxNSNP=2000: beyond 2000 SNPs/chr no gain in precision.
     # ------------------------------------------------------------------
+    if [ -s "${gone_dir}/Output_Ne_${pop}" ]; then
+        echo "  [${pop}] reusing existing GONE output" | tee -a "$LOG_FILE"
+    else
     echo "  [${pop}] GONE" | tee -a "$LOG_FILE"
 
     ln -sf "${plink_dir}/${pop}.map" "${gone_dir}/${pop}.map"
@@ -258,10 +268,11 @@ EOF
 
     (
         cd "$gone_dir"
-        script_GONE.sh "${pop}" >> "$LOG_FILE" 2>&1
+        /usr/local/bioinfo/src/GONE/GONE-134996d/Linux/script_GONE.sh "${pop}" >> "$LOG_FILE" 2>&1
     ) || echo "WARN: GONE returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
 
     echo "  [${pop}] GONE done" | tee -a "$LOG_FILE"
+    fi  # end GONE checkpoint
 
 done < "$POPS_LIST"
 
