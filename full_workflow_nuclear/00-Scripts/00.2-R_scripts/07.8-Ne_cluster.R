@@ -47,30 +47,23 @@ POP_COLORS <- c(
 parse_currentNe <- function(path) {
   if (!file.exists(path) || file.info(path)$size == 0) return(NULL)
   lines <- readLines(path, warn = FALSE)
-  lines <- lines[nzchar(trimws(lines))]
 
-  extract_num <- function(pattern) {
-    hit <- grep(pattern, lines, value = TRUE, ignore.case = TRUE)
-    if (length(hit) == 0) return(NA_real_)
-    as.numeric(gsub("[^0-9.]", "", regmatches(hit[1], regexpr("[0-9]+\\.?[0-9]*", hit[1]))))
-  }
-  extract_range <- function(pattern) {
-    hit <- grep(pattern, lines, value = TRUE, ignore.case = TRUE)
-    if (length(hit) == 0) return(c(NA_real_, NA_real_))
-    nums <- as.numeric(regmatches(hit[1], gregexpr("[0-9]+\\.?[0-9]*", hit[1]))[[1]])
-    if (length(nums) >= 2) nums[c(1, 2)] else c(NA_real_, NA_real_)
+  # currentNe format: label on one line (e.g. "# Ne point estimate:"),
+  # numeric value on the next line. idx[1] = first match = genome-wide estimate.
+  extract_next_num <- function(label) {
+    idx <- grep(label, lines, fixed = TRUE)
+    if (length(idx) == 0) return(NA_real_)
+    suppressWarnings(as.numeric(trimws(lines[idx[1] + 1])))
   }
 
-  ne   <- extract_num("Ne\\s*=|Ne estimate")
-  ci50 <- extract_range("50%")
-  ci90 <- extract_range("90%")
-
-  data.frame(Ne          = ne,
-             CI50_lower  = ci50[1],
-             CI50_upper  = ci50[2],
-             CI90_lower  = ci90[1],
-             CI90_upper  = ci90[2],
-             stringsAsFactors = FALSE)
+  data.frame(
+    Ne         = extract_next_num("# Ne point estimate:"),
+    CI50_lower = extract_next_num("# Lower bound of the 50% CI:"),
+    CI50_upper = extract_next_num("# Upper bound of the 50% CI:"),
+    CI90_lower = extract_next_num("# Lower bound of the 90% CI:"),
+    CI90_upper = extract_next_num("# Upper bound of the 90% CI:"),
+    stringsAsFactors = FALSE
+  )
 }
 
 # -------------------------------------------------------------------
