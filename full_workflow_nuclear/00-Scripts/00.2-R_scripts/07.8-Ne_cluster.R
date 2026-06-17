@@ -30,10 +30,10 @@ dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Discrete color palette for clusters (up to 4 populations)
 POP_COLORS <- c(
-  Pop_1 = "#E41A1C",
-  Pop_2 = "#377EB8",
-  Pop_3 = "#4DAF4A",
-  Pop_4 = "#984EA3"
+  Pop_1 = "#EE7600",
+  Pop_2 = "#458B00",
+  Pop_3 = "#CD2626",
+  Pop_4 = "#9A32CD"
 )
 
 # -------------------------------------------------------------------
