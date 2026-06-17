@@ -16,14 +16,20 @@
 #   K_GLOBAL=4 POP_ID=3 sbatch 07.9-fastStructure_cluster.slurm
 #
 # Parameters:
-#   K_GLOBAL  — global ADMIXTURE K used to define populations (2, 3 or 4)
-#   POP_ID    — population index to analyse (1 .. n_pop for this K)
-#   K_MIN     — minimum K for intra-cluster run (default 1)
-#   K_MAX     — maximum K for intra-cluster run (default 8)
-#   SEEDS     — space-separated list of random seeds (default "42 123 999")
+#   K_GLOBAL   — global ADMIXTURE K used to define populations (2, 3 or 4)
+#   POP_ID     — population index to analyse (1 .. n_pop for this K)
+#   K_MIN      — minimum K for intra-cluster run (default 1)
+#   K_MAX      — maximum K for intra-cluster run (default 5)
+#   SEEDS      — space-separated list of random seeds (default "42 123 999")
+#   N_SNP_THIN — number of SNPs to retain after subsampling (default 50000)
+#   THIN_SEED  — PLINK random seed for reproducible thinning (default 2024)
 #
 # Runs fastStructure K=K_MIN..K_MAX × SEEDS replicates on the subset of
 # guiana_only individuals belonging to Pop_${POP_ID} under K=${K_GLOBAL}.
+# Input SNPs are subsampled to N_SNP_THIN (from the LD-pruned VCF) for
+# computational tractability; 50k LD-pruned SNPs provide sufficient power
+# for structure inference in n=16-90 individuals (Raj et al. 2014).
+# Seeds within each K run in parallel (one per CPU, up to cpus-per-task).
 # Each K × seed is an independent run (--prior=logistic, --cv=10, --tol=1e-6).
 # The replicate with the highest marginal likelihood is retained per K.
 # K selection uses chooseK.py on the best-replicate set.
@@ -50,8 +56,10 @@ K_GLOBAL="${K_GLOBAL:-4}"
 POP_ID="${POP_ID:-1}"
 POP_LABEL="Pop_${POP_ID}"
 K_MIN="${K_MIN:-1}"
-K_MAX="${K_MAX:-8}"
+K_MAX="${K_MAX:-5}"
 SEEDS="${SEEDS:-42 123 999}"
+N_SNP_THIN="${N_SNP_THIN:-50000}"
+THIN_SEED="${THIN_SEED:-2024}"
 
 BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
 INPUT_VCF="${BASE}/06-variant_filtering/workflow_full/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
@@ -67,7 +75,7 @@ LOG_FILE="${LOG_DIR}/07.9-fstruct_K${K_GLOBAL}_${POP_LABEL}.log"
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$TMP_DIR"
 echo "START $(date -Iseconds) 07.9 fastStructure cluster K=${K_GLOBAL} ${POP_LABEL}" > "$LOG_FILE"
 echo "Input VCF : $INPUT_VCF" | tee -a "$LOG_FILE"
-echo "Intra-cluster K range: ${K_MIN}..${K_MAX} | seeds: ${SEEDS}" | tee -a "$LOG_FILE"
+echo "Intra-cluster K range: ${K_MIN}..${K_MAX} | seeds: ${SEEDS} | SNPs retained: ${N_SNP_THIN} (thin seed: ${THIN_SEED})" | tee -a "$LOG_FILE"
 
 if [ ! -s "$INPUT_VCF" ]; then
     echo "ERROR: input VCF not found: $INPUT_VCF" | tee -a "$LOG_FILE"; exit 1
@@ -114,13 +122,15 @@ plink \
     --allow-extra-chr \
     --const-fid \
     --keep "$KEEP_FILE" \
+    --thin-count "$N_SNP_THIN" \
+    --seed "$THIN_SEED" \
     --out "$PLINK_PREFIX" >> "$LOG_FILE" 2>&1
 
 if [ ! -s "${PLINK_PREFIX}.bed" ]; then
     echo "ERROR: PLINK conversion failed" | tee -a "$LOG_FILE"; exit 1
 fi
 N_SNP=$(wc -l < "${PLINK_PREFIX}.bim")
-echo "INFO: ${N_IND} individuals, ${N_SNP} SNPs" | tee -a "$LOG_FILE"
+echo "INFO: ${N_IND} individuals, ${N_SNP} SNPs (subsampled from LD-pruned VCF, thin seed=${THIN_SEED})" | tee -a "$LOG_FILE"
 
 # -------------------------------------------------------------------
 # STEP 4: fastStructure K=K_MIN..K_MAX × SEEDS replicates
@@ -134,19 +144,42 @@ BEST_SEEDS_FILE="${OUT_DIR}/best_seeds.txt"
 
 for K in $(seq "$K_MIN" "$K_MAX"); do
     echo "  --- K=${K} ---" | tee -a "$LOG_FILE"
+
+    # Launch all seeds in parallel (one background process per seed)
+    pids=()
     for SEED in $SEEDS; do
-        echo "    K=${K} seed=${SEED}..." | tee -a "$LOG_FILE"
-        python "${HOME_FAST}/structure.py" \
-            -K "${K}" \
-            --input="${PLINK_PREFIX}" \
-            --output="${OUT_DIR}/run_K${K}_s${SEED}" \
-            --prior=logistic \
-            --cv=10 \
-            --tol=1e-6 \
-            --format=bed \
-            --seed="${SEED}" \
-            >> "$LOG_FILE" 2>&1
+        echo "    K=${K} seed=${SEED}: launching..." | tee -a "$LOG_FILE"
+        seed_log="${TMP_DIR}/run_K${K}_s${SEED}.log"
+        (
+            python "${HOME_FAST}/structure.py" \
+                -K "${K}" \
+                --input="${PLINK_PREFIX}" \
+                --output="${OUT_DIR}/run_K${K}_s${SEED}" \
+                --prior=logistic \
+                --cv=10 \
+                --tol=1e-6 \
+                --format=bed \
+                --seed="${SEED}" \
+                > "$seed_log" 2>&1
+        ) &
+        pids+=($!)
     done
+
+    # Wait for all seeds; tally failures
+    n_failed=0
+    for pid in "${pids[@]}"; do
+        wait "$pid" || n_failed=$((n_failed + 1))
+    done
+
+    # Append individual seed logs to main log in seed order
+    for SEED in $SEEDS; do
+        seed_log="${TMP_DIR}/run_K${K}_s${SEED}.log"
+        [ -s "$seed_log" ] && cat "$seed_log" >> "$LOG_FILE"
+    done
+    [ "$n_failed" -gt 0 ] && \
+        echo "  WARN: ${n_failed} seed(s) failed for K=${K}" | tee -a "$LOG_FILE"
+
+    echo "  K=${K}: all seeds done" | tee -a "$LOG_FILE"
 
     # Select best replicate: highest marginal likelihood from per-run .log files
     best_seed=""
