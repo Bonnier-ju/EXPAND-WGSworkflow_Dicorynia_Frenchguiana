@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p workq
-#SBATCH --time=30:00:00
+#SBATCH --time=48:00:00
 #SBATCH -J 07.8-Ne_cluster
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
@@ -20,8 +20,10 @@
 #   N_CHR     — number of chromosome-level scaffolds used (default 13)
 #
 # Estimates effective population size (Ne) per genetic cluster:
-#   - currentNe: current Ne with 50%/90% CI (neural-network-based)
-#   - GONE: temporal Ne trajectory over ~2000 generations
+#   - currentNe  v1: current Ne with 50%/90% CI (neural-network LD)
+#   - currentNe2 v2: current Ne, panmictic + structure-corrected (-x)
+#   - GONE   v1    : temporal Ne trajectory over ~2000 generations
+#   - GONE2  v2    : temporal Ne trajectory, panmictic + structure (-x)
 #
 # Both analyses use only the 13 chromosome-level Super-Scaffolds (≥30 Mb)
 # renamed to integers 1-13 (see metadata/scaffold_info.txt).
@@ -40,6 +42,8 @@ module load bioinfo/Bcftools/1.9
 module load bioinfo/PLINK/1.90b7
 module load bioinfo/currentNe/37daed5
 module load bioinfo/GONE/134996d
+module load bioinfo/GONE2/1.0.2
+module load bioinfo/currentNe2/1.0.1
 module load statistics/R/4.3.0
 export R_LIBS_USER="${HOME}/R/R"
 
@@ -273,6 +277,95 @@ EOF
 
     echo "  [${pop}] GONE done" | tee -a "$LOG_FILE"
     fi  # end GONE checkpoint
+
+    # ------------------------------------------------------------------
+    # 4d: currentNe2 — default (panmictic) + structure (-x)
+    #     Input: full MAP/PED (5-6M SNPs), subsampled internally to
+    #     -s 1500000 (safe below MAXLOCI=2M compile limit, maximises
+    #     precision). Run from plink_dir so MAP is co-located with PED.
+    #     -k 0 : random pairing (default only; incompatible with -x).
+    # ------------------------------------------------------------------
+    cne2_dir="${POP_DIR}/${pop}/currentNe2"
+    mkdir -p "$cne2_dir"
+
+    CNE2_DEFAULT="${cne2_dir}/${pop}_currentNe2_default.txt"
+    CNE2_STRUCT="${cne2_dir}/${pop}_currentNe2_mix.txt"
+
+    if [ -s "$CNE2_DEFAULT" ]; then
+        echo "  [${pop}] reusing existing currentNe2 default output" | tee -a "$LOG_FILE"
+    else
+        echo "  [${pop}] currentNe2 default" | tee -a "$LOG_FILE"
+        (
+            cd "$plink_dir"
+            currentne2 \
+                -s 1500000 \
+                -r 1 \
+                -t "${CPUS}" \
+                -k 0 \
+                -o "$CNE2_DEFAULT" \
+                "${pop}.ped" >> "$LOG_FILE" 2>&1
+        ) || echo "WARN: currentNe2 default returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
+        echo "  [${pop}] currentNe2 default done" | tee -a "$LOG_FILE"
+    fi
+
+    if [ -s "$CNE2_STRUCT" ]; then
+        echo "  [${pop}] reusing existing currentNe2 -x output" | tee -a "$LOG_FILE"
+    else
+        echo "  [${pop}] currentNe2 -x (structure correction)" | tee -a "$LOG_FILE"
+        (
+            cd "$plink_dir"
+            currentne2 \
+                -x \
+                -s 1500000 \
+                -r 1 \
+                -t "${CPUS}" \
+                -o "$CNE2_STRUCT" \
+                "${pop}.ped" >> "$LOG_FILE" 2>&1
+        ) || echo "WARN: currentNe2 -x returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
+        echo "  [${pop}] currentNe2 -x done" | tee -a "$LOG_FILE"
+    fi
+
+    # ------------------------------------------------------------------
+    # 4e: GONE2 — default (panmictic) + structure (-x)
+    #     Input: full MAP/PED (5-6M SNPs), subsampled internally to
+    #     -s 1500000 (safe below MAXLOCI=2M compile limit, maximises
+    #     precision vs GONE v1 internal maxNSNP=2000×13=26k).
+    #     Run in dedicated subdirectories: both options produce a file
+    #     named ${pop}.ped_GONE2_Ne — separate dirs avoid overwrite.
+    # ------------------------------------------------------------------
+    gone2_dir="${POP_DIR}/${pop}/GONE_2"
+    g2_def_dir="${gone2_dir}/default"
+    g2_str_dir="${gone2_dir}/structure"
+    mkdir -p "$g2_def_dir" "$g2_str_dir"
+
+    GONE2_DEFAULT_NE="${g2_def_dir}/${pop}.ped_GONE2_Ne"
+    GONE2_STRUCT_NE="${g2_str_dir}/${pop}.ped_GONE2_Ne"
+
+    if [ -s "$GONE2_DEFAULT_NE" ]; then
+        echo "  [${pop}] reusing existing GONE2 default output" | tee -a "$LOG_FILE"
+    else
+        echo "  [${pop}] GONE2 default" | tee -a "$LOG_FILE"
+        ln -sf "${plink_dir}/${pop}.map" "${g2_def_dir}/${pop}.map"
+        ln -sf "${plink_dir}/${pop}.ped" "${g2_def_dir}/${pop}.ped"
+        (
+            cd "$g2_def_dir"
+            gone2 -s 1500000 -r 1 -t "${CPUS}" "${pop}.ped" >> "$LOG_FILE" 2>&1
+        ) || echo "WARN: GONE2 default returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
+        echo "  [${pop}] GONE2 default done" | tee -a "$LOG_FILE"
+    fi
+
+    if [ -s "$GONE2_STRUCT_NE" ]; then
+        echo "  [${pop}] reusing existing GONE2 -x output" | tee -a "$LOG_FILE"
+    else
+        echo "  [${pop}] GONE2 -x (structure correction)" | tee -a "$LOG_FILE"
+        ln -sf "${plink_dir}/${pop}.map" "${g2_str_dir}/${pop}.map"
+        ln -sf "${plink_dir}/${pop}.ped" "${g2_str_dir}/${pop}.ped"
+        (
+            cd "$g2_str_dir"
+            gone2 -x -s 1500000 -r 1 -t "${CPUS}" "${pop}.ped" >> "$LOG_FILE" 2>&1
+        ) || echo "WARN: GONE2 -x returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
+        echo "  [${pop}] GONE2 -x done" | tee -a "$LOG_FILE"
+    fi
 
 done < "$POPS_LIST"
 

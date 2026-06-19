@@ -1,9 +1,11 @@
 #!/usr/bin/env Rscript
 # 07.8-Ne_cluster.R
-# Compiles Ne estimation results per genetic cluster:
-#   - currentNe : current Ne with 50% / 90% bootstrap CI
-#   - GONE      : temporal Ne trajectory over ~2000 generations
-# Produces summary table + plots for both estimators.
+# Compiles Ne estimation results per genetic cluster for four tools:
+#   - currentNe  v1: current Ne  (neural-network LD, 50%/90% CI)
+#   - currentNe2 v2: current Ne  (improved LD, default + structure -x)
+#   - GONE   v1    : temporal Ne trajectory (~2000 generations)
+#   - GONE2  v2    : temporal Ne trajectory (default + structure -x)
+# Produces summary tables + plots organised in tool-specific subdirectories.
 
 suppressPackageStartupMessages({
   library(ggplot2)
@@ -25,10 +27,15 @@ k_global  <- if (length(args) >= 3) args[3] else "?"
 pops     <- readLines(pops_file)
 pops     <- pops[nzchar(pops)]
 pop_dir  <- file.path(out_dir, "per_cluster")
-plot_dir <- file.path(out_dir, "plots")
-dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Discrete color palette for clusters (up to 4 populations)
+cne_out_dir  <- file.path(out_dir, "currentNe")
+cne2_out_dir <- file.path(out_dir, "currentNe2")
+g1_out_dir   <- file.path(out_dir, "GONE_1")
+g2_out_dir   <- file.path(out_dir, "GONE_2")
+for (d in c(cne_out_dir, cne2_out_dir, g1_out_dir, g2_out_dir)) {
+  dir.create(d, recursive = TRUE, showWarnings = FALSE)
+}
+
 POP_COLORS <- c(
   Pop_1 = "#EE7600",
   Pop_2 = "#458B00",
@@ -37,25 +44,26 @@ POP_COLORS <- c(
 )
 
 # -------------------------------------------------------------------
-# Helper: parse currentNe output file
-# Expected format (lines containing key values):
-#   Ne = XXXX
-#   50% CI : XXXX - XXXX
-#   90% CI : XXXX - XXXX
-# Returns a one-row data frame or NULL on failure.
+# Helper: count individuals per population
+# -------------------------------------------------------------------
+n_ind_for <- function(pop) {
+  f <- file.path(pop_dir, paste0(pop, ".samples.txt"))
+  if (file.exists(f)) length(readLines(f, warn = FALSE)) else NA_integer_
+}
+
+# -------------------------------------------------------------------
+# Parser: currentNe v1
+# Label on one line, numeric value on the next line.
+# idx[1] = first match = genome-wide estimate (two estimates present).
 # -------------------------------------------------------------------
 parse_currentNe <- function(path) {
   if (!file.exists(path) || file.info(path)$size == 0) return(NULL)
   lines <- readLines(path, warn = FALSE)
-
-  # currentNe format: label on one line (e.g. "# Ne point estimate:"),
-  # numeric value on the next line. idx[1] = first match = genome-wide estimate.
   extract_next_num <- function(label) {
     idx <- grep(label, lines, fixed = TRUE)
     if (length(idx) == 0) return(NA_real_)
     suppressWarnings(as.numeric(trimws(lines[idx[1] + 1])))
   }
-
   data.frame(
     Ne         = extract_next_num("# Ne point estimate:"),
     CI50_lower = extract_next_num("# Lower bound of the 50% CI:"),
@@ -67,116 +75,178 @@ parse_currentNe <- function(path) {
 }
 
 # -------------------------------------------------------------------
-# Helper: parse GONE Output_Ne_<pop> file
-# Expected format (tab/space-separated, header on first data line):
-#   Generation  Geometric_mean  ...
-#   1           XXXX
-#   ...
-# Returns a data frame with columns: generation, Ne
+# Parser: currentNe2 (default output and -x/mix output)
+# Labels differ slightly from v1; mix output additionally contains
+# structure parameters (FST, migration rate, subpopulation number).
+# Tries multiple label variants to be robust to version differences.
 # -------------------------------------------------------------------
-parse_GONE <- function(path) {
+parse_currentNe2 <- function(path) {
+  if (!file.exists(path) || file.info(path)$size == 0) return(NULL)
+  lines <- readLines(path, warn = FALSE)
+
+  extract_next_num <- function(...) {
+    for (label in c(...)) {
+      idx <- grep(label, lines, fixed = TRUE)
+      if (length(idx) > 0) {
+        val <- suppressWarnings(as.numeric(trimws(lines[idx[1] + 1])))
+        if (!is.na(val)) return(val)
+      }
+    }
+    NA_real_
+  }
+
+  # Ne — genome-wide or metapopulation estimate (first occurrence)
+  ne_idx <- grep("# Ne point estimate:", lines, fixed = TRUE)
+  Ne <- if (length(ne_idx) > 0)
+    suppressWarnings(as.numeric(trimws(lines[ne_idx[1] + 1]))) else NA_real_
+
+  # CI — currentNe2 uses "limit" instead of "bound" (inconsistently)
+  CI50_lo <- extract_next_num(
+    "# Lower limit of 50% CI:",
+    "# Lower bound of 50% CI:",
+    "# Lower bound of the 50% CI:")
+  CI50_hi <- extract_next_num(
+    "# Upper bound of 50% CI:",
+    "# Upper limit of 50% CI:",
+    "# Upper bound of the 50% CI:")
+  CI90_lo <- extract_next_num(
+    "# Lower limit of 90% CI:",
+    "# Lower bound of 90% CI:",
+    "# Lower bound of the 90% CI:")
+  CI90_hi <- extract_next_num(
+    "# Upper limit of 90% CI:",
+    "# Upper bound of 90% CI:",
+    "# Upper bound of the 90% CI:")
+
+  # Structure parameters (present only in mix/-x output)
+  NT  <- extract_next_num("# NT estimate:", "# NT:")
+  FST <- extract_next_num("# FST estimate:", "# Estimated FST:", "# FST:")
+  m   <- extract_next_num(
+    "# Migration rate estimate:",
+    "# Estimated migration rate:",
+    "# Migration rate:")
+  s   <- extract_next_num(
+    "# Number of subpopulations estimate:",
+    "# Estimated number of subpopulations:",
+    "# Number of subpopulations:")
+
+  data.frame(
+    Ne = Ne, CI50_lower = CI50_lo, CI50_upper = CI50_hi,
+    CI90_lower = CI90_lo, CI90_upper = CI90_hi,
+    NT = NT, FST = FST, migration = m, n_subpop = s,
+    stringsAsFactors = FALSE
+  )
+}
+
+# -------------------------------------------------------------------
+# Parser: GONE v1 and GONE2 (identical tab-separated format)
+# Skips header / comment lines, reads generation (col1) + Ne (col2).
+# -------------------------------------------------------------------
+parse_GONE_file <- function(path) {
   if (!file.exists(path) || file.info(path)$size == 0) return(NULL)
   lines <- readLines(path, warn = FALSE)
   lines <- lines[nzchar(trimws(lines))]
-
-  # Find first all-numeric line (skip header / comment lines)
   data_start <- which(grepl("^\\s*[0-9]", lines))[1]
   if (is.na(data_start)) {
-    cat(sprintf("WARN: no numeric data found in %s\n", path))
+    cat(sprintf("WARN: no numeric data in %s\n", path))
     return(NULL)
   }
-
   d <- tryCatch(
     read.table(text = lines[data_start:length(lines)],
                header = FALSE, stringsAsFactors = FALSE),
     error = function(e) NULL
   )
   if (is.null(d) || ncol(d) < 2) return(NULL)
-
   data.frame(generation = as.integer(d[[1]]),
              Ne         = as.numeric(d[[2]]),
              stringsAsFactors = FALSE)
 }
 
 # -------------------------------------------------------------------
-# STEP 1: Collect results for all populations
+# STEP 1: Collect per-population results for all four tools
 # -------------------------------------------------------------------
-cat("INFO: parsing currentNe outputs...\n")
-cne_list <- lapply(pops, function(pop) {
+cat("INFO: parsing currentNe (v1) outputs...\n")
+cne1_list <- lapply(pops, function(pop) {
   f <- file.path(pop_dir, pop, "currentNe", paste0(pop, "_currentNe.txt"))
-  # currentNe may also produce the file without extension; try both
-  if (!file.exists(f)) f <- file.path(pop_dir, pop, "currentNe",
-                                       paste0(pop, "_currentNe"))
+  if (!file.exists(f))
+    f <- file.path(pop_dir, pop, "currentNe", paste0(pop, "_currentNe"))
   d <- parse_currentNe(f)
-  if (!is.null(d)) {
-    d$population <- pop
-    d$n_individuals <- length(readLines(
-      file.path(pop_dir, paste0(pop, ".samples.txt")), warn = FALSE))
-  }
+  if (!is.null(d)) { d$population <- pop; d$n_ind <- n_ind_for(pop) }
   d
 })
-names(cne_list) <- pops
-cne_valid <- Filter(Negate(is.null), cne_list)
+names(cne1_list) <- pops
+cne1_valid <- Filter(Negate(is.null), cne1_list)
 
-cat("INFO: parsing GONE outputs...\n")
-gone_list <- lapply(pops, function(pop) {
+cat("INFO: parsing currentNe2 (v2) outputs...\n")
+cne2_default_list <- lapply(pops, function(pop) {
+  f <- file.path(pop_dir, pop, "currentNe2", paste0(pop, "_currentNe2_default.txt"))
+  d <- parse_currentNe2(f)
+  if (!is.null(d)) { d$population <- pop; d$n_ind <- n_ind_for(pop) }
+  d
+})
+names(cne2_default_list) <- pops
+cne2_default_valid <- Filter(Negate(is.null), cne2_default_list)
+
+cne2_mix_list <- lapply(pops, function(pop) {
+  f <- file.path(pop_dir, pop, "currentNe2", paste0(pop, "_currentNe2_mix.txt"))
+  d <- parse_currentNe2(f)
+  if (!is.null(d)) { d$population <- pop; d$n_ind <- n_ind_for(pop) }
+  d
+})
+names(cne2_mix_list) <- pops
+cne2_mix_valid <- Filter(Negate(is.null), cne2_mix_list)
+
+cat("INFO: parsing GONE (v1) outputs...\n")
+gone1_list <- lapply(pops, function(pop) {
   f <- file.path(pop_dir, pop, "GONE", paste0("Output_Ne_", pop))
-  d <- parse_GONE(f)
+  d <- parse_GONE_file(f)
   if (!is.null(d)) d$population <- pop
   d
 })
-names(gone_list) <- pops
-gone_valid <- Filter(Negate(is.null), gone_list)
+names(gone1_list) <- pops
+gone1_valid <- Filter(Negate(is.null), gone1_list)
+
+cat("INFO: parsing GONE2 default outputs...\n")
+gone2_def_list <- lapply(pops, function(pop) {
+  f <- file.path(pop_dir, pop, "GONE_2", "default",
+                 paste0(pop, ".ped_GONE2_Ne"))
+  d <- parse_GONE_file(f)
+  if (!is.null(d)) d$population <- pop
+  d
+})
+names(gone2_def_list) <- pops
+gone2_def_valid <- Filter(Negate(is.null), gone2_def_list)
+
+cat("INFO: parsing GONE2 -x (structure) outputs...\n")
+gone2_str_list <- lapply(pops, function(pop) {
+  f <- file.path(pop_dir, pop, "GONE_2", "structure",
+                 paste0(pop, ".ped_GONE2_Ne"))
+  d <- parse_GONE_file(f)
+  if (!is.null(d)) d$population <- pop
+  d
+})
+names(gone2_str_list) <- pops
+gone2_str_valid <- Filter(Negate(is.null), gone2_str_list)
 
 # -------------------------------------------------------------------
-# STEP 2: currentNe summary table
+# STEP 2: currentNe v1 — summary table + barplot
 # -------------------------------------------------------------------
-if (length(cne_valid) > 0) {
-  cne_df <- do.call(rbind, cne_valid)
-  cne_df <- cne_df[, c("population", "n_individuals",
-                        "Ne", "CI50_lower", "CI50_upper",
-                        "CI90_lower", "CI90_upper")]
-  cne_df[sapply(cne_df, is.numeric)] <- lapply(
-    cne_df[sapply(cne_df, is.numeric)], round, 0)
-  cne_tsv <- file.path(out_dir, sprintf("07.8-currentNe_summary_K%s.tsv", k_global))
-  write.table(cne_df, cne_tsv, sep = "\t", quote = FALSE, row.names = FALSE)
-  cat("currentNe summary written:", cne_tsv, "\n")
-  print(cne_df)
-} else {
-  cat("WARN: no valid currentNe outputs found\n")
-  cne_df <- NULL
-}
+if (length(cne1_valid) > 0) {
+  cne1_df <- do.call(rbind, cne1_valid)
+  cne1_df <- cne1_df[, c("population", "n_ind", "Ne",
+                           "CI50_lower", "CI50_upper",
+                           "CI90_lower", "CI90_upper")]
+  cne1_df[sapply(cne1_df, is.numeric)] <-
+    lapply(cne1_df[sapply(cne1_df, is.numeric)], round, 0)
+  tsv <- file.path(cne_out_dir,
+                   sprintf("07.8-currentNe_summary_K%s.tsv", k_global))
+  write.table(cne1_df, tsv, sep = "\t", quote = FALSE, row.names = FALSE)
+  cat("currentNe v1 table written:", tsv, "\n")
+  print(cne1_df)
 
-# -------------------------------------------------------------------
-# STEP 3: GONE summary table (Ne at generation 1 = most recent)
-# -------------------------------------------------------------------
-if (length(gone_valid) > 0) {
-  gone_df <- do.call(rbind, gone_valid)
-  gone_tsv <- file.path(out_dir, sprintf("07.8-GONE_Ne_trajectory_K%s.tsv", k_global))
-  write.table(gone_df, gone_tsv, sep = "\t", quote = FALSE, row.names = FALSE)
-  cat("GONE trajectory written:", gone_tsv, "\n")
-
-  # Most recent Ne per population (generation 1)
-  gone_current <- do.call(rbind, lapply(gone_valid, function(d) {
-    d_sorted <- d[order(d$generation), ]
-    data.frame(population = d_sorted$population[1],
-               Ne_gen1    = d_sorted$Ne[1],
-               stringsAsFactors = FALSE)
-  }))
-} else {
-  cat("WARN: no valid GONE outputs found\n")
-  gone_df    <- NULL
-  gone_current <- NULL
-}
-
-# -------------------------------------------------------------------
-# STEP 4: Plot — currentNe barplot with CI
-# -------------------------------------------------------------------
-if (!is.null(cne_df) && any(!is.na(cne_df$Ne))) {
-  df_p <- cne_df[!is.na(cne_df$Ne), ]
+  df_p <- cne1_df[!is.na(cne1_df$Ne), ]
   df_p$population <- factor(df_p$population, levels = sort(unique(df_p$population)))
-
-  p_cne <- ggplot(df_p, aes(x = population, y = Ne, fill = population)) +
+  p <- ggplot(df_p, aes(x = population, y = Ne, fill = population)) +
     geom_col(width = 0.6, color = "grey30", linewidth = 0.3) +
     geom_errorbar(aes(ymin = CI90_lower, ymax = CI90_upper),
                   width = 0.18, color = "grey20", linewidth = 0.7) +
@@ -185,101 +255,343 @@ if (!is.null(cne_df) && any(!is.na(cne_df$Ne))) {
     geom_text(aes(label = format(round(Ne, 0), big.mark = ",")),
               vjust = -0.5, size = 3.2) +
     scale_fill_manual(values = POP_COLORS, na.value = "grey50") +
-    scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.12))) +
-    labs(title    = sprintf("Current effective population size — K=%s", k_global),
-         subtitle = "Error bars: thick = 50% CI, thin = 90% CI (neural-network bootstrap)",
-         x = NULL, y = "Ne (currentNe)") +
-    theme(legend.position = "none",
-          axis.text.x     = element_text(size = 10),
-          plot.subtitle   = element_text(size = 8, color = "grey40"))
-
-  fn_cne <- file.path(plot_dir, sprintf("currentNe_K%s.png", k_global))
-  ggsave(fn_cne, p_cne, width = max(6, length(unique(df_p$population)) * 1.8),
+    scale_y_continuous(labels = scales::comma,
+                       expand = expansion(mult = c(0, 0.12))) +
+    labs(title    = sprintf("Current Ne — currentNe v1 — K=%s", k_global),
+         subtitle = "Error bars: thick = 50% CI, thin = 90% CI",
+         x = NULL, y = "Ne (currentNe v1)") +
+    theme(legend.position = "none", axis.text.x = element_text(size = 10),
+          plot.subtitle = element_text(size = 8, color = "grey40"))
+  fn <- file.path(cne_out_dir,
+                  sprintf("currentNe_v1_K%s.png", k_global))
+  ggsave(fn, p, width = max(6, length(unique(df_p$population)) * 1.8),
          height = 5, dpi = 300)
-  cat("Plot written:", fn_cne, "\n")
+  cat("Plot written:", fn, "\n")
+} else {
+  cat("WARN: no valid currentNe v1 outputs found\n")
+  cne1_df <- NULL
 }
 
 # -------------------------------------------------------------------
-# STEP 5: Plot — GONE temporal Ne trajectory
+# STEP 3: currentNe2 — summary table + barplots (default + structure)
 # -------------------------------------------------------------------
-if (!is.null(gone_df) && nrow(gone_df) > 0) {
-  gone_df$population <- factor(gone_df$population,
-                                levels = sort(unique(gone_df$population)))
-  # Restrict to meaningful generations (1–500, beyond that LD signal is weak)
-  gone_plot <- gone_df[gone_df$generation <= 500 & !is.na(gone_df$Ne) & gone_df$Ne > 0, ]
+build_cne2_table <- function(valid_list, label) {
+  if (length(valid_list) == 0) return(NULL)
+  df <- do.call(rbind, valid_list)
+  cols_base <- c("population", "n_ind", "Ne",
+                 "CI50_lower", "CI50_upper", "CI90_lower", "CI90_upper")
+  cols_struct <- c("NT", "FST", "migration", "n_subpop")
+  cols_use <- c(cols_base,
+                cols_struct[cols_struct %in% colnames(df) &
+                              !all(is.na(df[, cols_struct[cols_struct %in% colnames(df)]]))])
+  df <- df[, intersect(cols_use, colnames(df))]
+  df[sapply(df, is.numeric)] <- lapply(df[sapply(df, is.numeric)], round, 4)
+  tsv <- file.path(cne2_out_dir,
+                   sprintf("07.8-currentNe2_%s_K%s.tsv", label, k_global))
+  write.table(df, tsv, sep = "\t", quote = FALSE, row.names = FALSE)
+  cat(sprintf("currentNe2 %s table written: %s\n", label, tsv))
+  print(df)
+  df
+}
 
-  if (nrow(gone_plot) > 0) {
-    p_gone <- ggplot(gone_plot, aes(x = generation, y = Ne,
-                                    color = population, group = population)) +
-      geom_line(linewidth = 0.9) +
-      scale_color_manual(values = POP_COLORS, na.value = "grey50") +
-      scale_x_continuous(breaks = c(1, 10, 50, 100, 200, 500)) +
-      scale_y_log10(labels = scales::comma) +
-      labs(title    = sprintf("Temporal Ne trajectory — GONE — K=%s", k_global),
-           subtitle = "Generations 1–500 — log10(Ne) scale",
-           x = "Generations ago", y = "Ne (GONE, log scale)",
-           color = "Cluster") +
-      theme(plot.subtitle = element_text(size = 8, color = "grey40"))
+cne2_def_df <- build_cne2_table(cne2_default_valid, "default")
+cne2_mix_df <- build_cne2_table(cne2_mix_valid,     "structure")
 
-    fn_gone <- file.path(plot_dir, sprintf("GONE_trajectory_K%s.png", k_global))
-    ggsave(fn_gone, p_gone, width = 8, height = 5, dpi = 300)
-    cat("Plot written:", fn_gone, "\n")
+plot_cne2_barplot <- function(df, subtitle_txt, fn_suffix) {
+  if (is.null(df) || all(is.na(df$Ne))) return(invisible(NULL))
+  df <- df[!is.na(df$Ne), ]
+  df$population <- factor(df$population, levels = sort(unique(df$population)))
+  p <- ggplot(df, aes(x = population, y = Ne, fill = population)) +
+    geom_col(width = 0.6, color = "grey30", linewidth = 0.3) +
+    geom_errorbar(aes(ymin = CI90_lower, ymax = CI90_upper),
+                  width = 0.18, color = "grey20", linewidth = 0.7) +
+    geom_errorbar(aes(ymin = CI50_lower, ymax = CI50_upper),
+                  width = 0.10, color = "black", linewidth = 1.1) +
+    geom_text(aes(label = format(round(Ne, 0), big.mark = ",")),
+              vjust = -0.5, size = 3.2) +
+    scale_fill_manual(values = POP_COLORS, na.value = "grey50") +
+    scale_y_continuous(labels = scales::comma,
+                       expand = expansion(mult = c(0, 0.12))) +
+    labs(title    = sprintf("Current Ne — currentNe2 %s — K=%s",
+                            fn_suffix, k_global),
+         subtitle = subtitle_txt,
+         x = NULL, y = "Ne (currentNe2)") +
+    theme(legend.position = "none", axis.text.x = element_text(size = 10),
+          plot.subtitle = element_text(size = 8, color = "grey40"))
+  fn <- file.path(cne2_out_dir,
+                  sprintf("currentNe2_%s_K%s.png", fn_suffix, k_global))
+  ggsave(fn, p, width = max(6, nrow(df) * 1.8), height = 5, dpi = 300)
+  cat("Plot written:", fn, "\n")
 
-    # Full trajectory (all generations)
-    gone_all <- gone_df[!is.na(gone_df$Ne) & gone_df$Ne > 0, ]
-    if (max(gone_all$generation) > 500) {
-      p_gone_full <- p_gone %+% gone_all +
-        scale_x_continuous() +
-        labs(subtitle = "All generations — log10(Ne) scale")
-      fn_full <- file.path(plot_dir, sprintf("GONE_trajectory_full_K%s.png", k_global))
-      ggsave(fn_full, p_gone_full, width = 9, height = 5, dpi = 300)
-      cat("Plot written:", fn_full, "\n")
+  # If mix output has FST, add a secondary barplot for structure params
+  if (!is.null(df$FST) && any(!is.na(df$FST))) {
+    struct_cols <- intersect(c("FST", "migration", "n_subpop"), colnames(df))
+    struct_long <- reshape(
+      df[, c("population", struct_cols)],
+      varying = struct_cols, times = struct_cols,
+      v.names = "value", timevar = "param",
+      idvar = "population", direction = "long"
+    )
+    struct_long <- struct_long[!is.na(struct_long$value), ]
+    if (nrow(struct_long) > 0) {
+      ps <- ggplot(struct_long,
+                   aes(x = population, y = value, fill = population)) +
+        geom_col(width = 0.6, color = "grey30", linewidth = 0.3) +
+        facet_wrap(~param, scales = "free_y") +
+        scale_fill_manual(values = POP_COLORS, na.value = "grey50") +
+        labs(title    = sprintf("Structure parameters — currentNe2 -x — K=%s",
+                                k_global),
+             x = NULL, y = "Estimate") +
+        theme(legend.position = "none",
+              axis.text.x = element_text(size = 9))
+      fn_s <- file.path(cne2_out_dir,
+                        sprintf("currentNe2_structure_params_K%s.png", k_global))
+      ggsave(fn_s, ps, width = max(8, nrow(df) * 2), height = 5, dpi = 300)
+      cat("Plot written:", fn_s, "\n")
     }
   }
 }
 
+plot_cne2_barplot(cne2_def_df,
+                  "Error bars: thick = 50% CI, thin = 90% CI | panmictic assumption",
+                  "default")
+plot_cne2_barplot(cne2_mix_df,
+                  "Error bars: thick = 50% CI, thin = 90% CI | population structure assumed (-x)",
+                  "structure")
+
 # -------------------------------------------------------------------
-# STEP 6: Combined comparison plot (current Ne from both tools)
+# STEP 4: GONE v1 — summary table + trajectory plots
 # -------------------------------------------------------------------
-if (!is.null(cne_df) && !is.null(gone_current)) {
-  cne_current <- cne_df[!is.na(cne_df$Ne),
-                         c("population", "Ne", "CI90_lower", "CI90_upper")]
-  colnames(cne_current)[2:4] <- c("Ne_currentNe", "CI90_lo", "CI90_hi")
+if (length(gone1_valid) > 0) {
+  gone1_df <- do.call(rbind, gone1_valid)
+  tsv <- file.path(g1_out_dir,
+                   sprintf("07.8-GONE_v1_trajectory_K%s.tsv", k_global))
+  write.table(gone1_df, tsv, sep = "\t", quote = FALSE, row.names = FALSE)
+  cat("GONE v1 trajectory table written:", tsv, "\n")
 
-  comp <- merge(cne_current, gone_current, by = "population", all = TRUE)
+  gone1_df$population <- factor(gone1_df$population,
+                                 levels = sort(unique(gone1_df$population)))
+  gone1_plot <- gone1_df[gone1_df$generation <= 500 &
+                           !is.na(gone1_df$Ne) & gone1_df$Ne > 0, ]
+  if (nrow(gone1_plot) > 0) {
+    p <- ggplot(gone1_plot, aes(x = generation, y = Ne,
+                                color = population, group = population)) +
+      geom_line(linewidth = 0.9) +
+      scale_color_manual(values = POP_COLORS, na.value = "grey50") +
+      scale_x_continuous(breaks = c(1, 10, 50, 100, 200, 500)) +
+      scale_y_log10(labels = scales::comma) +
+      labs(title    = sprintf("Temporal Ne trajectory — GONE v1 — K=%s", k_global),
+           subtitle = "Generations 1–500 — log10(Ne) scale",
+           x = "Generations ago", y = "Ne (GONE v1, log scale)",
+           color = "Cluster") +
+      theme(plot.subtitle = element_text(size = 8, color = "grey40"))
+    fn <- file.path(g1_out_dir,
+                    sprintf("GONE_v1_trajectory_K%s.png", k_global))
+    ggsave(fn, p, width = 8, height = 5, dpi = 300)
+    cat("Plot written:", fn, "\n")
 
-  if (nrow(comp) > 0) {
-    comp_long <- rbind(
-      data.frame(population = comp$population,
-                 Ne = comp$Ne_currentNe, tool = "currentNe",
-                 stringsAsFactors = FALSE),
-      data.frame(population = comp$population,
-                 Ne = comp$Ne_gen1, tool = "GONE",
-                 stringsAsFactors = FALSE)
-    )
-    comp_long <- comp_long[!is.na(comp_long$Ne), ]
-    comp_long$population <- factor(comp_long$population,
-                                   levels = sort(unique(comp_long$population)))
-
-    p_comp <- ggplot(comp_long,
-                     aes(x = population, y = Ne, fill = population,
-                         alpha = tool)) +
-      geom_col(position = position_dodge(width = 0.7), width = 0.6,
-               color = "grey30", linewidth = 0.3) +
-      scale_fill_manual(values = POP_COLORS, na.value = "grey50") +
-      scale_alpha_manual(values = c(currentNe = 1.0, GONE = 0.55)) +
-      scale_y_continuous(labels = scales::comma,
-                         expand = expansion(mult = c(0, 0.12))) +
-      labs(title    = sprintf("Current Ne — currentNe vs GONE (generation 1) — K=%s", k_global),
-           x = NULL, y = "Ne", fill = "Cluster", alpha = "Tool") +
-      theme(axis.text.x = element_text(size = 10))
-
-    fn_comp <- file.path(plot_dir, sprintf("Ne_comparison_K%s.png", k_global))
-    ggsave(fn_comp, p_comp,
-           width = max(6, length(unique(comp_long$population)) * 2.5),
-           height = 5, dpi = 300)
-    cat("Plot written:", fn_comp, "\n")
+    gone1_all <- gone1_df[!is.na(gone1_df$Ne) & gone1_df$Ne > 0, ]
+    if (max(gone1_all$generation) > 500) {
+      pfull <- p %+% gone1_all +
+        scale_x_continuous() +
+        labs(subtitle = "All generations — log10(Ne) scale")
+      fn2 <- file.path(g1_out_dir,
+                       sprintf("GONE_v1_trajectory_full_K%s.png", k_global))
+      ggsave(fn2, pfull, width = 9, height = 5, dpi = 300)
+      cat("Plot written:", fn2, "\n")
+    }
   }
+} else {
+  cat("WARN: no valid GONE v1 outputs found\n")
+  gone1_df <- NULL
+}
+
+# -------------------------------------------------------------------
+# STEP 5: GONE2 — summary tables + trajectory plots (default + -x)
+# -------------------------------------------------------------------
+plot_gone2_trajectory <- function(def_valid, str_valid, label) {
+  has_def <- length(def_valid) > 0
+  has_str <- length(str_valid) > 0
+  if (!has_def && !has_str) return(invisible(NULL))
+
+  build_df <- function(vlist, run_type) {
+    df <- do.call(rbind, vlist)
+    df$run <- run_type
+    df
+  }
+
+  if (has_def) {
+    tsv <- file.path(g2_out_dir,
+                     sprintf("07.8-GONE2_default_trajectory_K%s.tsv", k_global))
+    write.table(do.call(rbind, def_valid), tsv,
+                sep = "\t", quote = FALSE, row.names = FALSE)
+    cat("GONE2 default trajectory table written:", tsv, "\n")
+  }
+  if (has_str) {
+    tsv <- file.path(g2_out_dir,
+                     sprintf("07.8-GONE2_structure_trajectory_K%s.tsv", k_global))
+    write.table(do.call(rbind, str_valid), tsv,
+                sep = "\t", quote = FALSE, row.names = FALSE)
+    cat("GONE2 structure trajectory table written:", tsv, "\n")
+  }
+
+  # Overlay default vs -x per population (500-generation window)
+  if (has_def && has_str) {
+    combined <- rbind(build_df(def_valid, "default"),
+                      build_df(str_valid, "structure (-x)"))
+    combined$population <- factor(combined$population,
+                                  levels = sort(unique(combined$population)))
+    combined_plot <- combined[combined$generation <= 500 &
+                                !is.na(combined$Ne) & combined$Ne > 0, ]
+    if (nrow(combined_plot) > 0) {
+      p <- ggplot(combined_plot,
+                  aes(x = generation, y = Ne,
+                      color = population, linetype = run, group = interaction(population, run))) +
+        geom_line(linewidth = 0.8) +
+        scale_color_manual(values = POP_COLORS, na.value = "grey50") +
+        scale_linetype_manual(values = c("default" = "solid",
+                                         "structure (-x)" = "dashed")) +
+        scale_x_continuous(breaks = c(1, 10, 50, 100, 200, 500)) +
+        scale_y_log10(labels = scales::comma) +
+        labs(title    = sprintf("Temporal Ne trajectory — GONE2 — K=%s", k_global),
+             subtitle = "Solid = panmictic (default) | Dashed = structure-corrected (-x) | Generations 1–500",
+             x = "Generations ago", y = "Ne (GONE2, log scale)",
+             color = "Cluster", linetype = "Model") +
+        theme(plot.subtitle = element_text(size = 8, color = "grey40"))
+      fn <- file.path(g2_out_dir,
+                      sprintf("GONE2_trajectory_overlay_K%s.png", k_global))
+      ggsave(fn, p, width = 9, height = 5, dpi = 300)
+      cat("Plot written:", fn, "\n")
+
+      # Full trajectory
+      combined_all <- combined[!is.na(combined$Ne) & combined$Ne > 0, ]
+      if (max(combined_all$generation) > 500) {
+        pfull <- p %+% combined_all +
+          scale_x_continuous() +
+          labs(subtitle = "Solid = panmictic | Dashed = structure-corrected | All generations")
+        fn2 <- file.path(g2_out_dir,
+                         sprintf("GONE2_trajectory_overlay_full_K%s.png", k_global))
+        ggsave(fn2, pfull, width = 10, height = 5, dpi = 300)
+        cat("Plot written:", fn2, "\n")
+      }
+    }
+  } else {
+    # Only one mode available — single trajectory
+    vlist <- if (has_def) def_valid else str_valid
+    run_lbl <- if (has_def) "default" else "structure (-x)"
+    df_all <- do.call(rbind, vlist)
+    df_all$population <- factor(df_all$population,
+                                levels = sort(unique(df_all$population)))
+    df_plot <- df_all[df_all$generation <= 500 & !is.na(df_all$Ne) & df_all$Ne > 0, ]
+    if (nrow(df_plot) > 0) {
+      p <- ggplot(df_plot, aes(x = generation, y = Ne,
+                               color = population, group = population)) +
+        geom_line(linewidth = 0.9) +
+        scale_color_manual(values = POP_COLORS, na.value = "grey50") +
+        scale_x_continuous(breaks = c(1, 10, 50, 100, 200, 500)) +
+        scale_y_log10(labels = scales::comma) +
+        labs(title    = sprintf("Temporal Ne trajectory — GONE2 %s — K=%s",
+                                run_lbl, k_global),
+             x = "Generations ago", y = "Ne (GONE2, log scale)",
+             color = "Cluster")
+      fn <- file.path(g2_out_dir,
+                      sprintf("GONE2_trajectory_%s_K%s.png",
+                              gsub(" |\\(|\\)", "_", run_lbl), k_global))
+      ggsave(fn, p, width = 8, height = 5, dpi = 300)
+      cat("Plot written:", fn, "\n")
+    }
+  }
+}
+
+plot_gone2_trajectory(gone2_def_valid, gone2_str_valid, "GONE2")
+
+# -------------------------------------------------------------------
+# STEP 6: All-tools current Ne comparison barplot
+# Assembles gen-1 Ne from GONE/GONE2 and point-estimate Ne from
+# currentNe/currentNe2 into a single grouped barplot.
+# -------------------------------------------------------------------
+get_gen1_Ne <- function(valid_list) {
+  if (length(valid_list) == 0) return(NULL)
+  do.call(rbind, lapply(valid_list, function(d) {
+    d_sorted <- d[order(d$generation), ]
+    data.frame(population = d_sorted$population[1],
+               Ne = d_sorted$Ne[1],
+               stringsAsFactors = FALSE)
+  }))
+}
+
+comp_rows <- list()
+
+if (!is.null(cne1_df)) {
+  r <- cne1_df[!is.na(cne1_df$Ne), c("population", "Ne")]
+  r$tool <- "currentNe v1"
+  comp_rows[[length(comp_rows) + 1]] <- r
+}
+if (!is.null(cne2_def_df) && any(!is.na(cne2_def_df$Ne))) {
+  r <- cne2_def_df[!is.na(cne2_def_df$Ne), c("population", "Ne")]
+  r$tool <- "currentNe2 default"
+  comp_rows[[length(comp_rows) + 1]] <- r
+}
+if (!is.null(cne2_mix_df) && any(!is.na(cne2_mix_df$Ne))) {
+  r <- cne2_mix_df[!is.na(cne2_mix_df$Ne), c("population", "Ne")]
+  r$tool <- "currentNe2 -x"
+  comp_rows[[length(comp_rows) + 1]] <- r
+}
+g1_curr <- get_gen1_Ne(gone1_valid)
+if (!is.null(g1_curr)) {
+  g1_curr$tool <- "GONE v1 (gen 1)"
+  comp_rows[[length(comp_rows) + 1]] <- g1_curr
+}
+g2_curr <- get_gen1_Ne(gone2_def_valid)
+if (!is.null(g2_curr)) {
+  g2_curr$tool <- "GONE2 default (gen 1)"
+  comp_rows[[length(comp_rows) + 1]] <- g2_curr
+}
+g2s_curr <- get_gen1_Ne(gone2_str_valid)
+if (!is.null(g2s_curr)) {
+  g2s_curr$tool <- "GONE2 -x (gen 1)"
+  comp_rows[[length(comp_rows) + 1]] <- g2s_curr
+}
+
+if (length(comp_rows) > 0) {
+  comp_df <- do.call(rbind, comp_rows)
+  comp_df <- comp_df[!is.na(comp_df$Ne), ]
+  comp_df$population <- factor(comp_df$population,
+                                levels = sort(unique(comp_df$population)))
+  comp_df$tool <- factor(comp_df$tool, levels = unique(comp_df$tool))
+
+  tool_alphas <- setNames(
+    seq(1.0, 0.3, length.out = nlevels(comp_df$tool)),
+    levels(comp_df$tool)
+  )
+
+  p_comp <- ggplot(comp_df,
+                   aes(x = population, y = Ne,
+                       fill = population, alpha = tool)) +
+    geom_col(position = position_dodge(width = 0.75), width = 0.65,
+             color = "grey30", linewidth = 0.25) +
+    scale_fill_manual(values = POP_COLORS, na.value = "grey50") +
+    scale_alpha_manual(values = tool_alphas) +
+    scale_y_continuous(labels = scales::comma,
+                       expand = expansion(mult = c(0, 0.12))) +
+    labs(title = sprintf("Current Ne — all tools comparison — K=%s", k_global),
+         subtitle = "Grouped by tool (transparency). GONE/GONE2 values = generation 1.",
+         x = NULL, y = "Ne", fill = "Cluster", alpha = "Tool") +
+    theme(axis.text.x = element_text(size = 10),
+          plot.subtitle = element_text(size = 8, color = "grey40"),
+          legend.key.size = unit(0.5, "cm"))
+
+  fn_comp <- file.path(out_dir,
+                       sprintf("07.8-Ne_all_tools_K%s.png", k_global))
+  ggsave(fn_comp, p_comp,
+         width = max(8, nlevels(comp_df$population) * 3),
+         height = 5, dpi = 300)
+  cat("All-tools comparison plot written:", fn_comp, "\n")
+
+  tsv_comp <- file.path(out_dir,
+                        sprintf("07.8-Ne_all_tools_K%s.tsv", k_global))
+  write.table(comp_df, tsv_comp, sep = "\t", quote = FALSE, row.names = FALSE)
+  cat("All-tools table written:", tsv_comp, "\n")
 }
 
 cat(sprintf("DONE 07.8 Ne R script completed — K=%s\n", k_global))
