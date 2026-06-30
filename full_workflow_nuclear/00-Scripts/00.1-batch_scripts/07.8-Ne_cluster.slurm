@@ -279,10 +279,41 @@ EOF
     fi  # end GONE checkpoint
 
     # ------------------------------------------------------------------
-    # 4d: currentNe2 — default (panmictic) + structure (-x)
-    #     Input: full MAP/PED (5-6M SNPs), subsampled internally to
-    #     -s 1500000 (safe below MAXLOCI=2M compile limit, maximises
-    #     precision). Run from plink_dir so MAP is co-located with PED.
+    # 4d: Pre-thin PED for currentNe2 and GONE2
+    #     MAXLOCI=2,000,000 is a compile-time array limit: both tools read
+    #     the entire PED sequentially before any internal subsampling, so
+    #     files with 5-6M SNPs crash on the 2M boundary. Fix: pre-thin to
+    #     ~1.5M SNPs with PLINK --thin (25% margin below 2M). The ratio is
+    #     computed dynamically from the BIM line count.
+    #     The thinned MAP/PED are symlinked as ${pop}.ped in each GONE2
+    #     subdir so the output name (${pop}.ped_GONE2_Ne) is preserved for
+    #     the R parser.
+    # ------------------------------------------------------------------
+    NE2_PED="${plink_dir}/${pop}_ne2.ped"
+    NE2_MAP="${plink_dir}/${pop}_ne2.map"
+
+    if [ -s "$NE2_PED" ]; then
+        N_SNP_NE2=$(wc -l < "$NE2_MAP")
+        echo "  [${pop}] reusing existing ne2 PED: ${N_SNP_NE2} SNPs" | tee -a "$LOG_FILE"
+    else
+        N_SNP_FULL=$(wc -l < "${plink_dir}/${pop}.bim")
+        THIN_NE2=$(awk -v n="$N_SNP_FULL" 'BEGIN {t=1500000/n; print (t>0.95?0.95:t)}')
+        echo "  [${pop}] thinning for currentNe2/GONE2: --thin ${THIN_NE2} from ${N_SNP_FULL} SNPs (target 1.5M)" | tee -a "$LOG_FILE"
+        plink \
+            --bfile "${plink_dir}/${pop}" \
+            --chr-set ${N_CHR} \
+            --thin "$THIN_NE2" \
+            --recode \
+            --out "${plink_dir}/${pop}_ne2" \
+            >> "$LOG_FILE" 2>&1
+        N_SNP_NE2=$(wc -l < "$NE2_MAP")
+        echo "  [${pop}] ne2 PED: ${N_SNP_NE2} SNPs retained" | tee -a "$LOG_FILE"
+    fi
+
+    # ------------------------------------------------------------------
+    # 4e: currentNe2 — default (panmictic) + structure (-x)
+    #     Input: ne2-thinned PED (~1.5M SNPs, < MAXLOCI=2M compile limit).
+    #     Run from plink_dir so MAP is co-located with PED.
     #     -k 0 : random pairing (default only; incompatible with -x).
     # ------------------------------------------------------------------
     cne2_dir="${POP_DIR}/${pop}/currentNe2"
@@ -298,12 +329,11 @@ EOF
         (
             cd "$plink_dir"
             currentne2 \
-                -s 1500000 \
                 -r 1 \
                 -t "${CPUS}" \
                 -k 0 \
                 -o "$CNE2_DEFAULT" \
-                "${pop}.ped" >> "$LOG_FILE" 2>&1
+                "${pop}_ne2.ped" >> "$LOG_FILE" 2>&1
         ) || echo "WARN: currentNe2 default returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
         echo "  [${pop}] currentNe2 default done" | tee -a "$LOG_FILE"
     fi
@@ -316,22 +346,20 @@ EOF
             cd "$plink_dir"
             currentne2 \
                 -x \
-                -s 1500000 \
                 -r 1 \
                 -t "${CPUS}" \
                 -o "$CNE2_STRUCT" \
-                "${pop}.ped" >> "$LOG_FILE" 2>&1
+                "${pop}_ne2.ped" >> "$LOG_FILE" 2>&1
         ) || echo "WARN: currentNe2 -x returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
         echo "  [${pop}] currentNe2 -x done" | tee -a "$LOG_FILE"
     fi
 
     # ------------------------------------------------------------------
-    # 4e: GONE2 — default (panmictic) + structure (-x)
-    #     Input: full MAP/PED (5-6M SNPs), subsampled internally to
-    #     -s 1500000 (safe below MAXLOCI=2M compile limit, maximises
-    #     precision vs GONE v1 internal maxNSNP=2000×13=26k).
-    #     Run in dedicated subdirectories: both options produce a file
-    #     named ${pop}.ped_GONE2_Ne — separate dirs avoid overwrite.
+    # 4f: GONE2 — default (panmictic) + structure (-x)
+    #     Input: ne2-thinned PED (~1.5M SNPs), symlinked as ${pop}.ped in
+    #     each subdir so output (${pop}.ped_GONE2_Ne) matches R parser.
+    #     Run in dedicated subdirectories: both options produce the same
+    #     filename — separate dirs avoid overwrite.
     # ------------------------------------------------------------------
     gone2_dir="${POP_DIR}/${pop}/GONE_2"
     g2_def_dir="${gone2_dir}/default"
@@ -345,11 +373,11 @@ EOF
         echo "  [${pop}] reusing existing GONE2 default output" | tee -a "$LOG_FILE"
     else
         echo "  [${pop}] GONE2 default" | tee -a "$LOG_FILE"
-        ln -sf "${plink_dir}/${pop}.map" "${g2_def_dir}/${pop}.map"
-        ln -sf "${plink_dir}/${pop}.ped" "${g2_def_dir}/${pop}.ped"
+        ln -sf "$NE2_MAP" "${g2_def_dir}/${pop}.map"
+        ln -sf "$NE2_PED" "${g2_def_dir}/${pop}.ped"
         (
             cd "$g2_def_dir"
-            gone2 -s 1500000 -r 1 -t "${CPUS}" "${pop}.ped" >> "$LOG_FILE" 2>&1
+            gone2 -r 1 -t "${CPUS}" "${pop}.ped" >> "$LOG_FILE" 2>&1
         ) || echo "WARN: GONE2 default returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
         echo "  [${pop}] GONE2 default done" | tee -a "$LOG_FILE"
     fi
@@ -358,11 +386,11 @@ EOF
         echo "  [${pop}] reusing existing GONE2 -x output" | tee -a "$LOG_FILE"
     else
         echo "  [${pop}] GONE2 -x (structure correction)" | tee -a "$LOG_FILE"
-        ln -sf "${plink_dir}/${pop}.map" "${g2_str_dir}/${pop}.map"
-        ln -sf "${plink_dir}/${pop}.ped" "${g2_str_dir}/${pop}.ped"
+        ln -sf "$NE2_MAP" "${g2_str_dir}/${pop}.map"
+        ln -sf "$NE2_PED" "${g2_str_dir}/${pop}.ped"
         (
             cd "$g2_str_dir"
-            gone2 -x -s 1500000 -r 1 -t "${CPUS}" "${pop}.ped" >> "$LOG_FILE" 2>&1
+            gone2 -x -r 1 -t "${CPUS}" "${pop}.ped" >> "$LOG_FILE" 2>&1
         ) || echo "WARN: GONE2 -x returned non-zero for ${pop} — check log" | tee -a "$LOG_FILE"
         echo "  [${pop}] GONE2 -x done" | tee -a "$LOG_FILE"
     fi
