@@ -279,15 +279,18 @@ EOF
     fi  # end GONE checkpoint
 
     # ------------------------------------------------------------------
-    # 4d: Pre-thin PED for currentNe2 and GONE2
+    # 4d: Pre-thin PED for GONE2 (~1.5M SNPs)
     #     MAXLOCI=2,000,000 is a compile-time array limit: both tools read
-    #     the entire PED sequentially before any internal subsampling, so
-    #     files with 5-6M SNPs crash on the 2M boundary. Fix: pre-thin to
-    #     ~1.5M SNPs with PLINK --thin (25% margin below 2M). The ratio is
-    #     computed dynamically from the BIM line count.
-    #     The thinned MAP/PED are symlinked as ${pop}.ped in each GONE2
-    #     subdir so the output name (${pop}.ped_GONE2_Ne) is preserved for
-    #     the R parser.
+    #     the entire PED sequentially. Files with 5-6M SNPs crash on the
+    #     2M boundary. Fix: pre-thin to ~1.5M SNPs with PLINK --thin so
+    #     both tools can read the file (1.5M < MAXLOCI).
+    #     This file is used AS-IS by GONE2 (all 1.5M SNPs — its binned
+    #     algorithm is fast regardless of SNP count).
+    #     currentNe2 receives the same file but subsamples internally to
+    #     200k SNPs via -s 200000 (~1.6h/run vs ~89h with 1.5M effective).
+    #     The thinned MAP/PED are symlinked as ${pop}.ped in GONE2 subdirs
+    #     so the output name (${pop}.ped_GONE2_Ne) is preserved for the R
+    #     parser.
     # ------------------------------------------------------------------
     NE2_PED="${plink_dir}/${pop}_ne2.ped"
     NE2_MAP="${plink_dir}/${pop}_ne2.map"
@@ -298,7 +301,7 @@ EOF
     else
         N_SNP_FULL=$(wc -l < "${plink_dir}/${pop}.bim")
         THIN_NE2=$(awk -v n="$N_SNP_FULL" 'BEGIN {t=1500000/n; print (t>0.95?0.95:t)}')
-        echo "  [${pop}] thinning for currentNe2/GONE2: --thin ${THIN_NE2} from ${N_SNP_FULL} SNPs (target 1.5M)" | tee -a "$LOG_FILE"
+        echo "  [${pop}] thinning: --thin ${THIN_NE2} from ${N_SNP_FULL} SNPs (target 1.5M for GONE2)" | tee -a "$LOG_FILE"
         plink \
             --bfile "${plink_dir}/${pop}" \
             --chr-set ${N_CHR} \
@@ -312,8 +315,11 @@ EOF
 
     # ------------------------------------------------------------------
     # 4e: currentNe2 — default (panmictic) + structure (-x)
-    #     Input: ne2-thinned PED (~1.5M SNPs, < MAXLOCI=2M compile limit).
-    #     Run from plink_dir so MAP is co-located with PED.
+    #     Input: ne2-thinned PED (~1.5M SNPs, safely below MAXLOCI=2M).
+    #     -s 200000: internal subsampling to 200k SNPs for computation;
+    #       200k gives ~20B pairs → ~1.6h/run at 8 threads (vs ~89h at
+    #       1.5M effective). Precision for Ne estimation is excellent at
+    #       200k (>10× the baddoch validation example of 157k SNPs).
     #     -k 0 : random pairing (default only; incompatible with -x).
     # ------------------------------------------------------------------
     cne2_dir="${POP_DIR}/${pop}/currentNe2"
@@ -329,6 +335,7 @@ EOF
         (
             cd "$plink_dir"
             currentne2 \
+                -s 200000 \
                 -r 1 \
                 -t "${CPUS}" \
                 -k 0 \
@@ -346,6 +353,7 @@ EOF
             cd "$plink_dir"
             currentne2 \
                 -x \
+                -s 200000 \
                 -r 1 \
                 -t "${CPUS}" \
                 -o "$CNE2_STRUCT" \

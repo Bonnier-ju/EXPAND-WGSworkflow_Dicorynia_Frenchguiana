@@ -33,8 +33,12 @@
 #   global signal is driven by structure or genuine demographic change.
 #
 # Parameters:
-#   -s 1500000 : internal random SNP subsampling; keeps computation well
-#                below MAXLOCI=2,000,000 (compile-time limit for both tools)
+#   Input PED  : pre-thinned to ~1.5M SNPs (< MAXLOCI=2M compile limit).
+#                Tools read the entire file sequentially — 5-6M SNP files
+#                crash on the 2M boundary even when -s requests fewer SNPs.
+#   -s 200000  : currentNe2 only — internal subsampling to 200k effective
+#                SNPs (~20B pairs, ~1.6h/run). Not used for GONE2 (binned
+#                algorithm; fast regardless of SNP count).
 #   -r 1       : uniform 1 cM/Mb recombination rate (no genetic map for
 #                Dicorynia guianensis; same assumption as GONE v1 cMMb=1)
 #   -t 8       : threads (= SLURM cpus-per-task)
@@ -177,21 +181,47 @@ else
         >> "$LOG_FILE" 2>&1
     N_SNP=$(wc -l < "${PLINK_DIR}/${LABEL}.bim")
     echo "INFO: BED — ${N_IND} individuals, ${N_SNP} SNPs (MAF>=0.05, geno<=10%)" | tee -a "$LOG_FILE"
+fi
 
+# -------------------------------------------------------------------
+# STEP 4b: Pre-thin PED for currentNe2 and GONE2
+# MAXLOCI=2,000,000 is a compile-time array limit: both tools read
+# the entire PED sequentially before any internal subsampling, so
+# files with 5-6M SNPs crash on the 2M boundary. Fix: pre-thin to
+# ~1.5M SNPs via PLINK --thin (25% margin below 2M). The thin ratio
+# is computed dynamically from the BIM line count.
+# The thinned PED is symlinked as ${LABEL}.ped in each GONE2 subdir
+# so the output name (${LABEL}.ped_GONE2_Ne) is preserved for the R
+# parser.
+# -------------------------------------------------------------------
+NE2_PED="${PLINK_DIR}/${LABEL}_ne2.ped"
+NE2_MAP="${PLINK_DIR}/${LABEL}_ne2.map"
+
+if [ -s "$NE2_PED" ]; then
+    N_SNP_NE2=$(wc -l < "$NE2_MAP")
+    echo "INFO: reusing existing ne2 PED: ${N_SNP_NE2} SNPs" | tee -a "$LOG_FILE"
+else
+    N_SNP_FULL=$(wc -l < "${PLINK_DIR}/${LABEL}.bim")
+    THIN_NE2=$(awk -v n="$N_SNP_FULL" 'BEGIN {t=1500000/n; print (t>0.95?0.95:t)}')
+    echo "INFO: thinning for currentNe2/GONE2: --thin ${THIN_NE2} from ${N_SNP_FULL} SNPs (target 1.5M)" | tee -a "$LOG_FILE"
     plink \
         --bfile "${PLINK_DIR}/${LABEL}" \
         --chr-set ${N_CHR} \
+        --thin "$THIN_NE2" \
         --recode \
-        --out "${PLINK_DIR}/${LABEL}" \
+        --out "${PLINK_DIR}/${LABEL}_ne2" \
         >> "$LOG_FILE" 2>&1
-    echo "INFO: PED/MAP conversion done" | tee -a "$LOG_FILE"
+    N_SNP_NE2=$(wc -l < "$NE2_MAP")
+    echo "INFO: ne2 PED: ${N_SNP_NE2} SNPs retained" | tee -a "$LOG_FILE"
 fi
 
 # -------------------------------------------------------------------
 # STEP 5: currentNe2 — default (panmictic)
-# -s 1500000: random SNP subsample drawn internally, well below
-#             MAXLOCI=2,000,000 compile-time limit (same as 07.8).
-# -k 0      : random-mating assumption (incompatible with -x).
+# Input: ne2-thinned PED (~1.5M SNPs, safely below MAXLOCI=2M).
+# -s 200000: internal subsampling to 200k SNPs for computation;
+#   200k → ~20B pairs → ~1.6h/run at 8 threads (vs ~89h at 1.5M
+#   effective). Precision for Ne estimation is excellent at 200k.
+# -k 0: random-mating assumption (incompatible with -x).
 # Must run from PLINK_DIR so the MAP file is co-located with PED.
 # -------------------------------------------------------------------
 echo "STEP 5: currentNe2 default (panmictic assumption)" | tee -a "$LOG_FILE"
@@ -203,12 +233,12 @@ else
     (
         cd "$PLINK_DIR"
         currentne2 \
-            -s 1500000 \
+            -s 200000 \
             -r 1 \
             -t "${CPUS}" \
             -k 0 \
             -o "$CNE2_DEFAULT" \
-            "${LABEL}.ped" >> "$LOG_FILE" 2>&1
+            "${LABEL}_ne2.ped" >> "$LOG_FILE" 2>&1
     ) || echo "WARN: currentNe2 default returned non-zero — check log" | tee -a "$LOG_FILE"
     echo "INFO: currentNe2 default done" | tee -a "$LOG_FILE"
 fi
@@ -219,6 +249,7 @@ fi
 # FST (pairwise average), m (migration rate), s (number of
 # inferred subpopulations). The estimated s is directly comparable
 # to ADMIXTURE K_best as an independent cross-validation of structure.
+# -s 200000: same rationale as Step 5.
 # -k incompatible with -x (omitted per Santiago et al. 2025 README).
 # -------------------------------------------------------------------
 echo "STEP 6: currentNe2 -x (structure inference)" | tee -a "$LOG_FILE"
@@ -231,22 +262,20 @@ else
         cd "$PLINK_DIR"
         currentne2 \
             -x \
-            -s 1500000 \
+            -s 200000 \
             -r 1 \
             -t "${CPUS}" \
             -o "$CNE2_STRUCT" \
-            "${LABEL}.ped" >> "$LOG_FILE" 2>&1
+            "${LABEL}_ne2.ped" >> "$LOG_FILE" 2>&1
     ) || echo "WARN: currentNe2 -x returned non-zero — check log" | tee -a "$LOG_FILE"
     echo "INFO: currentNe2 -x done" | tee -a "$LOG_FILE"
 fi
 
 # -------------------------------------------------------------------
 # STEP 7: GONE2 — default (panmictic temporal trajectory)
-# Run in GONE2/default/ to avoid output filename collision with -x:
-# both produce ${LABEL}.ped_GONE2_Ne and cannot be renamed.
-# Symlinks allow GONE2 to find MAP co-located with PED.
-# -s 1500000: far more SNPs than GONE v1 (maxNSNP=2000×13=26k),
-#             dramatically improving recent-history resolution.
+# Input: ne2-thinned PED (~1.5M SNPs), symlinked as ${LABEL}.ped so
+# output name (${LABEL}.ped_GONE2_Ne) is preserved for the R parser.
+# Run in GONE2/default/ to avoid filename collision with -x run.
 # -------------------------------------------------------------------
 echo "STEP 7: GONE2 default (panmictic trajectory)" | tee -a "$LOG_FILE"
 
@@ -254,18 +283,18 @@ GONE2_DEF_NE="${GONE2_DIR}/default/${LABEL}.ped_GONE2_Ne"
 if [ -s "$GONE2_DEF_NE" ]; then
     echo "INFO: reusing existing GONE2 default output" | tee -a "$LOG_FILE"
 else
-    ln -sf "${PLINK_DIR}/${LABEL}.map" "${GONE2_DIR}/default/${LABEL}.map"
-    ln -sf "${PLINK_DIR}/${LABEL}.ped" "${GONE2_DIR}/default/${LABEL}.ped"
+    ln -sf "$NE2_MAP" "${GONE2_DIR}/default/${LABEL}.map"
+    ln -sf "$NE2_PED" "${GONE2_DIR}/default/${LABEL}.ped"
     (
         cd "${GONE2_DIR}/default"
-        gone2 -s 1500000 -r 1 -t "${CPUS}" "${LABEL}.ped" >> "$LOG_FILE" 2>&1
+        gone2 -r 1 -t "${CPUS}" "${LABEL}.ped" >> "$LOG_FILE" 2>&1
     ) || echo "WARN: GONE2 default returned non-zero — check log" | tee -a "$LOG_FILE"
     echo "INFO: GONE2 default done" | tee -a "$LOG_FILE"
 fi
 
 # -------------------------------------------------------------------
 # STEP 8: GONE2 -x (structure-corrected temporal trajectory)
-# Run in GONE2/structure/ (separate subdir; see Step 7 rationale).
+# Run in GONE2/structure/ (separate subdir to avoid filename collision).
 # -------------------------------------------------------------------
 echo "STEP 8: GONE2 -x (structure-corrected trajectory)" | tee -a "$LOG_FILE"
 
@@ -273,11 +302,11 @@ GONE2_STR_NE="${GONE2_DIR}/structure/${LABEL}.ped_GONE2_Ne"
 if [ -s "$GONE2_STR_NE" ]; then
     echo "INFO: reusing existing GONE2 -x output" | tee -a "$LOG_FILE"
 else
-    ln -sf "${PLINK_DIR}/${LABEL}.map" "${GONE2_DIR}/structure/${LABEL}.map"
-    ln -sf "${PLINK_DIR}/${LABEL}.ped" "${GONE2_DIR}/structure/${LABEL}.ped"
+    ln -sf "$NE2_MAP" "${GONE2_DIR}/structure/${LABEL}.map"
+    ln -sf "$NE2_PED" "${GONE2_DIR}/structure/${LABEL}.ped"
     (
         cd "${GONE2_DIR}/structure"
-        gone2 -x -s 1500000 -r 1 -t "${CPUS}" "${LABEL}.ped" >> "$LOG_FILE" 2>&1
+        gone2 -x -r 1 -t "${CPUS}" "${LABEL}.ped" >> "$LOG_FILE" 2>&1
     ) || echo "WARN: GONE2 -x returned non-zero — check log" | tee -a "$LOG_FILE"
     echo "INFO: GONE2 -x done" | tee -a "$LOG_FILE"
 fi
