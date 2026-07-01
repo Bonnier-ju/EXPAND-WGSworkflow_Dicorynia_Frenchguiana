@@ -21,18 +21,23 @@
 #   K_MIN      — minimum K for intra-cluster run (default 1)
 #   K_MAX      — maximum K for intra-cluster run (default 5)
 #   SEEDS      — space-separated list of random seeds (default "42 123 999")
-#   N_SNP_THIN — number of SNPs to retain after subsampling (default 50000)
+#   N_SNP_THIN — target number of SNPs after subsampling (default 50000)
 #   THIN_SEED  — PLINK random seed for reproducible thinning (default 2024)
 #
-# Runs fastStructure K=K_MIN..K_MAX × SEEDS replicates on the subset of
-# guiana_only individuals belonging to Pop_${POP_ID} under K=${K_GLOBAL}.
-# Input SNPs are subsampled to N_SNP_THIN (from the LD-pruned VCF) for
-# computational tractability; 50k LD-pruned SNPs provide sufficient power
-# for structure inference in n=16-90 individuals (Raj et al. 2014).
+# Detects within-cluster sub-structure for individuals of Pop_${POP_ID}
+# under the K=${K_GLOBAL} ADMIXTURE partition.
+#
+# SNP filtering strategy (STEP 3):
+#   The LD-pruned input VCF was produced on all 155 FG individuals. Many
+#   globally-polymorphic SNPs are fixed within a single ADMIXTURE cluster
+#   (between-cluster fixed differences): they are highly informative for
+#   the global ADMIXTURE partitioning but carry no signal for within-cluster
+#   sub-structure. A within-cluster MAF >= 0.05 filter is therefore applied
+#   AFTER individual subsetting to retain only informative within-cluster SNPs.
+#   If fewer than N_SNP_THIN polymorphic SNPs are available, all are retained.
+#
 # Seeds within each K run in parallel (one per CPU, up to cpus-per-task).
-# Each K × seed is an independent run (--prior=logistic, --cv=10, --tol=1e-6).
 # The replicate with the highest marginal likelihood is retained per K.
-# K selection uses chooseK.py on the best-replicate set.
 #
 # Output: 07.6-fastStructure/07.6.${K_GLOBAL}-K=${K_GLOBAL}/Pop_${POP_ID}/
 # -------------------------------------------------------------------
@@ -43,7 +48,6 @@ set -euo pipefail
 # STEP 0: Environment setup
 # -------------------------------------------------------------------
 module purge
-module load bioinfo/Bcftools/1.9
 module load bioinfo/PLINK/1.90b7
 module load bioinfo/fastStructure/1.0
 module load statistics/R/4.3.0
@@ -74,8 +78,8 @@ LOG_FILE="${LOG_DIR}/07.9-fstruct_K${K_GLOBAL}_${POP_LABEL}.log"
 
 mkdir -p "$OUT_DIR" "$LOG_DIR" "$TMP_DIR"
 echo "START $(date -Iseconds) 07.9 fastStructure cluster K=${K_GLOBAL} ${POP_LABEL}" > "$LOG_FILE"
-echo "Input VCF : $INPUT_VCF" | tee -a "$LOG_FILE"
-echo "Intra-cluster K range: ${K_MIN}..${K_MAX} | seeds: ${SEEDS} | SNPs retained: ${N_SNP_THIN} (thin seed: ${THIN_SEED})" | tee -a "$LOG_FILE"
+echo "Input VCF  : $INPUT_VCF" | tee -a "$LOG_FILE"
+echo "Intra-cluster K range: ${K_MIN}..${K_MAX} | seeds: ${SEEDS} | SNP target: ${N_SNP_THIN} (thin seed: ${THIN_SEED})" | tee -a "$LOG_FILE"
 
 if [ ! -s "$INPUT_VCF" ]; then
     echo "ERROR: input VCF not found: $INPUT_VCF" | tee -a "$LOG_FILE"; exit 1
@@ -109,35 +113,70 @@ if [ "$N_IND" -lt 3 ]; then
 fi
 
 # -------------------------------------------------------------------
-# STEP 3: PLINK VCF -> BED (subset to this population)
-# fastStructure accepts PLINK BED; no chromosome remapping needed
-# (unlike ADMIXTURE, fastStructure tolerates non-numeric chr IDs).
+# STEP 3: PLINK VCF -> BED (within-cluster MAF filter + thinning)
+#
+# Pass 3a: subset individuals + MAF >= 0.05 within cluster.
+#   Between-cluster fixed differences (polymorphic globally, fixed within
+#   the cluster) are removed — they carry no within-cluster signal.
+# Pass 3b: thin to N_SNP_THIN if more polymorphic SNPs are available;
+#   retain all if the cluster has fewer (e.g. small n or low diversity).
 # -------------------------------------------------------------------
 PLINK_PREFIX="${OUT_DIR}/fastStructure_input"
-echo "STEP 3: PLINK conversion" | tee -a "$LOG_FILE"
+PLINK_FULL="${TMP_DIR}/fastStructure_input_full"
+echo "STEP 3: PLINK conversion (within-cluster MAF >= 0.05)" | tee -a "$LOG_FILE"
 
+# 3a: cluster individuals + within-cluster MAF filter
 plink \
     --vcf "$INPUT_VCF" \
     --make-bed \
     --allow-extra-chr \
     --const-fid \
     --keep "$KEEP_FILE" \
-    --thin-count "$N_SNP_THIN" \
-    --seed "$THIN_SEED" \
-    --out "$PLINK_PREFIX" >> "$LOG_FILE" 2>&1
+    --maf 0.05 \
+    --out "$PLINK_FULL" >> "$LOG_FILE" 2>&1
+
+if [ ! -s "${PLINK_FULL}.bed" ]; then
+    echo "ERROR: PLINK step 3a failed" | tee -a "$LOG_FILE"; exit 1
+fi
+N_SNP_AVAIL=$(wc -l < "${PLINK_FULL}.bim")
+echo "INFO: ${N_SNP_AVAIL} within-cluster polymorphic SNPs (MAF >= 0.05)" | tee -a "$LOG_FILE"
+
+# 3b: thin to N_SNP_THIN, or keep all if fewer are available
+if [ "$N_SNP_AVAIL" -le "$N_SNP_THIN" ]; then
+    cp "${PLINK_FULL}.bed" "${PLINK_PREFIX}.bed"
+    cp "${PLINK_FULL}.bim" "${PLINK_PREFIX}.bim"
+    cp "${PLINK_FULL}.fam" "${PLINK_PREFIX}.fam"
+    echo "INFO: retaining all ${N_SNP_AVAIL} SNPs (below ${N_SNP_THIN} target)" | tee -a "$LOG_FILE"
+else
+    plink \
+        --bfile "$PLINK_FULL" \
+        --allow-extra-chr \
+        --thin-count "$N_SNP_THIN" \
+        --seed "$THIN_SEED" \
+        --make-bed \
+        --out "$PLINK_PREFIX" >> "$LOG_FILE" 2>&1
+    echo "INFO: thinned to ${N_SNP_THIN} SNPs (seed=${THIN_SEED})" | tee -a "$LOG_FILE"
+fi
+rm -f "${PLINK_FULL}".{bed,bim,fam,log,nosex,hh}
 
 if [ ! -s "${PLINK_PREFIX}.bed" ]; then
     echo "ERROR: PLINK conversion failed" | tee -a "$LOG_FILE"; exit 1
 fi
 N_SNP=$(wc -l < "${PLINK_PREFIX}.bim")
-echo "INFO: ${N_IND} individuals, ${N_SNP} SNPs (subsampled from LD-pruned VCF, thin seed=${THIN_SEED})" | tee -a "$LOG_FILE"
+echo "INFO: ${N_IND} individuals, ${N_SNP} within-cluster polymorphic SNPs for fastStructure" | tee -a "$LOG_FILE"
 
 # -------------------------------------------------------------------
 # STEP 4: fastStructure K=K_MIN..K_MAX × SEEDS replicates
 # Each replicate uses a unique output prefix: run_K${K}_s${SEED}
-# Parameters: logistic prior, 10-fold CV, convergence tol=1e-6
+# Parameters: logistic prior (recommended for admixed populations),
+#   CV folds adapted to sample size (min 3, max 10), tol=1e-6.
+# Seeds run in parallel (one background process per seed).
 # -------------------------------------------------------------------
 echo "STEP 4: fastStructure K=${K_MIN}..${K_MAX} x seeds [${SEEDS}]" | tee -a "$LOG_FILE"
+
+# CV folds: cap at n_ind/3 to avoid folds with < 3 test individuals
+CV_FOLDS=$(awk -v n="$N_IND" 'BEGIN { cv = int(n/3); print (cv > 10 ? 10 : (cv < 3 ? 3 : cv)) }')
+echo "INFO: using --cv=${CV_FOLDS} (n=${N_IND} individuals)" | tee -a "$LOG_FILE"
 
 BEST_SEEDS_FILE="${OUT_DIR}/best_seeds.txt"
 > "$BEST_SEEDS_FILE"
@@ -156,7 +195,7 @@ for K in $(seq "$K_MIN" "$K_MAX"); do
                 --input="${PLINK_PREFIX}" \
                 --output="${OUT_DIR}/run_K${K}_s${SEED}" \
                 --prior=logistic \
-                --cv=10 \
+                --cv="${CV_FOLDS}" \
                 --tol=1e-6 \
                 --format=bed \
                 --seed="${SEED}" \
@@ -212,17 +251,10 @@ for K in $(seq "$K_MIN" "$K_MAX"); do
            "${OUT_DIR}/fastStructure_best.${K}.meanQ"
 done
 
-# K model selection on best replicates
-echo "STEP 4b: chooseK.py on best replicates" | tee -a "$LOG_FILE"
-python "${HOME_FAST}/chooseK.py" \
-    --input="${OUT_DIR}/fastStructure_best" \
-    >> "$LOG_FILE" 2>&1 \
-    || echo "WARN: chooseK.py returned non-zero" | tee -a "$LOG_FILE"
-
 # -------------------------------------------------------------------
-# STEP 5: Attach individual names to .meanQ matrices
-# The resulting .named.Q files follow the same format as ADMIXTURE
-# output, enabling direct reuse of 07.2-admixture_plot.R.
+# STEP 5: Attach individual names to best-replicate .meanQ matrices
+# paste produces: sample_id <TAB> p1 <SP> p2 ... pK
+# The R plotting script reads this with sep="" (any whitespace).
 # -------------------------------------------------------------------
 IDS_FILE="${OUT_DIR}/individual_ids.txt"
 awk '{print $2}' "${PLINK_PREFIX}.fam" > "$IDS_FILE"
@@ -242,12 +274,9 @@ for K in $(seq "$K_MIN" "$K_MAX"); do
 done
 
 # -------------------------------------------------------------------
-# STEP 6: R barplot (reuses 07.2-admixture_plot.R)
-#   arg1 = out_dir   (directory with named.Q files)
-#   arg2 = map_file  (sample_id -> site, for individual labels)
-#   arg3 = k_min
-#   arg4 = k_max
-#   arg5 = bed_base  (prefix shared by all named.Q files)
+# STEP 6: R barplot (07.6-fastStructure_plot.R)
+#   Produces one PNG per K: fastStructure_K{k}.png
+#   Layout mirrors 07.2-admixture_plot.R (single ggplot, ADMIXTURE style).
 # -------------------------------------------------------------------
 if [ -s "$R_PLOT_SCRIPT" ]; then
     echo "STEP 6: R barplot" | tee -a "$LOG_FILE"
