@@ -90,6 +90,24 @@ SCAFFOLDS=(
 )
 SCAFFOLDS_CSV=$(IFS=,; echo "${SCAFFOLDS[*]}")
 
+# Scaffold lengths from Dgu_HS1_HYBRID_SCAFFOLD.fa.fai
+# Required by smc++ vcf2smc --length: subset VCF headers lack ##contig lines
+declare -A SCAFFOLD_LENGTHS=(
+    [Super-Scaffold_1]=41062991
+    [Super-Scaffold_2]=43610879
+    [Super-Scaffold_4]=38450403
+    [Super-Scaffold_5]=40225412
+    [Super-Scaffold_6]=37865487
+    [Super-Scaffold_7]=37763175
+    [Super-Scaffold_8]=39463349
+    [Super-Scaffold_12]=40647968
+    [Super-Scaffold_13]=41045391
+    [Super-Scaffold_14]=34837072
+    [Super-Scaffold_16]=32669108
+    [Super-Scaffold_17]=36622932
+    [Super-Scaffold_21]=33998326
+)
+
 LOG_DIR="${OUT_BASE}/logs"
 mkdir -p "$LOG_DIR" "${OUT_BASE}/csv" "${OUT_BASE}/plots"
 LOG_FILE="${LOG_DIR}/07.12a-smcpp_estimate.log"
@@ -168,6 +186,19 @@ fi
 # -------------------------------------------------------------------
 echo "STEP 4: generating vcf2smc commands" | tee -a "$LOG_FILE"
 
+# Remove empty/truncated .smc.gz files from previous failed runs.
+# Legitimate files are several MB; files from a run without --length are ~450 bytes.
+SMC_MIN_BYTES=1000
+N_PURGED=0
+for POP in Pop_1 Pop_2 Pop_3 Pop_4; do
+    OUT_POP="${OUT_BASE}/${POP}"
+    while IFS= read -r f; do
+        rm -f "$f"
+        N_PURGED=$((N_PURGED + 1))
+    done < <(find "${OUT_POP}/vcf2smc" -name "*.smc.gz" -size -${SMC_MIN_BYTES}c 2>/dev/null)
+done
+[ "$N_PURGED" -gt 0 ] && echo "  INFO: purged ${N_PURGED} truncated .smc.gz files" | tee -a "$LOG_FILE"
+
 VCF2SMC_CMDS="${LOG_DIR}/vcf2smc_commands.txt"
 > "$VCF2SMC_CMDS"
 N_SKIP=0
@@ -191,8 +222,8 @@ for POP in Pop_1 Pop_2 Pop_3 Pop_4; do
                 N_SKIP=$((N_SKIP + 1))
                 continue
             fi
-            printf 'smc++ vcf2smc --mask "%s" -d "%s" "%s" "%s" "%s" "%s" "%s:%s"\n' \
-                "$TE_BED" "$DIST" "$DIST" "$FG_VCF" \
+            printf 'smc++ vcf2smc --mask "%s" --length "%s" -d "%s" "%s" "%s" "%s" "%s" "%s:%s"\n' \
+                "$TE_BED" "${SCAFFOLD_LENGTHS[$CHR]}" "$DIST" "$DIST" "$FG_VCF" \
                 "$OUT_SMC" "$CHR" "$POP" "$SAMPLES_CSV" \
                 >> "$VCF2SMC_CMDS"
             N_GEN=$((N_GEN + 1))

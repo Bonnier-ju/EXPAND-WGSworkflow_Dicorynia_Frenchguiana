@@ -69,6 +69,23 @@ SCAFFOLDS=(
     Super-Scaffold_21
 )
 
+# Scaffold lengths from Dgu_HS1_HYBRID_SCAFFOLD.fa.fai (required by --length)
+declare -A SCAFFOLD_LENGTHS=(
+    [Super-Scaffold_1]=41062991
+    [Super-Scaffold_2]=43610879
+    [Super-Scaffold_4]=38450403
+    [Super-Scaffold_5]=40225412
+    [Super-Scaffold_6]=37865487
+    [Super-Scaffold_7]=37763175
+    [Super-Scaffold_8]=39463349
+    [Super-Scaffold_12]=40647968
+    [Super-Scaffold_13]=41045391
+    [Super-Scaffold_14]=34837072
+    [Super-Scaffold_16]=32669108
+    [Super-Scaffold_17]=36622932
+    [Super-Scaffold_21]=33998326
+)
+
 # All 6 pairwise combinations of 4 populations
 declare -a PAIRS=("Pop_1:Pop_2" "Pop_1:Pop_3" "Pop_1:Pop_4"
                   "Pop_2:Pop_3" "Pop_2:Pop_4" "Pop_3:Pop_4")
@@ -150,8 +167,8 @@ for PAIR in "${PAIRS[@]}"; do
         for CHR in "${SCAFFOLDS[@]}"; do
             OUT_SMC="${PAIR_DIR}/vcf2smc/${POP_A}.${CHR}.${DIST}.smc.gz"
             if [ -s "$OUT_SMC" ]; then N_SKIP=$((N_SKIP + 1)); continue; fi
-            printf 'smc++ vcf2smc --mask "%s" -d "%s" "%s" "%s" "%s" "%s" "%s:%s" "%s:%s"\n' \
-                "$TE_BED" "$DIST" "$DIST" "$FG_VCF" "$OUT_SMC" "$CHR" \
+            printf 'smc++ vcf2smc --mask "%s" --length "%s" -d "%s" "%s" "%s" "%s" "%s" "%s:%s" "%s:%s"\n' \
+                "$TE_BED" "${SCAFFOLD_LENGTHS[$CHR]}" "$DIST" "$DIST" "$FG_VCF" "$OUT_SMC" "$CHR" \
                 "$POP_A" "$SAMPLES_A_CSV" "$POP_B" "$SAMPLES_B_CSV" \
                 >> "$SPLIT_CMDS"
             N_GEN=$((N_GEN + 1))
@@ -163,8 +180,8 @@ for PAIR in "${PAIRS[@]}"; do
         for CHR in "${SCAFFOLDS[@]}"; do
             OUT_SMC="${PAIR_DIR}/vcf2smc/${POP_B}.${CHR}.${DIST}.smc.gz"
             if [ -s "$OUT_SMC" ]; then N_SKIP=$((N_SKIP + 1)); continue; fi
-            printf 'smc++ vcf2smc --mask "%s" -d "%s" "%s" "%s" "%s" "%s" "%s:%s" "%s:%s"\n' \
-                "$TE_BED" "$DIST" "$DIST" "$FG_VCF" "$OUT_SMC" "$CHR" \
+            printf 'smc++ vcf2smc --mask "%s" --length "%s" -d "%s" "%s" "%s" "%s" "%s" "%s:%s" "%s:%s"\n' \
+                "$TE_BED" "${SCAFFOLD_LENGTHS[$CHR]}" "$DIST" "$DIST" "$FG_VCF" "$OUT_SMC" "$CHR" \
                 "$POP_A" "$SAMPLES_A_CSV" "$POP_B" "$SAMPLES_B_CSV" \
                 >> "$SPLIT_CMDS"
             N_GEN=$((N_GEN + 1))
