@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p unlimitq
-#SBATCH --time=96:00:00
+#SBATCH --time=180:00:00
 #SBATCH -J 07.11-stairway_plot
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
@@ -27,19 +27,20 @@
 #   STEP 3g : Stairway Plot phase 2 (training replicates via sarray)
 #   STEP 3h : Stairway Plot phase 3 (summary + built-in plot)
 #
-# L estimation (callable sites):
-#   Reference genome: Dgu_HS1_HYBRID_SCAFFOLD.fa → 550,240,880 bp
-#   TE-masked bases (Dgu_HS1_HYBRID_SCAFFOLD.fa.out.gff.gz): 296,419,896 bp
-#   L = 550,240,880 - 296,419,896 = 253,820,984 callable sites
+# L estimation (callable non-TE sites, GQ >= 20, computed from GVCFs):
+#   Per-population mean over 5 samples each (07.11b-compute_L.slurm):
+#     Pop_1: 215,357,483 bp  |  Pop_2: 221,273,354 bp
+#     Pop_3: 193,750,488 bp  |  Pop_4: 216,089,077 bp
+#   Non-TE genome: 270,668,577 bp total; Pop_3 lower due to reduced GQ coverage.
 #
 # Mutation rate: mu=5e-9 per site per generation (central estimate;
 #   R script shows sensitivity for mu = 2..8 × 10^-9 by rescaling axes).
 #
 # Note on site independence: Stairway Plot 2 assumes independent sites.
-#   The TE-filtered VCF contains ~5-10M SNPs per cluster without LD pruning.
-#   LD decay in tropical trees is typically short-range (<1 kb), so the
-#   impact on SFS shape is expected to be minor, but should be acknowledged
-#   in the methods. Using all SNPs (vs LD-pruned) maximises SFS accuracy.
+#   The LD-pruned VCF (06.6b) is used to satisfy this assumption and make
+#   the SFS estimates statistically more rigorous. LD pruning removes
+#   correlated sites while retaining the genome-wide allele frequency
+#   distribution required for SFS-based demographic inference.
 #
 # Clusters run SEQUENTIALLY (memory safety for easySFS with ~5-10M SNPs).
 # Training replicates run in PARALLEL via sarray (200 per population).
@@ -65,8 +66,8 @@ export R_LIBS_USER="${HOME}/R/R"
 # -------------------------------------------------------------------
 K_GLOBAL="${K_GLOBAL:-4}"
 
-# L = non-TE callable genome size (bp)
-L_CALLABLE=253820984
+# L per population (non-TE callable sites, GQ >= 20, mean of 5 GVCFs each)
+declare -A L_POP=([Pop_1]=215357483 [Pop_2]=221273354 [Pop_3]=193750488 [Pop_4]=216089077)
 # Reference mutation rate (see R script for sensitivity to other values)
 MU_REF="5e-9"
 YEAR_PER_GEN=30
@@ -74,7 +75,7 @@ NINPUT=200     # Stairway Plot bootstrap replicates
 PCT_TRAIN=0.67
 
 BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
-INPUT_VCF="${BASE}/06-variant_filtering/workflow_full/06.5-transposable_element_filtering/snps_TE_filtered.vcf.gz"
+INPUT_VCF="${BASE}/06-variant_filtering/workflow_full/06.6b-ld_pruning/snps_TE_filtered.ld_pruned.vcf.gz"
 CLUSTER_ASSIGNMENTS="${BASE}/metadata/cluster_assignments.tsv"
 STAIRWAY_ES_DIR="/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es"
 R_PLOT_SCRIPT="${BASE}/00-Scripts/00.2-R_scripts/07.11-stairway_plot.R"
@@ -84,7 +85,7 @@ mkdir -p "${OUT_BASE}/logs"
 LOG_FILE="${OUT_BASE}/logs/07.11-stairway_plot.log"
 echo "START $(date -Iseconds) 07.11 Stairway Plot K=${K_GLOBAL}" > "$LOG_FILE"
 echo "Input VCF  : $INPUT_VCF" | tee -a "$LOG_FILE"
-echo "L callable : ${L_CALLABLE} bp" | tee -a "$LOG_FILE"
+echo "L callable : Pop_1=${L_POP[Pop_1]} Pop_2=${L_POP[Pop_2]} Pop_3=${L_POP[Pop_3]} Pop_4=${L_POP[Pop_4]}" | tee -a "$LOG_FILE"
 echo "mu_ref     : ${MU_REF}" | tee -a "$LOG_FILE"
 
 if [ ! -s "$INPUT_VCF" ]; then
@@ -250,7 +251,7 @@ for POP in Pop_1 Pop_2 Pop_3 Pop_4; do
     cat > "$BLUEPRINT" << BPEOF
 popid: ${POP}
 nseq: ${NPROJ}
-L: ${L_CALLABLE}
+L: ${L_POP[${POP}]}
 whether_folded: true
 SFS: ${SFS_STR}
 pct_training: ${PCT_TRAIN}
