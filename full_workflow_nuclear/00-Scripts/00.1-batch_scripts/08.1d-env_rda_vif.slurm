@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p workq
 #SBATCH --time=04:00:00
-#SBATCH -J 08.1c-env_rda_vif
+#SBATCH -J 08.1d-env_rda_vif
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
 #SBATCH --mem=64G
@@ -31,9 +31,10 @@ SAMPLE_META="${BASE}/08-gea/workflow_full/08.2-genotype_matrix/sample_metadata.t
 CHELSA_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/chelsa/chelsa_env_per_site.csv"
 ENVIREM_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/envirem/envirem_env_per_site.csv"
 MANUAL_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/manual_variables/manual_variables_per_site.csv"
+TERRA_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/terraclimate/terraclimate_env_per_site.csv"
 
-# Variables selected in 08.1a/08.1b (uncommented lines = kept)
-VARS_FILE="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/correlation_analysis/variables_to_keep_template.txt"
+# Variables selected in 08.1a (uncommented lines = kept)
+VARS_FILE="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/correlation_analysis/variables_to_keep.txt"
 
 OUT_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/rda_vif"
 LOG_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/logs"
@@ -47,7 +48,7 @@ mkdir -p "$OUT_DIR" "$LOG_DIR"
 echo "START $(date -Iseconds) 08.1c RDA forward selection + VIF" > "$LOG_FILE"
 
 # Check inputs
-for f in "$GENO_MATRIX" "$SAMPLE_META" "$CHELSA_CSV" "$ENVIREM_CSV" "$MANUAL_CSV" "$VARS_FILE"; do
+for f in "$GENO_MATRIX" "$SAMPLE_META" "$CHELSA_CSV" "$ENVIREM_CSV" "$MANUAL_CSV" "$TERRA_CSV" "$VARS_FILE"; do
     if [ ! -s "$f" ]; then
         echo "ERROR: required input missing: $f" | tee -a "$LOG_FILE"
         exit 1
@@ -66,7 +67,8 @@ Rscript --vanilla "$R_SCRIPT" \
     "$MANUAL_CSV" \
     "$VARS_FILE" \
     "$OUT_DIR" \
-    "$N_PERM" >> "$LOG_FILE" 2>&1
+    "$N_PERM" \
+    "$TERRA_CSV" >> "$LOG_FILE" 2>&1
 
 echo "DONE $(date -Iseconds) 08.1c RDA + VIF completed" | tee -a "$LOG_FILE"
 echo "Outputs: ${OUT_DIR}"

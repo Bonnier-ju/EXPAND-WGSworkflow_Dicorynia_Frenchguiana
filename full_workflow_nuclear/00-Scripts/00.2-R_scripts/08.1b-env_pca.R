@@ -3,10 +3,12 @@
 # PCA on user-selected environmental variables at site level.
 #
 # Inputs:
-#   chelsa_env_per_site.csv   — CHELSA BIO variables (temp in K after /10, precip raw)
-#   envirem_env_per_site.csv  — ENVIREM variables (physical units)
+#   chelsa_env_per_site.csv       — CHELSA BIO variables (temp in K after /10, precip raw)
+#   envirem_env_per_site.csv      — ENVIREM variables (physical units)
 #   manual_variables_per_site.csv — elevation + habitat dummies
-#   variables_to_keep_template.txt — user selection (uncommented = kept)
+#   variables_to_keep.txt         — user selection (uncommented = kept)
+#   out_dir                       — output root directory
+#   terraclimate_env_per_site.csv — TerraClimate 30-yr normals (08.0.4 output)
 #
 # Outputs (plots/):
 #   pca_screeplot.png/pdf
@@ -45,12 +47,13 @@ site_colors <- if (file.exists(SITE_COLORS_FILE)) {
 # -------------------------------------------------------------------
 # Arguments
 # -------------------------------------------------------------------
-args            <- commandArgs(trailingOnly = TRUE)
-chelsa_csv      <- if (length(args) >= 1) args[1] else stop("chelsa_csv required")
-envirem_csv     <- if (length(args) >= 2) args[2] else stop("envirem_csv required")
-manual_csv      <- if (length(args) >= 3) args[3] else stop("manual_csv required")
-vars_file       <- if (length(args) >= 4) args[4] else stop("vars_file required")
-out_dir         <- if (length(args) >= 5) args[5] else stop("out_dir required")
+args                  <- commandArgs(trailingOnly = TRUE)
+chelsa_csv            <- if (length(args) >= 1) args[1] else stop("chelsa_csv required")
+envirem_csv           <- if (length(args) >= 2) args[2] else stop("envirem_csv required")
+manual_csv            <- if (length(args) >= 3) args[3] else stop("manual_csv required")
+vars_file             <- if (length(args) >= 4) args[4] else stop("vars_file required")
+out_dir               <- if (length(args) >= 5) args[5] else stop("out_dir required")
+terraclimate_csv      <- if (length(args) >= 6) args[6] else NULL
 
 plot_dir <- file.path(out_dir, "plots")
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
@@ -87,6 +90,14 @@ envirem <- read.csv(envirem_csv, stringsAsFactors = FALSE, check.names = FALSE)
 cat("Loading manual site data:", manual_csv, "\n")
 manual <- read.csv(manual_csv, stringsAsFactors = FALSE, check.names = FALSE)
 
+terraclimate <- NULL
+if (!is.null(terraclimate_csv) && file.exists(terraclimate_csv)) {
+  cat("Loading TerraClimate site data:", terraclimate_csv, "\n")
+  terraclimate <- read.csv(terraclimate_csv, stringsAsFactors = FALSE, check.names = FALSE)
+} else {
+  cat("WARN: TerraClimate CSV not provided or not found — TerraClimate vars will be NA\n")
+}
+
 # -------------------------------------------------------------------
 # STEP 3: Apply CHELSA scale factor corrections
 # The chelsa_env_per_site.csv stores:
@@ -114,6 +125,15 @@ env_all <- merge(chelsa[, c("site", names(chelsa)[names(chelsa) != "lat" & names
 env_all <- merge(env_all,
                  manual[, c("site", "elevation")],
                  by = "site", all.x = TRUE)
+
+if (!is.null(terraclimate)) {
+  tc_cols <- names(terraclimate)[!names(terraclimate) %in% c("lat", "long")]
+  env_all <- merge(env_all,
+                   terraclimate[, tc_cols],
+                   by = "site", all.x = TRUE)
+  cat(sprintf("INFO: TerraClimate merged (%d variables)\n",
+              length(tc_cols) - 1))
+}
 
 # Exclude outgroup site
 env_all <- env_all[env_all$site != "Cameroun_Benin", ]

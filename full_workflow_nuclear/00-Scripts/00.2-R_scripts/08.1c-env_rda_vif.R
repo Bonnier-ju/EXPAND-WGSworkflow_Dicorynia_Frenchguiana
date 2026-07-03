@@ -62,15 +62,16 @@ site_colors <- if (file.exists(SITE_COLORS_FILE)) {
 # -------------------------------------------------------------------
 # Arguments
 # -------------------------------------------------------------------
-args        <- commandArgs(trailingOnly = TRUE)
-geno_file   <- if (length(args) >= 1) args[1] else stop("geno_file required")
-meta_file   <- if (length(args) >= 2) args[2] else stop("meta_file required")
-chelsa_csv  <- if (length(args) >= 3) args[3] else stop("chelsa_csv required")
-envirem_csv <- if (length(args) >= 4) args[4] else stop("envirem_csv required")
-manual_csv  <- if (length(args) >= 5) args[5] else stop("manual_csv required")
-vars_file   <- if (length(args) >= 6) args[6] else stop("vars_file required")
-out_dir     <- if (length(args) >= 7) args[7] else stop("out_dir required")
-n_perm      <- if (length(args) >= 8) as.integer(args[8]) else 999L
+args              <- commandArgs(trailingOnly = TRUE)
+geno_file         <- if (length(args) >= 1) args[1] else stop("geno_file required")
+meta_file         <- if (length(args) >= 2) args[2] else stop("meta_file required")
+chelsa_csv        <- if (length(args) >= 3) args[3] else stop("chelsa_csv required")
+envirem_csv       <- if (length(args) >= 4) args[4] else stop("envirem_csv required")
+manual_csv        <- if (length(args) >= 5) args[5] else stop("manual_csv required")
+vars_file         <- if (length(args) >= 6) args[6] else stop("vars_file required")
+out_dir           <- if (length(args) >= 7) args[7] else stop("out_dir required")
+n_perm            <- if (length(args) >= 8) as.integer(args[8]) else 999L
+terraclimate_csv  <- if (length(args) >= 9) args[9] else NULL
 
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 set.seed(42)
@@ -106,7 +107,16 @@ precip   <- intersect(paste0("BIO", 12:19), names(chelsa))
 for (v in temp_abs) chelsa[[v]] <- chelsa[[v]] - 273.15
 for (v in precip)   chelsa[[v]] <- chelsa[[v]] / 10
 
-# Merge the three sources
+# Load TerraClimate if provided
+terraclimate <- NULL
+if (!is.null(terraclimate_csv) && file.exists(terraclimate_csv)) {
+  cat("Loading TerraClimate site data:", terraclimate_csv, "\n")
+  terraclimate <- read.csv(terraclimate_csv, stringsAsFactors = FALSE, check.names = FALSE)
+} else {
+  cat("WARN: TerraClimate CSV not provided — TerraClimate variables will be unavailable\n")
+}
+
+# Merge all four sources, keeping only selected variables
 env_site <- merge(
   chelsa[, c("site", intersect(selected_vars, names(chelsa)))],
   envirem[, c("site", intersect(selected_vars, names(envirem)))],
@@ -116,6 +126,16 @@ if ("elevation" %in% selected_vars) {
   env_site <- merge(env_site,
                     manual[, c("site", "elevation")],
                     by = "site", all.x = TRUE)
+}
+if (!is.null(terraclimate)) {
+  tc_sel <- intersect(selected_vars, names(terraclimate))
+  if (length(tc_sel) > 0) {
+    env_site <- merge(env_site,
+                      terraclimate[, c("site", tc_sel)],
+                      by = "site", all.x = TRUE)
+    cat(sprintf("INFO: %d TerraClimate variables merged: %s\n",
+                length(tc_sel), paste(tc_sel, collapse = ", ")))
+  }
 }
 env_site <- env_site[env_site$site != "Cameroun_Benin", ]
 

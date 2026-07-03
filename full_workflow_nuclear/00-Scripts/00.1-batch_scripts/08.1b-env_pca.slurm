@@ -26,8 +26,9 @@ BASE="/home/jbonnier/work/chapitre_5/full_workflow_nuclear"
 CHELSA_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/chelsa/chelsa_env_per_site.csv"
 ENVIREM_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/envirem/envirem_env_per_site.csv"
 MANUAL_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/manual_variables/manual_variables_per_site.csv"
+TERRA_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/terraclimate/terraclimate_env_per_site.csv"
 
-VARS_TO_KEEP="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/correlation_analysis/variables_to_keep_template.txt"
+VARS_TO_KEEP="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/correlation_analysis/variables_to_keep.txt"
 
 OUT_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection"
 LOG_DIR="${OUT_DIR}/logs"
@@ -46,7 +47,8 @@ Rscript --vanilla "$R_SCRIPT" \
     "$ENVIREM_SITE_CSV" \
     "$MANUAL_SITE_CSV" \
     "$VARS_TO_KEEP" \
-    "$OUT_DIR" >> "$LOG_FILE" 2>&1
+    "$OUT_DIR" \
+    "$TERRA_SITE_CSV" >> "$LOG_FILE" 2>&1
 
 echo "DONE $(date -Iseconds) 08.1b env PCA completed" | tee -a "$LOG_FILE"
 echo "Outputs: ${OUT_DIR}/plots/"

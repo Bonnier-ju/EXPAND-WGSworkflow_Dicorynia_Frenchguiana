@@ -56,6 +56,7 @@ module purge
 module load devel/Miniconda/Miniconda3
 module load bioinfo/SMC++/1.15.5
 module load bioinfo/Bcftools/1.9
+module load bioinfo/samtools/1.21
 module load statistics/R/4.3.0
 export R_LIBS_USER="${HOME}/R/R"
 
@@ -146,6 +147,24 @@ for POP in Pop_1 Pop_2 Pop_3 Pop_4; do
     N=$(wc -l < "${LOG_DIR}/samples_${POP}.txt")
     echo "  ${POP}: ${N} individuals" | tee -a "$LOG_FILE"
 done
+
+# -------------------------------------------------------------------
+# STEP 2.5: bgzip + tabix-index TE mask for smc++ vcf2smc --mask
+#
+# smc++ vcf2smc passes the mask to pysam.TabixFile, which requires a
+# bgzipped BED (.bed.gz) with a tabix index (.bed.gz.tbi).
+# A plain .bed file causes: OSError: index .tbi not found
+# -------------------------------------------------------------------
+TE_BED_GZ="${TE_BED}.gz"
+if [ ! -s "${TE_BED_GZ}.tbi" ]; then
+    echo "STEP 2.5: bgzipping and indexing TE mask" | tee -a "$LOG_FILE"
+    bgzip -c "$TE_BED" > "$TE_BED_GZ"
+    tabix -p bed "$TE_BED_GZ"
+    echo "  TE mask indexed: $TE_BED_GZ" | tee -a "$LOG_FILE"
+else
+    echo "STEP 2.5: TE mask index exists — reusing $TE_BED_GZ" | tee -a "$LOG_FILE"
+fi
+TE_BED="$TE_BED_GZ"
 
 # -------------------------------------------------------------------
 # STEP 3: Shared VCF — 155 FG individuals, 13 Super-Scaffolds

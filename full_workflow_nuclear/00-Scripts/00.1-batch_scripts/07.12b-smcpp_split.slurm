@@ -41,6 +41,7 @@ set -euo pipefail
 module purge
 module load devel/Miniconda/Miniconda3
 module load bioinfo/SMC++/1.15.5
+module load bioinfo/samtools/1.21
 module load statistics/R/4.3.0
 export R_LIBS_USER="${HOME}/R/R"
 
@@ -110,6 +111,24 @@ for POP in Pop_1 Pop_2 Pop_3 Pop_4; do
     }
 done
 echo "INFO: all marginal models verified" | tee -a "$LOG_FILE"
+
+# -------------------------------------------------------------------
+# STEP 1.5: bgzip + tabix-index TE mask for smc++ vcf2smc --mask
+#
+# smc++ vcf2smc passes the mask to pysam.TabixFile, which requires a
+# bgzipped BED (.bed.gz) with a tabix index (.bed.gz.tbi).
+# A plain .bed file causes: OSError: index .tbi not found
+# -------------------------------------------------------------------
+TE_BED_GZ="${TE_BED}.gz"
+if [ ! -s "${TE_BED_GZ}.tbi" ]; then
+    echo "STEP 1.5: bgzipping and indexing TE mask" | tee -a "$LOG_FILE"
+    bgzip -c "$TE_BED" > "$TE_BED_GZ"
+    tabix -p bed "$TE_BED_GZ"
+    echo "  TE mask indexed: $TE_BED_GZ" | tee -a "$LOG_FILE"
+else
+    echo "STEP 1.5: TE mask index exists — reusing $TE_BED_GZ" | tee -a "$LOG_FILE"
+fi
+TE_BED="$TE_BED_GZ"
 
 # -------------------------------------------------------------------
 # STEP 2: Load sample lists (written by 07.12a)
