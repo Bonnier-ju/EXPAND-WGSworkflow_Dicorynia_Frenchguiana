@@ -9,23 +9,28 @@
 # Scale factors are validated against the already-computed site-level CSVs.
 #
 # Inputs:
-#   chelsa_dir       — directory with CHELSA_bio{N}_1981-2010_V.2.1.tif
-#   envirem_root     — ENVIREM raster root directory
-#   dem_dir          — Copernicus DEM GLO-30 tile directory
-#   chelsa_site_csv  — chelsa_env_per_site.csv (physical units, 08.0.1 output)
-#   envirem_site_csv — envirem_env_per_site.csv (physical units, 08.0.2 output)
-#   manual_site_csv  — manual_variables_per_site.csv (08.0.3 output)
-#   out_dir          — output root (08.1-env_variable_selection/)
-#   n_points         — number of random landscape points (default 5000)
-#   cor_threshold    — |r| threshold for flagging high correlations (default 0.7)
+#   chelsa_dir            — directory with CHELSA_bio{N}_1981-2010_V.2.1.tif
+#   envirem_root          — ENVIREM raster root directory
+#   dem_dir               — Copernicus DEM GLO-30 tile directory
+#   chelsa_site_csv       — chelsa_env_per_site.csv (physical units, 08.0.1 output)
+#   envirem_site_csv      — envirem_env_per_site.csv (physical units, 08.0.2 output)
+#   manual_site_csv       — manual_variables_per_site.csv (08.0.3 output)
+#   out_dir               — output root (08.1-env_variable_selection/)
+#   n_points              — number of random landscape points (default 5000)
+#   cor_threshold         — |r| threshold for flagging high correlations (default 0.7)
+#   terraclimate_site_csv — terraclimate_env_per_site.csv (08.0.4 output)
 #
 # Outputs:
 #   correlation_analysis/landscape_correlation_matrix.csv
 #   correlation_analysis/landscape_high_correlations.tsv
+#   correlation_analysis/site_level_correlation_matrix.csv   [all 4 sources, n=19 sites]
+#   correlation_analysis/site_level_high_correlations.tsv    [all 4 sources, n=19 sites]
 #   correlation_analysis/variable_summary.tsv
 #   correlation_analysis/variables_to_keep_template.txt
 #   plots/landscape_correlation_heatmap.png
 #   plots/landscape_correlation_heatmap.pdf
+#   plots/site_level_correlation_heatmap.png                 [all 4 sources]
+#   plots/site_level_correlation_heatmap.pdf                 [all 4 sources]
 
 suppressPackageStartupMessages({
   if (!requireNamespace("terra", quietly = TRUE))
@@ -51,7 +56,8 @@ envirem_site_csv <- args[5]
 manual_site_csv  <- args[6]
 out_dir        <- args[7]
 n_points       <- if (length(args) >= 8) as.integer(args[8]) else 5000L
-cor_threshold  <- if (length(args) >= 9) as.numeric(args[9]) else 0.7
+cor_threshold         <- if (length(args) >= 9) as.numeric(args[9]) else 0.7
+terraclimate_site_csv <- if (length(args) >= 10) args[10] else NULL
 
 cor_dir  <- file.path(out_dir, "correlation_analysis")
 plot_dir <- file.path(out_dir, "plots")
@@ -390,61 +396,256 @@ ggsave(file.path(plot_dir, "landscape_correlation_heatmap.pdf"),
 cat("Heatmap written\n")
 
 # -------------------------------------------------------------------
+# STEP 12b: Site-level joint correlation — all 4 sources + TerraClimate
+#
+# The landscape raster analysis (CHELSA + ENVIREM, n=5000 pts) captures
+# spatial redundancy across French Guiana but excludes TerraClimate.
+# The site-level analysis (n=19 sites) covers all 4 sources and is the
+# operative correlation reference for GEA variable selection, since
+# the GEA models operate on per-site environmental values.
+# -------------------------------------------------------------------
+cat("STEP 12b: site-level joint correlation (all 4 sources + TerraClimate)\n")
+
+site_hc_df    <- data.frame(Var1 = character(), Var2 = character(),
+                             r = numeric(), stringsAsFactors = FALSE)
+terra_vars     <- character(0)
+site_env_cols  <- NULL
+
+if (!is.null(terraclimate_site_csv) && file.exists(terraclimate_site_csv)) {
+
+  site_chelsa  <- read.csv(chelsa_site_csv,         stringsAsFactors = FALSE)
+  site_envirem <- read.csv(envirem_site_csv,         stringsAsFactors = FALSE)
+  site_manual  <- read.csv(manual_site_csv,          stringsAsFactors = FALSE)
+  site_terra   <- read.csv(terraclimate_site_csv,    stringsAsFactors = FALSE)
+
+  terra_vars <- c("aet_mean", "aet_sd", "def_mean", "def_sd", "ppt_sd",
+                  "PDSI_mean", "PDSI_sd", "soil_mean", "soil_sd",
+                  "srad_mean", "vpd_mean")
+  terra_vars <- terra_vars[terra_vars %in% names(site_terra)]
+
+  site_all <- Reduce(
+    function(a, b) merge(a, b, by = "site"),
+    list(
+      site_chelsa [, c("site", paste0("BIO", 1:19))],
+      site_envirem[, c("site", names(envirem_paths)[names(envirem_paths) %in% names(site_envirem)])],
+      site_manual [, c("site", "elevation")],
+      site_terra  [, c("site", terra_vars)]
+    )
+  )
+
+  site_env_cols <- c(
+    paste0("BIO", 1:19),
+    names(envirem_paths)[names(envirem_paths) %in% names(site_all)],
+    "elevation",
+    terra_vars
+  )
+  site_env_cols <- site_env_cols[site_env_cols %in% names(site_all)]
+
+  cat(sprintf("  %d sites x %d variables\n", nrow(site_all), length(site_env_cols)))
+
+  # Remove columns with zero variance (constant among sites)
+  site_var <- sapply(site_all[, site_env_cols], var, na.rm = TRUE)
+  zero_site <- names(site_var)[site_var == 0 | is.na(site_var)]
+  if (length(zero_site) > 0) {
+    cat(sprintf("  Dropping zero-variance (site-level): %s\n",
+                paste(zero_site, collapse = ", ")))
+    site_env_cols <- setdiff(site_env_cols, zero_site)
+  }
+
+  site_cor_mat <- cor(site_all[, site_env_cols], use = "pairwise.complete.obs")
+
+  out_site_cor <- file.path(cor_dir, "site_level_correlation_matrix.csv")
+  write.csv(round(site_cor_mat, 4), file = out_site_cor, quote = FALSE)
+  cat("Site-level correlation matrix:", out_site_cor, "\n")
+
+  site_hc_idx <- which(abs(site_cor_mat) >= cor_threshold &
+                         upper.tri(site_cor_mat), arr.ind = TRUE)
+
+  var_source <- function(v) {
+    if (grepl("^BIO", v)) "CHELSA"
+    else if (v %in% terra_vars) "TerraClimate"
+    else if (v == "elevation") "manual"
+    else "ENVIREM"
+  }
+
+  if (nrow(site_hc_idx) > 0) {
+    site_hc_df <- data.frame(
+      Var1    = rownames(site_cor_mat)[site_hc_idx[, 1]],
+      Var2    = colnames(site_cor_mat)[site_hc_idx[, 2]],
+      r       = round(site_cor_mat[site_hc_idx], 4),
+      stringsAsFactors = FALSE
+    )
+    site_hc_df$source1 <- sapply(site_hc_df$Var1, var_source)
+    site_hc_df$source2 <- sapply(site_hc_df$Var2, var_source)
+    site_hc_df <- site_hc_df[order(-abs(site_hc_df$r)), ]
+    out_site_hc <- file.path(cor_dir, "site_level_high_correlations.tsv")
+    write.table(site_hc_df, file = out_site_hc, sep = "\t",
+                quote = FALSE, row.names = FALSE)
+    cat(sprintf("INFO: %d site-level pairs |r| >= %.2f -> %s\n",
+                nrow(site_hc_df), cor_threshold, out_site_hc))
+    print(site_hc_df)
+  } else {
+    cat(sprintf("INFO: no site-level pairs with |r| >= %.2f\n", cor_threshold))
+  }
+
+  # Site-level heatmap — color-coded by source
+  site_col_long <- as.data.frame(as.table(site_cor_mat))
+  colnames(site_col_long) <- c("Var1", "Var2", "r")
+  site_col_long$Var1 <- factor(site_col_long$Var1, levels = site_env_cols)
+  site_col_long$Var2 <- factor(site_col_long$Var2, levels = site_env_cols)
+
+  site_label_cols <- sapply(site_env_cols, function(v) {
+    if (grepl("^BIO", v)) "#1a6696"
+    else if (v %in% terra_vars) "#8B0000"
+    else if (v == "elevation") "#8B4513"
+    else "#2e8b57"
+  })
+
+  p_site_cor <- ggplot(site_col_long, aes(x = Var2, y = Var1, fill = r)) +
+    geom_tile(color = "white", linewidth = 0.25) +
+    geom_text(aes(label = sprintf("%.2f", r)), size = 1.1, color = "black") +
+    scale_fill_gradientn(
+      colours = c("#d73027", "#f7f7f7", "#4575b4"),
+      limits  = c(-1, 1), name = "Pearson r"
+    ) +
+    labs(
+      title    = "Site-level Pearson r — CHELSA + ENVIREM + elevation + TerraClimate",
+      subtitle = sprintf(
+        "n = %d sites | blue=CHELSA | green=ENVIREM | brown=elevation | red=TerraClimate",
+        nrow(site_all)),
+      x = NULL, y = NULL
+    ) +
+    theme(
+      axis.text.x       = element_text(angle = 45, hjust = 1, size = 5.5,
+                                       colour = site_label_cols),
+      axis.text.y       = element_text(size = 5.5, colour = site_label_cols),
+      plot.title        = element_text(face = "bold", size = 9),
+      plot.subtitle     = element_text(size = 7),
+      legend.key.height = unit(0.8, "cm")
+    )
+
+  ggsave(file.path(plot_dir, "site_level_correlation_heatmap.png"),
+         p_site_cor, width = 18, height = 17, dpi = 300)
+  ggsave(file.path(plot_dir, "site_level_correlation_heatmap.pdf"),
+         p_site_cor, width = 18, height = 17)
+  cat("Site-level heatmap written\n")
+
+} else {
+  cat("WARN: terraclimate_site_csv not provided or not found — skipping site-level joint correlation\n")
+}
+
+# -------------------------------------------------------------------
 # STEP 13: Generate variable selection template for user
+#
+# Correlation counts in the template use the SITE-LEVEL matrix (all 4
+# sources, n=19 sites) because GEA models operate on per-site values.
+# Existing user selections are preserved if a template already exists.
 # -------------------------------------------------------------------
 cat("STEP 13: generating variable selection template\n")
 
 tmpl_path <- file.path(cor_dir, "variables_to_keep_template.txt")
+
+# Preserve selections from an existing template (user may have uncommented vars)
+old_kept <- character(0)
+if (file.exists(tmpl_path)) {
+  old_lines <- readLines(tmpl_path)
+  for (line in old_lines) {
+    lt <- trimws(line)
+    if (!startsWith(lt, "#") && nchar(lt) > 0) {
+      var_name <- strsplit(lt, "[[:space:]#]")[[1]][1]
+      if (nchar(var_name) > 0) old_kept <- c(old_kept, var_name)
+    }
+  }
+  cat(sprintf("INFO: preserving %d selections from existing template\n", length(old_kept)))
+}
+
+# Helper: count high-correlation partners from the site-level matrix
+n_hc_site <- function(v) {
+  if (nrow(site_hc_df) == 0) return(0L)
+  sum(site_hc_df$Var1 == v | site_hc_df$Var2 == v)
+}
+
 tmpl_lines <- c(
-  "# 08.1a — Variable selection template",
-  "# =====================================",
+  "# 08.1a -- Variable selection template",
+  "# ======================================",
   "# Instructions:",
-  "#   1. Review the correlation heatmap: plots/landscape_correlation_heatmap.png",
-  "#   2. Review high-correlation pairs:  correlation_analysis/landscape_high_correlations.tsv",
-  "#   3. For each group of highly correlated variables (|r| >= threshold),",
-  "#      keep ONE variable based on ecological relevance.",
-  "#   4. Edit this file: uncomment (remove #) the variables you want to KEEP.",
-  "#   5. Save as 'variables_to_keep.txt' (same directory).",
-  "#   6. This file feeds 08.1b (RDA forward selection + VIF).",
+  "#   1. Site-level heatmap (all 4 sources): plots/site_level_correlation_heatmap.png",
+  "#   2. Site-level high-corr pairs:         correlation_analysis/site_level_high_correlations.tsv",
+  "#   3. Landscape heatmap (CHELSA+ENVIREM): plots/landscape_correlation_heatmap.png",
+  "#   4. For each cluster of correlated variables (|r| >= threshold),",
+  "#      keep ONE representative based on ecological relevance.",
+  "#   5. Edit this file: uncomment (remove #) the variables you want to KEEP.",
+  "#   6. Save as 'variables_to_keep.txt' (same directory).",
+  "#   7. This file feeds 08.1b (RDA forward selection + VIF).",
   "#",
   "# Note: elevation, forest habitat dummies, and pedology dummies are treated",
-  "#       separately in 08.1b — do not list them here.",
+  "#       separately in 08.1b -- do not list them here.",
   "#",
   sprintf("# Generated: %s", Sys.time()),
-  sprintf("# Landscape n = %d points | Correlation threshold |r| >= %.2f",
+  sprintf("# Site-level n = 19 sites | Landscape n = %d pts | |r| >= %.2f",
           nrow(land_df), cor_threshold),
+  "# Correlation counts refer to site-level Pearson r (all 4 sources combined).",
   "#",
   "# --- CHELSA BIO variables ---"
 )
 
 for (v in paste0("BIO", 1:19)) {
   if (!v %in% env_cols_all) next
-  n_hc <- if (exists("hc_df") && nrow(hc_df) > 0)
-    sum(hc_df$Var1 == v | hc_df$Var2 == v) else 0
-  flag <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
-  tmpl_lines <- c(tmpl_lines, sprintf("# %s%s", v, flag))
+  n_hc  <- n_hc_site(v)
+  flag  <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
+  pfx   <- if (v %in% old_kept) " " else "# "
+  tmpl_lines <- c(tmpl_lines, sprintf("%s%s%s", pfx, v, flag))
 }
 
 tmpl_lines <- c(tmpl_lines, "#", "# --- ENVIREM variables ---")
 for (v in names(envirem_paths)) {
   if (!v %in% env_cols_all) next
-  n_hc <- if (exists("hc_df") && nrow(hc_df) > 0)
-    sum(hc_df$Var1 == v | hc_df$Var2 == v) else 0
-  flag <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
-  tmpl_lines <- c(tmpl_lines, sprintf("# %s%s", v, flag))
+  n_hc  <- n_hc_site(v)
+  flag  <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
+  pfx   <- if (v %in% old_kept) " " else "# "
+  tmpl_lines <- c(tmpl_lines, sprintf("%s%s%s", pfx, v, flag))
 }
 
-tmpl_lines <- c(tmpl_lines, "#", "# --- Continuous manual variable ---",
-                "# elevation")
+tmpl_lines <- c(tmpl_lines, "#", "# --- Continuous manual variable ---")
+{
+  v    <- "elevation"
+  n_hc <- n_hc_site(v)
+  flag <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
+  pfx  <- if (v %in% old_kept) " " else "# "
+  tmpl_lines <- c(tmpl_lines, sprintf("%s%s%s", pfx, v, flag))
+}
+
+# TerraClimate section — all commented by default (new source, user must evaluate)
+terra_tmpl_vars <- if (length(terra_vars) > 0 && !is.null(site_env_cols))
+  terra_vars[terra_vars %in% site_env_cols] else character(0)
+
+if (length(terra_tmpl_vars) > 0) {
+  tmpl_lines <- c(
+    tmpl_lines,
+    "#",
+    "# --- TerraClimate variables (1991-2020 30-year normals, ~4 km resolution) ---",
+    "# [NEW] Review site_level_correlation_heatmap.png before selecting."
+  )
+  for (v in terra_tmpl_vars) {
+    n_hc <- n_hc_site(v)
+    flag <- if (n_hc > 0) sprintf(" # correlated with %d other variable(s)", n_hc) else ""
+    pfx  <- if (v %in% old_kept) " " else "# "
+    tmpl_lines <- c(tmpl_lines, sprintf("%s%s%s", pfx, v, flag))
+  }
+}
+
 writeLines(tmpl_lines, tmpl_path)
 cat("Variable selection template written:", tmpl_path, "\n")
 
 cat(sprintf(
-  "\nSUMMARY\n-------\n  Variables analysed : %d\n  Landscape points   : %d\n",
+  "\nSUMMARY\n-------\n  Landscape variables  : %d\n  Landscape points     : %d\n",
   length(env_cols_all), nrow(land_df)))
-cat(sprintf("  High-corr pairs (|r|>=%.2f): %d\n",
-            cor_threshold, if (exists("hc_df")) nrow(hc_df) else 0))
-cat(sprintf("  Zero-variance dropped      : %s\n",
+cat(sprintf("  Landscape high-corr (|r|>=%.2f): %d pairs\n",
+            cor_threshold, if (exists("hc_df") && nrow(hc_df) > 0) nrow(hc_df) else 0))
+cat(sprintf("  Site-level variables : %d\n",
+            if (!is.null(site_env_cols)) length(site_env_cols) else 0))
+cat(sprintf("  Site-level high-corr : %d pairs\n", nrow(site_hc_df)))
+cat(sprintf("  Zero-variance dropped: %s\n",
             if (length(zero_var) > 0) paste(zero_var, collapse = ", ") else "none"))
 
-cat("\nDONE 08.1a landscape correlation analysis completed\n")
+cat("\nDONE 08.1a landscape + site-level correlation analysis completed\n")

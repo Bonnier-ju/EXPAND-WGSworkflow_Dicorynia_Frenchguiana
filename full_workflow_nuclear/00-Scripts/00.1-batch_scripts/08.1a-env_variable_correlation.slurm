@@ -32,10 +32,11 @@ ENVIREM_ROOT="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/envi
 # Copernicus DEM GLO-30 tiles (elevation, ~30 m)
 DEM_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/elevation/copernicus_dem30"
 
-# Site-level CSVs (already in physical units) — used for scale-factor validation
+# Site-level CSVs (already in physical units)
 CHELSA_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/chelsa/chelsa_env_per_site.csv"
 ENVIREM_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/envirem/envirem_env_per_site.csv"
 MANUAL_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/manual_variables/manual_variables_per_site.csv"
+TERRA_SITE_CSV="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/data/terraclimate/terraclimate_env_per_site.csv"
 
 R_OUT_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection"
 LOG_DIR="${BASE}/08-gea/workflow_full/08.1-env_variable_selection/logs"
@@ -66,7 +67,8 @@ Rscript --vanilla "$R_SCRIPT" \
     "$MANUAL_SITE_CSV" \
     "$R_OUT_DIR" \
     "$N_POINTS" \
-    "$COR_THRESHOLD" >> "$LOG_FILE" 2>&1
+    "$COR_THRESHOLD" \
+    "$TERRA_SITE_CSV" >> "$LOG_FILE" 2>&1
 
 echo "DONE $(date -Iseconds) 08.1a landscape correlation completed" | tee -a "$LOG_FILE"
 echo "Outputs: ${R_OUT_DIR}/correlation_analysis/"
