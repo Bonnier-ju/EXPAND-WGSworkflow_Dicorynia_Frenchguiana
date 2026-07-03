@@ -301,7 +301,7 @@ BPEOF
     # sarray parallelises all replicates as separate SLURM jobs.
     # sarray inherits the CWD → must cd to OUT_POP before calling it.
     # ----------------------------------------------------------------
-    SUMMARY_FILE="${OUT_POP}/stairway/${POP}.final.summary"
+    SUMMARY_FILE="${OUT_POP}/stairway/${POP} (K=${K_GLOBAL}).final.summary"
     if [ -s "$SUMMARY_FILE" ]; then
         echo "  Summary already exists, skipping training" | tee -a "$POP_LOG"
     else

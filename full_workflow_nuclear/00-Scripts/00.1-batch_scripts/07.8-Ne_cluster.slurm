@@ -365,9 +365,10 @@ EOF
     # ------------------------------------------------------------------
     # 4f: GONE2 — default (panmictic) + structure (-x)
     #     Input: ne2-thinned PED (~1.5M SNPs), symlinked as ${pop}.ped in
-    #     each subdir so output (${pop}.ped_GONE2_Ne) matches R parser.
-    #     Run in dedicated subdirectories: both options produce the same
-    #     filename — separate dirs avoid overwrite.
+    #     each subdir so output basename matches R parser expectations.
+    #     GONE2 default  → ${pop}.ped_GONE2_Ne
+    #     GONE2 -x       → ${pop}.ped_GONE2_Ne_mix  (5-column format)
+    #     Run in dedicated subdirectories to avoid filename conflicts.
     # ------------------------------------------------------------------
     gone2_dir="${POP_DIR}/${pop}/GONE_2"
     g2_def_dir="${gone2_dir}/default"
@@ -375,7 +376,7 @@ EOF
     mkdir -p "$g2_def_dir" "$g2_str_dir"
 
     GONE2_DEFAULT_NE="${g2_def_dir}/${pop}.ped_GONE2_Ne"
-    GONE2_STRUCT_NE="${g2_str_dir}/${pop}.ped_GONE2_Ne"
+    GONE2_STRUCT_NE="${g2_str_dir}/${pop}.ped_GONE2_Ne_mix"
 
     if [ -s "$GONE2_DEFAULT_NE" ]; then
         echo "  [${pop}] reusing existing GONE2 default output" | tee -a "$LOG_FILE"

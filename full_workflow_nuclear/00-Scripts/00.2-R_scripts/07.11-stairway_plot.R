@@ -53,7 +53,7 @@ load_summary <- function(pop, k_global, out_base) {
   f <- file.path(out_base,
                  paste0(pop, "_K", k_global),
                  "stairway",
-                 paste0(pop, ".final.summary"))
+                 paste0(pop, " (K=", k_global, ").final.summary"))
   if (!file.exists(f)) {
     cat(sprintf("WARN: summary not found for %s: %s\n", pop, f))
     return(NULL)
@@ -112,7 +112,7 @@ p1 <- ggplot(combined_df,
   annotation_logticks(sides = "bl", size = 0.3) +
   labs(
     title    = sprintf("Demographic history — Stairway Plot 2 (K=%d)", k_global),
-    subtitle = sprintf("Folded SFS | L = 253,820,984 callable sites | μ = %.0e | %d yr/gen | 95%% CI ribbon",
+    subtitle = sprintf("Folded SFS | L = 194–221 Mbp callable sites (per-population) | μ = %.0e | %d yr/gen | 95%% CI ribbon",
                        mu_ref, as.integer(year_per_gen))
   ) +
   theme(

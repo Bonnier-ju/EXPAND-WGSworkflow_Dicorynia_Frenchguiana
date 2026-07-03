@@ -298,7 +298,7 @@ fi
 # -------------------------------------------------------------------
 echo "STEP 8: GONE2 -x (structure-corrected trajectory)" | tee -a "$LOG_FILE"
 
-GONE2_STR_NE="${GONE2_DIR}/structure/${LABEL}.ped_GONE2_Ne"
+GONE2_STR_NE="${GONE2_DIR}/structure/${LABEL}.ped_GONE2_Ne_mix"
 if [ -s "$GONE2_STR_NE" ]; then
     echo "INFO: reusing existing GONE2 -x output" | tee -a "$LOG_FILE"
 else

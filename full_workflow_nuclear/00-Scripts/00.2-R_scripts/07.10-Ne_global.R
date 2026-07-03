@@ -55,25 +55,31 @@ parse_currentNe2 <- function(path) {
     NA_real_
   }
 
-  ne_idx <- grep("# Ne point estimate:", lines, fixed = TRUE)
-  Ne <- if (length(ne_idx) > 0)
-    suppressWarnings(as.numeric(trimws(lines[ne_idx[1] + 1]))) else NA_real_
+  # Default: "# Ne point estimate:" ; -x: "# Ne of the entire metapopulation..."
+  Ne <- extract_next_num(
+    "# Ne point estimate:",
+    "# Ne of the entire metapopulation")
 
   CI50_lo <- extract_next_num(
     "# Lower limit of 50% CI:", "# Lower bound of 50% CI:",
-    "# Lower bound of the 50% CI:")
+    "# Lower bound of the 50% CI:",
+    "# Lower 50% limit of the Ne estimate:")
   CI50_hi <- extract_next_num(
     "# Upper limit of 50% CI:", "# Upper bound of 50% CI:",
-    "# Upper bound of the 50% CI:")
+    "# Upper bound of the 50% CI:",
+    "# Upper 50% limit of the Ne estimate:")
   CI90_lo <- extract_next_num(
     "# Lower limit of 90% CI:", "# Lower bound of 90% CI:",
-    "# Lower bound of the 90% CI:")
+    "# Lower bound of the 90% CI:",
+    "# Lower 90% limit of the Ne estimate:")
   CI90_hi <- extract_next_num(
     "# Upper limit of 90% CI:", "# Upper bound of 90% CI:",
-    "# Upper bound of the 90% CI:")
+    "# Upper bound of the 90% CI:",
+    "# Upper 90% limit of the Ne estimate:")
 
-  NT  <- extract_next_num("# NT estimate:", "# NT:")
-  FST <- extract_next_num("# FST estimate:", "# Estimated FST:", "# FST:")
+  # -x labels: "# N_T of the metapopulation...:", "# Fst (subpopulation...):"
+  NT  <- extract_next_num("# NT estimate:", "# NT:", "# N_T of the metapopulation")
+  FST <- extract_next_num("# FST estimate:", "# Estimated FST:", "# FST:", "# Fst (")
   m   <- extract_next_num(
     "# Migration rate estimate:", "# Estimated migration rate:",
     "# Migration rate:")
@@ -91,7 +97,7 @@ parse_currentNe2 <- function(path) {
 }
 
 # -------------------------------------------------------------------
-# Parser: GONE2 trajectory (tab-separated, generation + Ne)
+# Parser: GONE2 default trajectory (2-column: generation + Ne)
 # -------------------------------------------------------------------
 parse_GONE2 <- function(path) {
   if (!file.exists(path) || file.info(path)$size == 0) {
@@ -117,6 +123,37 @@ parse_GONE2 <- function(path) {
 }
 
 # -------------------------------------------------------------------
+# Parser: GONE2 -x structure output (5-column format)
+# Header: Rec_rate_bin / generation / N_T_metapop / Ne_metapop / d²
+# Returns generation (col 2) + Ne_metapop (col 4).
+# -------------------------------------------------------------------
+parse_GONE2_mix <- function(path) {
+  if (!file.exists(path) || file.info(path)$size == 0) {
+    cat(sprintf("WARN: not found or empty: %s\n", path))
+    return(NULL)
+  }
+  lines <- readLines(path, warn = FALSE)
+  data_start <- which(grepl("Rec_rate_bin", lines, fixed = TRUE))[1]
+  if (is.na(data_start)) {
+    cat(sprintf("WARN: GONE2 -x header not found in %s\n", path))
+    return(NULL)
+  }
+  d <- tryCatch(
+    read.table(text  = lines[(data_start + 1):length(lines)],
+               header = FALSE, stringsAsFactors = FALSE,
+               col.names = c("rec_rate", "generation", "N_T", "Ne", "d2")),
+    error = function(e) {
+      cat(sprintf("ERROR reading GONE2 -x %s: %s\n", path, e$message))
+      NULL
+    }
+  )
+  if (is.null(d) || nrow(d) == 0) return(NULL)
+  data.frame(generation = as.integer(d$generation),
+             Ne         = as.numeric(d$Ne),
+             stringsAsFactors = FALSE)
+}
+
+# -------------------------------------------------------------------
 # STEP 1: Parse all outputs
 # -------------------------------------------------------------------
 cat("INFO: parsing currentNe2 default output...\n")
@@ -135,8 +172,8 @@ gone2_def <- parse_GONE2(
 )
 
 cat("INFO: parsing GONE2 -x trajectory...\n")
-gone2_str <- parse_GONE2(
-  file.path(gone2_dir, "structure", paste0(label, ".ped_GONE2_Ne"))
+gone2_str <- parse_GONE2_mix(
+  file.path(gone2_dir, "structure", paste0(label, ".ped_GONE2_Ne_mix"))
 )
 
 # -------------------------------------------------------------------
