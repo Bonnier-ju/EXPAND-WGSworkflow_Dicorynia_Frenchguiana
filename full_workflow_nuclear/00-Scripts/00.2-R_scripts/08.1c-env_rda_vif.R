@@ -8,7 +8,7 @@
 #
 # Inputs:
 #   genotype_012_imputed.tsv  — 155 ind x N SNPs, 0/1/2 dosage, NAs imputed
-#   sample_metadata.tsv       — individual_id, site, lat, long
+#   sample_metadata.tsv       — sample_id, site, lat, long
 #   chelsa_env_per_site.csv   — CHELSA BIO variables (temp in K/10, precip raw)
 #   envirem_env_per_site.csv  — ENVIREM variables (physical units)
 #   manual_variables_per_site.csv — elevation
@@ -149,7 +149,7 @@ meta <- read.table(meta_file, header = TRUE, sep = "\t",
                    stringsAsFactors = FALSE, check.names = FALSE)
 
 # Join env to each individual via site
-ind_env <- merge(meta[, c("individual_id", "site")],
+ind_env <- merge(meta[, c("sample_id", "site")],
                  env_site, by = "site", all.x = FALSE)
 ind_env <- ind_env[!is.na(ind_env$site), ]
 cat(sprintf("INFO: %d individuals with environmental data\n", nrow(ind_env)))
@@ -166,14 +166,14 @@ geno_raw <- read.table(geno_file, header = TRUE, sep = "\t",
 cat(sprintf("INFO: %d individuals x %d SNPs loaded\n", nrow(geno_raw), ncol(geno_raw)))
 
 # Keep only individuals present in both matrices
-common_ind <- intersect(rownames(geno_raw), ind_env$individual_id)
+common_ind <- intersect(rownames(geno_raw), ind_env$sample_id)
 cat(sprintf("INFO: %d individuals in common\n", length(common_ind)))
 
 geno_mat <- as.matrix(geno_raw[common_ind, ])
 mode(geno_mat) <- "numeric"
 
-ind_env <- ind_env[match(common_ind, ind_env$individual_id), ]
-rownames(ind_env) <- ind_env$individual_id
+ind_env <- ind_env[match(common_ind, ind_env$sample_id), ]
+rownames(ind_env) <- ind_env$sample_id
 
 env_vars_present <- intersect(selected_vars, names(ind_env))
 missing_vars <- setdiff(selected_vars, names(ind_env))
@@ -356,9 +356,9 @@ print(vpart_df[order(-vpart_df$r2adj_unique), ])
 cat("\nSTEP 10: RDA biplot...\n")
 
 site_scores <- as.data.frame(scores(rda_final, display = "sites", scaling = 2))
-site_scores$individual_id <- rownames(site_scores)
-site_scores <- merge(site_scores, ind_env[, c("individual_id", "site")],
-                     by = "individual_id")
+site_scores$sample_id <- rownames(site_scores)
+site_scores <- merge(site_scores, ind_env[, c("sample_id", "site")],
+                     by = "sample_id")
 
 env_scores  <- as.data.frame(scores(rda_final, display = "bp", scaling = 2))
 env_scores$variable <- rownames(env_scores)

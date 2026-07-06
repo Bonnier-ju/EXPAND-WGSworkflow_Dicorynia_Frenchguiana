@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p unlimitq
-#SBATCH --time=36:00:00
+#SBATCH --time=160:00:00
 #SBATCH -J 07.12a-smcpp_estimate
 #SBATCH -o /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/output/output-%x-%j.out
 #SBATCH -e /home/jbonnier/work/chapitre_5/full_workflow_nuclear/00-Scripts/00.1-batch_scripts/error/error-%x-%j.err
