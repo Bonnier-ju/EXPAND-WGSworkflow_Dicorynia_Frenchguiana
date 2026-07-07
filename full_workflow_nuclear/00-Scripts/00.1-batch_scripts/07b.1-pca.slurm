@@ -47,6 +47,17 @@ done
 echo "START $(date -Iseconds) 07b.1 PCA on purity-filtered individuals" > "$LOG_FILE"
 
 # -------------------------------------------------------------------
+# STEP 1b: Build site-exclusion list (confirmed 2026-07-07)
+#   St_georges and Petit_Croissant excluded from all purity-filtered analyses
+# -------------------------------------------------------------------
+EXCLUDE_SITES_FILE="${OUT_BASE}/exclude_sites.txt"
+mkdir -p "$OUT_BASE"
+awk -F',' 'NR>1 && ($4 == "St_georges" || $4 == "Petit_Croissant") {print $1}' \
+    "$SAMPLE_SHEET" > "$EXCLUDE_SITES_FILE"
+N_EXCL=$(wc -l < "$EXCLUDE_SITES_FILE")
+echo "Site exclusion: $N_EXCL individuals from St_georges + Petit_Croissant" | tee -a "$LOG_FILE"
+
+# -------------------------------------------------------------------
 # STEP 2: Loop over purity thresholds
 # -------------------------------------------------------------------
 for THRESH in 70 80 90 95; do
@@ -58,22 +69,28 @@ for THRESH in 70 80 90 95; do
         continue
     fi
 
-    N_IND=$(wc -l < "$KEEP")
-    N_PC=$(( N_IND < 21 ? N_IND - 1 : 20 ))
     OUT_T="${OUT_BASE}/${TAG}"
     mkdir -p "$OUT_T"
 
-    echo "--- $TAG: $N_IND individuals, $N_PC PCs ---" | tee -a "$LOG_FILE"
+    # STEP 2a: Filter keep file — remove individuals from excluded sites
+    KEEP_FILTERED="${OUT_T}/keep_filtered_${TAG}.txt"
+    awk 'NR==FNR {excl[$1]=1; next} !($2 in excl)' \
+        "$EXCLUDE_SITES_FILE" "$KEEP" > "$KEEP_FILTERED"
 
-    # STEP 2a: Extract individual IDs (col 2 of keep file: IND_ID)
+    N_IND=$(wc -l < "$KEEP_FILTERED")
+    N_PC=$(( N_IND < 21 ? N_IND - 1 : 20 ))
+
+    echo "--- $TAG: $N_IND individuals (after site exclusion), $N_PC PCs ---" | tee -a "$LOG_FILE"
+
+    # STEP 2b: Extract individual IDs (col 2 of filtered keep file: IND_ID)
     IDS_FILE="${OUT_T}/keep_ids.txt"
-    cut -f2 "$KEEP" > "$IDS_FILE"
+    cut -f2 "$KEEP_FILTERED" > "$IDS_FILE"
 
-    # STEP 2b: Convert keep file to FID=IID format required by PLINK --double-id
+    # STEP 2c: Convert keep file to FID=IID format required by PLINK --double-id
     KEEP_PLINK="${OUT_T}/keep_plink_${TAG}.txt"
-    awk '{print $2"\t"$2}' "$KEEP" > "$KEEP_PLINK"
+    awk '{print $2"\t"$2}' "$KEEP_FILTERED" > "$KEEP_PLINK"
 
-    # STEP 2c: PLINK — filter VCF and convert to BED
+    # STEP 2d: PLINK — filter VCF and convert to BED
     PLINK_PREFIX="${OUT_T}/plink_input_${TAG}"
     plink \
         --vcf "$VCF_LD" \
@@ -89,7 +106,7 @@ for THRESH in 70 80 90 95; do
         continue
     fi
 
-    # STEP 2d: PLINK — PCA
+    # STEP 2e: PLINK — PCA
     PCA_PREFIX="${OUT_T}/pca_${TAG}"
     plink \
         --bfile "$PLINK_PREFIX" \
@@ -99,7 +116,7 @@ for THRESH in 70 80 90 95; do
 
     echo "  PCA done → ${PCA_PREFIX}.eigenvec" | tee -a "$LOG_FILE"
 
-    # STEP 2e: Build cluster map (Pop_1/2/3 from Q file)
+    # STEP 2f: Build cluster map (Pop_1/2/3 from Q file)
     # Q column mapping: Q2=Pop_1, Q3=Pop_2, Q4=Pop_3 (Q file: $1=ID $2=Q1 $3=Q2 $4=Q3)
     CLUSTER_MAP="${OUT_T}/cluster_map_${TAG}.tsv"
     awk 'NR==FNR {keep[$1]=1; next}
@@ -110,13 +127,13 @@ for THRESH in 70 80 90 95; do
              print $1"\t"cl
          }' "$IDS_FILE" "$Q_FILE" > "$CLUSTER_MAP"
 
-    # STEP 2f: Build site map (sample_id → site, from sample sheet)
+    # STEP 2g: Build site map (sample_id → site, from sample sheet)
     SITE_MAP="${OUT_T}/site_map_${TAG}.tsv"
     awk -F',' 'NR==FNR {keep[$1]=1; next}
                FNR>1 && $1 in keep && $4!="" {print $1"\t"$4}' \
         "$IDS_FILE" "$SAMPLE_SHEET" > "$SITE_MAP"
 
-    # STEP 2g: R plots (cluster + site coloring in one call)
+    # STEP 2h: R plots (cluster + site coloring in one call)
     echo "  R plots — $TAG" | tee -a "$LOG_FILE"
     Rscript --vanilla "$R_SCRIPT" \
         "$OUT_T" \
