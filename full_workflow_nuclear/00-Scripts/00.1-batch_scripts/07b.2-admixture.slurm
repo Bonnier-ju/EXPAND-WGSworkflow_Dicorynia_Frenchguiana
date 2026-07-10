@@ -74,6 +74,12 @@ for THRESH in 70 80 90 95; do
     OUT_T="${OUT_BASE}/${TAG}"
     mkdir -p "${OUT_T}/reps"
 
+    # Skip threshold if R plots already exist (threshold fully complete)
+    if ls "${OUT_T}/plots/"*.png 2>/dev/null | grep -q .; then
+        echo "=== $TAG: already completed — skipping ===" | tee -a "$LOG_FILE"
+        continue
+    fi
+
     # STEP 2a: Apply site exclusion — keep FID=0 format for --const-fid
     KEEP_FILE="${OUT_T}/keep_${TAG}.txt"
     awk 'NR==FNR {excl[$1]=1; next} !($2 in excl)' \
@@ -82,31 +88,33 @@ for THRESH in 70 80 90 95; do
     N_IND=$(wc -l < "$KEEP_FILE")
     echo "=== $TAG: $N_IND individuals (after site exclusion) ===" | tee -a "$LOG_FILE"
 
-    # STEP 2b: PLINK VCF → BED
+    # STEP 2b: PLINK VCF → BED (skip if already done)
     PLINK_PREFIX="${OUT_T}/admixture_input"
-    plink \
-        --vcf "$VCF_LD" \
-        --make-bed \
-        --allow-extra-chr \
-        --const-fid \
-        --keep "$KEEP_FILE" \
-        --out "$PLINK_PREFIX" >> "$LOG_FILE" 2>&1
-
     if [ ! -s "${PLINK_PREFIX}.bed" ]; then
-        echo "ERROR: PLINK conversion failed for $TAG" | tee -a "$LOG_FILE"
-        continue
+        plink \
+            --vcf "$VCF_LD" \
+            --make-bed \
+            --allow-extra-chr \
+            --const-fid \
+            --keep "$KEEP_FILE" \
+            --out "$PLINK_PREFIX" >> "$LOG_FILE" 2>&1
+
+        if [ ! -s "${PLINK_PREFIX}.bed" ]; then
+            echo "ERROR: PLINK conversion failed for $TAG" | tee -a "$LOG_FILE"
+            continue
+        fi
+
+        # STEP 2c: Rename chromosomes to 0 (ADMIXTURE requires numeric chr IDs)
+        awk '{$1=0; print $0}' "${PLINK_PREFIX}.bim" > "${PLINK_PREFIX}.bim.tmp"
+        mv "${PLINK_PREFIX}.bim.tmp" "${PLINK_PREFIX}.bim"
     fi
 
     N_SNP=$(wc -l < "${PLINK_PREFIX}.bim")
     echo "  $N_IND individuals | $N_SNP SNPs" | tee -a "$LOG_FILE"
 
-    # STEP 2c: Rename chromosomes to 0 (ADMIXTURE requires numeric chr IDs)
-    awk '{$1=0; print $0}' "${PLINK_PREFIX}.bim" > "${PLINK_PREFIX}.bim.tmp"
-    mv "${PLINK_PREFIX}.bim.tmp" "${PLINK_PREFIX}.bim"
-
-    # Initialize output files
-    > "${OUT_T}/cross_validation.txt"
-    printf "K\trep\tloglikelihood\tcv_error\n" > "${OUT_T}/loglik_summary.txt"
+    # Initialize output files only if they don't exist (preserve entries from prior runs)
+    [ -s "${OUT_T}/cross_validation.txt" ] || > "${OUT_T}/cross_validation.txt"
+    [ -s "${OUT_T}/loglik_summary.txt" ]   || printf "K\trep\tloglikelihood\tcv_error\n" > "${OUT_T}/loglik_summary.txt"
 
     # -------------------------------------------------------------------
     # STEP 3: ADMIXTURE K=K_MIN..K_MAX — N_REP replicates in parallel
@@ -114,6 +122,13 @@ for THRESH in 70 80 90 95; do
     for K in $(seq "$K_MIN" "$K_MAX"); do
         K_DIR="${OUT_T}/reps/K${K}"
         mkdir -p "$K_DIR"
+
+        # Skip K if best Q already copied to threshold directory
+        if [ -s "${OUT_T}/admixture_input.${K}.Q" ]; then
+            echo "  K=${K}: best Q already exists — skipping" | tee -a "$LOG_FILE"
+            continue
+        fi
+
         echo "  K=${K}: launching $N_REP replicates (${THREADS_PER_RUN} threads each)..." | tee -a "$LOG_FILE"
 
         # Launch all replicates simultaneously
@@ -145,8 +160,8 @@ for THRESH in 70 80 90 95; do
             REP_DIR="${K_DIR}/rep${rep}"
             LOG_R="${REP_DIR}/run.log"
 
-            LL=$(grep "Loglikelihood:" "$LOG_R" 2>/dev/null | tail -1 | awk '{print $2}')
-            CV_ERR=$(grep "CV error" "$LOG_R" 2>/dev/null | tail -1 | awk -F': ' '{print $2}')
+            LL=$(grep "^Loglikelihood:" "$LOG_R" 2>/dev/null | tail -1 | awk '{print $2}') || true
+            CV_ERR=$(grep "CV error" "$LOG_R" 2>/dev/null | tail -1 | awk -F': ' '{print $2}') || true
             [ -z "$LL" ]     && LL="-999999999999"
             [ -z "$CV_ERR" ] && CV_ERR="NA"
 

@@ -123,6 +123,13 @@ for THRESH in 70 80 90 95; do
     OUT_T="${OUT_BASE}/${TAG}"
     CLUSTER_DIR="${OUT_T}/per_cluster"
     mkdir -p "$CLUSTER_DIR"
+
+    # Skip threshold if R plots already exist (threshold fully complete)
+    if ls "${OUT_T}/plots/"*.png 2>/dev/null | grep -q .; then
+        echo "=== $TAG: already completed — skipping ===" | tee -a "$LOG_FILE"
+        continue
+    fi
+
     echo "=== $TAG ===" | tee -a "$LOG_FILE"
 
     # STEP 5a: Extract purity-filtered IDs (col 2 of keep file)
@@ -157,23 +164,29 @@ for THRESH in 70 80 90 95; do
         POP_OUT="${CLUSTER_DIR}/${CLUSTER}"
         mkdir -p "$POP_OUT"
 
-        # Nucleotide diversity π per site
-        vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
-            --site-pi --out "${POP_OUT}/pi" >> "$LOG_FILE" 2>&1
+        # Skip vcftools if all output files already exist
+        if [ -s "${POP_OUT}/pi.sites.pi" ] && [ -s "${POP_OUT}/het.het" ] && \
+           [ -s "${POP_OUT}/freq.frq" ]    && [ -s "${POP_OUT}/tajima.Tajima.D" ]; then
+            echo "  vcftools already done: $CLUSTER — skipping" | tee -a "$LOG_FILE"
+        else
+            # Nucleotide diversity π per site
+            vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
+                --site-pi --out "${POP_OUT}/pi" >> "$LOG_FILE" 2>&1
 
-        # Per-individual observed heterozygosity (F statistics)
-        vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
-            --het --out "${POP_OUT}/het" >> "$LOG_FILE" 2>&1
+            # Per-individual observed heterozygosity (F statistics)
+            vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
+                --het --out "${POP_OUT}/het" >> "$LOG_FILE" 2>&1
 
-        # Allele frequencies — N_CHR and freq retained for private allele rarefaction
-        vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
-            --freq2 --out "${POP_OUT}/freq" >> "$LOG_FILE" 2>&1
+            # Allele frequencies — N_CHR and freq retained for private allele rarefaction
+            vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
+                --freq2 --out "${POP_OUT}/freq" >> "$LOG_FILE" 2>&1
 
-        # Tajima's D (windowed)
-        vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
-            --TajimaD "$TAJIMA_WINDOW" --out "${POP_OUT}/tajima" >> "$LOG_FILE" 2>&1
+            # Tajima's D (windowed)
+            vcftools --gzvcf "$VCFTOOLS_VCF" --keep "$KEEP_C" \
+                --TajimaD "$TAJIMA_WINDOW" --out "${POP_OUT}/tajima" >> "$LOG_FILE" 2>&1
 
-        echo "  vcftools done: $CLUSTER ($N_C ind)" | tee -a "$LOG_FILE"
+            echo "  vcftools done: $CLUSTER ($N_C ind)" | tee -a "$LOG_FILE"
+        fi
     done
 
     # STEP 5e: R — compile metrics and produce summary table + plots
