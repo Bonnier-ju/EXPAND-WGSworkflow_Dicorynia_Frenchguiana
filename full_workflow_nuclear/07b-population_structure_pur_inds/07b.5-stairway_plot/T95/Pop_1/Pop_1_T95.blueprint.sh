@@ -1,0 +1,1607 @@
+# Step 1: create .addTheta files. random_seed=2359345038380934533
+date
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-1 3 0.67 -872286138953032534
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-2 3 0.67 7954826700940197670
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-3 3 0.67 593177542396851064
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-4 3 0.67 3477385690027778114
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-5 3 0.67 -708098202609541882
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-6 3 0.67 5012758996819986790
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-7 3 0.67 3439140052432318908
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-8 3 0.67 -6623657814579080220
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-9 3 0.67 3090600776850494826
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-10 3 0.67 6999268344946623616
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-11 3 0.67 -6909739639921074328
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-12 3 0.67 6488823448241859122
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-13 3 0.67 7417190397671923966
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-14 3 0.67 7287902557164873001
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-15 3 0.67 811138263406407174
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-16 3 0.67 1847466650705369619
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-17 3 0.67 5709933870431783888
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-18 3 0.67 -7490689584605358693
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-19 3 0.67 8439896737281059397
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-20 3 0.67 716042592963945523
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-21 3 0.67 9183435961293491022
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-22 3 0.67 2409866943498854931
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-23 3 0.67 7592347056630398070
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-24 3 0.67 -2699202408163080320
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-25 3 0.67 8283488795681457869
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-26 3 0.67 6653416940141000017
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-27 3 0.67 -469949848430397169
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-28 3 0.67 -6637335555652598354
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-29 3 0.67 7026150981285048326
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-30 3 0.67 -4749489611870100197
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-31 3 0.67 8878582876837462316
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-32 3 0.67 -5202774554334660684
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-33 3 0.67 -7532230711312569453
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-34 3 0.67 2048191338896527034
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-35 3 0.67 -8497846908101266679
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-36 3 0.67 4047807876924781133
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-37 3 0.67 -3353485672736421514
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-38 3 0.67 5623167100438922106
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-39 3 0.67 -9074367086034539895
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-40 3 0.67 5701906358008609400
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-41 3 0.67 -3887479615815545453
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-42 3 0.67 4228776448606553391
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-43 3 0.67 -8843496558256401998
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-44 3 0.67 5833651233964526073
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-45 3 0.67 8616838458408994866
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-46 3 0.67 8133925238440678059
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-47 3 0.67 2351291673619759407
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-48 3 0.67 -1892861163898199082
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-49 3 0.67 8029144568528125566
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-50 3 0.67 4647496698581288009
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-51 3 0.67 -3449632330979725107
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-52 3 0.67 -7676615498275522342
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-53 3 0.67 -8994407882319551736
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-54 3 0.67 3093283591729576037
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-55 3 0.67 -766704649249392642
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-56 3 0.67 -5253240664777024491
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-57 3 0.67 -893277520150421948
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-58 3 0.67 3647997435263913953
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-59 3 0.67 5691986385985822297
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-60 3 0.67 -3477768259764287655
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-61 3 0.67 -8907896280843753718
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-62 3 0.67 3828614171886271138
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-63 3 0.67 -6721881037140476905
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-64 3 0.67 -1950000788416286785
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-65 3 0.67 5972656425931107095
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-66 3 0.67 284523682267288593
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-67 3 0.67 1632340186715794072
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-68 3 0.67 2446374370742577696
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-69 3 0.67 -7951887535058172022
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-70 3 0.67 7050705392342568859
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-71 3 0.67 -6170380655781509924
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-72 3 0.67 8443497889738252189
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-73 3 0.67 3539200010755559783
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-74 3 0.67 7168827974087800113
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-75 3 0.67 6548684037025757195
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-76 3 0.67 8670940887545631256
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-77 3 0.67 1006872889778581015
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-78 3 0.67 -907397860923773495
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-79 3 0.67 -4585300246663552018
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-80 3 0.67 793483400461906104
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-81 3 0.67 8365098230254533606
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-82 3 0.67 7118186099106308059
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-83 3 0.67 6877639473585572723
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-84 3 0.67 -8888919091530105751
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-85 3 0.67 -6571975167335363964
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-86 3 0.67 110413029448211428
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-87 3 0.67 8880441267266688300
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-88 3 0.67 5192978540129057882
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-89 3 0.67 -7623723321945283707
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-90 3 0.67 -5649385478433384217
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-91 3 0.67 -1110822505703187504
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-92 3 0.67 -3442826976711720323
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-93 3 0.67 5807657435524424417
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-94 3 0.67 5373488440290803943
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-95 3 0.67 -8785120786013843783
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-96 3 0.67 188719312006709258
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-97 3 0.67 2757944082570682228
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-98 3 0.67 7777396395103260013
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-99 3 0.67 2876141604578271845
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-100 3 0.67 -5645652187066504708
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-101 3 0.67 -9134848925903592577
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-102 3 0.67 977708330717131784
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-103 3 0.67 -5076109041818955530
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-104 3 0.67 -4763055257593614958
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-105 3 0.67 2998442538932696357
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-106 3 0.67 -5232267328090660151
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-107 3 0.67 -9020633355379840334
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-108 3 0.67 3671908716488258768
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-109 3 0.67 -5265985030678843665
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-110 3 0.67 -3880368238283911997
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-111 3 0.67 -4548624196448913789
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-112 3 0.67 1259372718877915899
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-113 3 0.67 6141278299356522569
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-114 3 0.67 -5991936485950241135
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-115 3 0.67 -8125215468545744265
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-116 3 0.67 3848995616052719905
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-117 3 0.67 2810515287693405698
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-118 3 0.67 234202076352279248
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-119 3 0.67 3439726441547695169
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-120 3 0.67 -1389268097483312497
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-121 3 0.67 6002295579585514192
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-122 3 0.67 5438902715168898720
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-123 3 0.67 -5475448699624412746
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-124 3 0.67 6911493214265166169
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-125 3 0.67 4563939457037869002
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-126 3 0.67 7037596244153609767
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-127 3 0.67 3328121064973662546
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-128 3 0.67 -2065838133133655339
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-129 3 0.67 -8516107007007732500
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-130 3 0.67 8221614170551712014
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-131 3 0.67 -2771065168200998223
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-132 3 0.67 -6562658114967579616
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-133 3 0.67 2120545006480828822
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-134 3 0.67 -3211739461502404862
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-135 3 0.67 2267614288589889302
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-136 3 0.67 -1155425616967201129
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-137 3 0.67 1688474882296581389
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-138 3 0.67 2003435089997732916
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-139 3 0.67 -574933580806110745
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-140 3 0.67 7854904820009919583
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-141 3 0.67 5639576610737268473
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-142 3 0.67 -8862394967643519526
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-143 3 0.67 -1671655041281337042
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-144 3 0.67 6479892237852638431
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-145 3 0.67 -322424791363737626
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-146 3 0.67 6700968978791601836
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-147 3 0.67 -3455237623414776294
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-148 3 0.67 -5552287497375409855
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-149 3 0.67 7771188769961146819
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-150 3 0.67 -3360669668420607129
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-151 3 0.67 -4819485467185990276
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-152 3 0.67 -6129393187197548300
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-153 3 0.67 -7029179961980581787
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-154 3 0.67 -2472454558465020083
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-155 3 0.67 5961819794845827147
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-156 3 0.67 -7031740242610868692
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-157 3 0.67 7884773853565884933
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-158 3 0.67 -8807304466193991517
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-159 3 0.67 -7871709502241080288
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-160 3 0.67 -2162313081090993567
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-161 3 0.67 3387097707060606910
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-162 3 0.67 -3590796982576310990
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-163 3 0.67 9096923887045227450
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-164 3 0.67 7656387309595036364
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-165 3 0.67 -4652815334448257520
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-166 3 0.67 1626257677702323911
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-167 3 0.67 -6332059868930162820
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-168 3 0.67 5784979251959459053
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-169 3 0.67 -8495918661344563872
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-170 3 0.67 -7856585236879216716
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-171 3 0.67 -5492104266226870806
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-172 3 0.67 -6679145637909966072
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-173 3 0.67 8656211398923874933
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-174 3 0.67 -6801094089478738100
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-175 3 0.67 -4880534667491087312
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-176 3 0.67 -3659798420239585118
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-177 3 0.67 -6802112604552356099
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-178 3 0.67 -6544338728321257878
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-179 3 0.67 -3743210118064675173
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-180 3 0.67 926025059376887561
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-181 3 0.67 4464733425759590918
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-182 3 0.67 -2617025809473301525
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-183 3 0.67 -2273584298217055971
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-184 3 0.67 3348225939976849866
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-185 3 0.67 -7533423326420529019
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-186 3 0.67 7211807294856288559
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-187 3 0.67 8010293350930274253
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-188 3 0.67 -5218300335790931143
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-189 3 0.67 -5434328757817864750
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-190 3 0.67 5015442928941225628
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-191 3 0.67 549778632431621989
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-192 3 0.67 3545058705715939564
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-193 3 0.67 136838227142042666
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-194 3 0.67 -3089658477382361061
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-195 3 0.67 8429700899838107074
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-196 3 0.67 1743939711028293696
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-197 3 0.67 -8817653864377473748
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-198 3 0.67 5065153300319121817
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-199 3 0.67 -5119492459293228440
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-200 3 0.67 4701676753532515027
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-1 7 0.67 1008143245210200669
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-2 7 0.67 -8129310580603688056
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-3 7 0.67 5977034222242086652
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-4 7 0.67 3067825575344255752
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-5 7 0.67 6496816116833889700
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-6 7 0.67 473321706920976219
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-7 7 0.67 -8493064769693544504
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-8 7 0.67 -3784453860868714362
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-9 7 0.67 8449408345282408910
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-10 7 0.67 5636660899324865549
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-11 7 0.67 -2571185447754865606
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-12 7 0.67 -1264305092741149511
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-13 7 0.67 6472305067688983307
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-14 7 0.67 3157024711582395035
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-15 7 0.67 5104541099920645988
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-16 7 0.67 588401908933820240
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-17 7 0.67 8906291880759023471
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-18 7 0.67 -1425152909662082427
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-19 7 0.67 -2744898667357017986
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-20 7 0.67 -3833434450674181443
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-21 7 0.67 338689408569276274
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-22 7 0.67 -3569733481027830191
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-23 7 0.67 -1585796763640657056
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-24 7 0.67 7671951899685257400
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-25 7 0.67 7664046544848262769
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-26 7 0.67 -4867742235503585272
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-27 7 0.67 4485190333284608265
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-28 7 0.67 -6581217932276554052
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-29 7 0.67 8999834689301984042
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-30 7 0.67 5282879887586358711
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-31 7 0.67 -3599062926933313509
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-32 7 0.67 2449967131751238281
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-33 7 0.67 4440912136558909508
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-34 7 0.67 -8786168743332176400
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-35 7 0.67 -346020415319190181
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-36 7 0.67 -5283877286883608928
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-37 7 0.67 -7725346163305351995
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-38 7 0.67 -4705916518562321338
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-39 7 0.67 -5099001800566774730
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-40 7 0.67 6589002134529677002
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-41 7 0.67 8699879273424749722
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-42 7 0.67 -7271590576033305131
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-43 7 0.67 -4752278787710288073
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-44 7 0.67 8505569252766276754
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-45 7 0.67 3962885728702122258
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-46 7 0.67 8098735537413230007
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-47 7 0.67 -6146812453606033262
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-48 7 0.67 3261442443853673414
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-49 7 0.67 6264156276230050147
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-50 7 0.67 -3992121881061109361
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-51 7 0.67 1658866505649007261
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-52 7 0.67 1313372462064436986
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-53 7 0.67 -211948885050289372
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-54 7 0.67 5152062040422147587
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-55 7 0.67 -8240206723842484143
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-56 7 0.67 6737888014239077380
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-57 7 0.67 -3652457869012282671
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-58 7 0.67 2117020735962463034
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-59 7 0.67 -3367673337596076595
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-60 7 0.67 6638660611193671809
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-61 7 0.67 707070266494426187
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-62 7 0.67 2954967774241026402
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-63 7 0.67 3995218607927357651
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-64 7 0.67 7901989200819117647
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-65 7 0.67 1361665542638488405
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-66 7 0.67 -4337378150467447508
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-67 7 0.67 -9202842560852217526
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-68 7 0.67 2439714226889183249
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-69 7 0.67 8968883394980291608
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-70 7 0.67 -844175309670519730
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-71 7 0.67 6171334133231765946
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-72 7 0.67 -7378860176246538833
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-73 7 0.67 -6632775510506996832
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-74 7 0.67 7789484492061053440
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-75 7 0.67 -8658543055650922541
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-76 7 0.67 5483199629735700691
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-77 7 0.67 1253304577732374620
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-78 7 0.67 5213056857227961216
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-79 7 0.67 3528184416282449126
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-80 7 0.67 -5289555158068612756
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-81 7 0.67 -757304400775138654
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-82 7 0.67 281085455494560910
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-83 7 0.67 2541345077602637418
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-84 7 0.67 5334856381289634351
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-85 7 0.67 -4208367338986873560
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-86 7 0.67 7852437673335227376
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-87 7 0.67 7655250964603747961
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-88 7 0.67 2265113678512823569
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-89 7 0.67 5619626424717172108
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-90 7 0.67 -5176190690278012945
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-91 7 0.67 3552394358203286608
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-92 7 0.67 -7428881484310655026
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-93 7 0.67 -7931956190524248882
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-94 7 0.67 -240649963566650663
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-95 7 0.67 1608064823963385042
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-96 7 0.67 1916718051551303782
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-97 7 0.67 8668328450504824785
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-98 7 0.67 9108416733787791229
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-99 7 0.67 -3942479530551858426
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-100 7 0.67 8361441835383009690
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-101 7 0.67 -7859153989039400995
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-102 7 0.67 3197017349854262706
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-103 7 0.67 -2456607726304534379
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-104 7 0.67 7458581357580222323
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-105 7 0.67 5027152442999487264
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-106 7 0.67 -6756612860181268784
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-107 7 0.67 -2383902015644832179
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-108 7 0.67 -391156783348517956
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-109 7 0.67 3639712582154558760
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-110 7 0.67 -3593344658702691788
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-111 7 0.67 459997753971139744
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-112 7 0.67 -2315770905062849917
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-113 7 0.67 1481374955843186538
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-114 7 0.67 1459949719312406977
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-115 7 0.67 8744705386317866021
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-116 7 0.67 6317606752587392668
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-117 7 0.67 2893674077922431423
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-118 7 0.67 7745317871246478938
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-119 7 0.67 -8608420520019657194
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-120 7 0.67 6489164995970168350
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-121 7 0.67 -3517797711909274910
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-122 7 0.67 8596819752597109865
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-123 7 0.67 4818333531297096913
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-124 7 0.67 -5016311352857016605
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-125 7 0.67 7277030677121462515
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-126 7 0.67 1492853459272067163
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-127 7 0.67 -7330073007934460840
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-128 7 0.67 4155369094291333900
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-129 7 0.67 1888548577370214902
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-130 7 0.67 2949451992503372578
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-131 7 0.67 8492577709062249168
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-132 7 0.67 3027356272941813116
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-133 7 0.67 4643663468356562005
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-134 7 0.67 -4472185429237588302
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-135 7 0.67 5786874735986772229
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-136 7 0.67 6559595292578092632
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-137 7 0.67 -6541509869984422054
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-138 7 0.67 -4443871147786126716
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-139 7 0.67 7811114455761081061
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-140 7 0.67 -8926058239433621619
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-141 7 0.67 8840743236991597494
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-142 7 0.67 7133620185169346581
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-143 7 0.67 4376937369258776577
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-144 7 0.67 5108004406241882442
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-145 7 0.67 -3176366800480388099
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-146 7 0.67 -3566743214450518168
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-147 7 0.67 6283284048523463695
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-148 7 0.67 3538641087202279041
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-149 7 0.67 -1604312831368090328
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-150 7 0.67 -342975399802799232
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-151 7 0.67 3433501862795941738
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-152 7 0.67 -2659114363034060437
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-153 7 0.67 3782484513433890577
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-154 7 0.67 -5562813643050428697
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-155 7 0.67 -2233804009960159344
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-156 7 0.67 6651123031308310529
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-157 7 0.67 -1856009899889347334
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-158 7 0.67 7352631424391491627
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-159 7 0.67 9122208614972329891
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-160 7 0.67 -3065464425397753725
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-161 7 0.67 8656410205573713415
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-162 7 0.67 488301248018015835
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-163 7 0.67 -4361146098894923543
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-164 7 0.67 -4847493047744375307
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-165 7 0.67 -3671823612836151873
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-166 7 0.67 -6830420874824417906
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-167 7 0.67 8654977099222442829
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-168 7 0.67 -1327229481090876259
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-169 7 0.67 -2105147128815459185
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-170 7 0.67 -2856120966535627940
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-171 7 0.67 -7886934773314226725
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-172 7 0.67 4278262746641976967
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-173 7 0.67 3052359274967595079
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-174 7 0.67 -5027609376245460125
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-175 7 0.67 -1720878897187774649
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-176 7 0.67 7699442095891646465
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-177 7 0.67 7429323729604676762
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-178 7 0.67 -7393950471719214141
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-179 7 0.67 4838748505256871527
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-180 7 0.67 293665498871510047
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-181 7 0.67 7186258105148205986
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-182 7 0.67 -4951723087130787422
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-183 7 0.67 -3292547754721457484
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-184 7 0.67 7167339514021658936
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-185 7 0.67 -2047508635860484517
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-186 7 0.67 -5518762672511937110
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-187 7 0.67 3638055195815736526
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-188 7 0.67 -3604994978033719961
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-189 7 0.67 -747420429789493980
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-190 7 0.67 3829282799839824006
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-191 7 0.67 -4073043429564156171
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-192 7 0.67 1264964689545302795
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-193 7 0.67 3886649286377087041
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-194 7 0.67 -79677946999488664
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-195 7 0.67 -5570244762255458928
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-196 7 0.67 7531673439730679111
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-197 7 0.67 -7364317763933116325
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-198 7 0.67 4819121695178713222
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-199 7 0.67 8849499870514663338
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-200 7 0.67 -1486808603171279741
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-1 10 0.67 1846606666499446526
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-2 10 0.67 -7300028454568126568
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-3 10 0.67 7061443220227260272
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-4 10 0.67 -2728481907301768471
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-5 10 0.67 -1492126404979245287
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-6 10 0.67 2622042504740450908
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-7 10 0.67 8944821783097944756
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-8 10 0.67 7749690472948469992
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-9 10 0.67 478144577341658498
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-10 10 0.67 -2242478576540127981
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-11 10 0.67 -3366774751723762835
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-12 10 0.67 -7109722783484634699
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-13 10 0.67 6715095260952283504
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-14 10 0.67 -3692355760512755967
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-15 10 0.67 4329622721979783221
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-16 10 0.67 -5296519420797311035
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-17 10 0.67 -8832105095789564673
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-18 10 0.67 8495787417334445808
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-19 10 0.67 4549625809847317706
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-20 10 0.67 -3924720298829049515
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-21 10 0.67 -7418049990420435537
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-22 10 0.67 105145031247443886
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-23 10 0.67 -4663856490923887987
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-24 10 0.67 -8518676974285861662
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-25 10 0.67 -5972004759772128027
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-26 10 0.67 -5832491373389880182
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-27 10 0.67 7810936316905840902
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-28 10 0.67 3774806754306700721
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-29 10 0.67 -7345545845063530391
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-30 10 0.67 -1775374781777414693
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-31 10 0.67 -6529562547453563298
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-32 10 0.67 2497042921971245128
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-33 10 0.67 -4551298533713370393
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-34 10 0.67 -3653379132394508935
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-35 10 0.67 -3528442530260264989
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-36 10 0.67 -2832402269401121037
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-37 10 0.67 1862679816694971502
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-38 10 0.67 1915611576905597762
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-39 10 0.67 7581059414179457671
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-40 10 0.67 622587567028295232
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-41 10 0.67 2398939369394195188
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-42 10 0.67 -3936147863674265194
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-43 10 0.67 -6298909669252983966
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-44 10 0.67 1146341285322670467
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-45 10 0.67 2599459786438017743
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-46 10 0.67 -5896570150758583844
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-47 10 0.67 -95697104071442388
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-48 10 0.67 -1643330257655183533
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-49 10 0.67 544604920835604285
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-50 10 0.67 -5887674896147072773
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-51 10 0.67 -4249966177978462268
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-52 10 0.67 7726029561900973579
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-53 10 0.67 -1898844091488748835
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-54 10 0.67 -5722703089586519071
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-55 10 0.67 3731242837590495915
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-56 10 0.67 -1048911186004901814
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-57 10 0.67 -4752265601309239244
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-58 10 0.67 -4675969346892225536
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-59 10 0.67 -1798926521565258871
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-60 10 0.67 4121597354151358835
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-61 10 0.67 915154321385323050
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-62 10 0.67 1300463690684955596
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-63 10 0.67 8757717529955737511
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-64 10 0.67 5981390134865269294
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-65 10 0.67 5526702288501369994
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-66 10 0.67 -1941907880117494978
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-67 10 0.67 2797470849581688692
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-68 10 0.67 362816309043356901
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-69 10 0.67 5637413048001191045
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-70 10 0.67 699519855637965908
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-71 10 0.67 -446679832643891455
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-72 10 0.67 -2240951977535806904
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-73 10 0.67 -3650244599409385169
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-74 10 0.67 2519705436033937295
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-75 10 0.67 -4014530427473275260
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-76 10 0.67 -7180411210754474551
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-77 10 0.67 -1838182294239964159
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-78 10 0.67 6240728375550740595
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-79 10 0.67 2241578436869669593
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-80 10 0.67 -1045027396340663775
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-81 10 0.67 -2499705353271084714
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-82 10 0.67 800094304242194954
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-83 10 0.67 5599784448718687740
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-84 10 0.67 7536656583054937545
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-85 10 0.67 2954554759163017454
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-86 10 0.67 -467520368233188510
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-87 10 0.67 -904813494890748016
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-88 10 0.67 -965798753700358270
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-89 10 0.67 -2218784689433811347
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-90 10 0.67 8373225848774986762
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-91 10 0.67 -3755211380800830117
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-92 10 0.67 2953544409360196302
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-93 10 0.67 8457701128580995549
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-94 10 0.67 4939522197307625625
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-95 10 0.67 -363046418578865209
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-96 10 0.67 6668899420405824628
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-97 10 0.67 1147297813788039208
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-98 10 0.67 -1517466608901538009
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-99 10 0.67 -4275001752600193437
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-100 10 0.67 6493054328747497216
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-101 10 0.67 2719540647705201567
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-102 10 0.67 6750735401098367954
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-103 10 0.67 8046496945750673505
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-104 10 0.67 -1047096213452914880
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-105 10 0.67 8777028480444779638
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-106 10 0.67 -7155795420537731781
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-107 10 0.67 939913022564240661
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-108 10 0.67 -2883658131254615864
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-109 10 0.67 5472666223551461701
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-110 10 0.67 -7997039030585061114
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-111 10 0.67 219274874663460988
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-112 10 0.67 8468072150483425903
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-113 10 0.67 -9145178874689806456
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-114 10 0.67 -5143787125253826466
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-115 10 0.67 -8966792354155268174
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-116 10 0.67 -8661761550107893040
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-117 10 0.67 5939356968223798304
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-118 10 0.67 1146727552015141998
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-119 10 0.67 -8457247216022470277
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-120 10 0.67 5568580682732485834
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-121 10 0.67 8680016448247602129
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-122 10 0.67 -8930465512490767639
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-123 10 0.67 -7183669878297512261
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-124 10 0.67 1598175437630749697
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-125 10 0.67 -3043433560910396478
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-126 10 0.67 -435588463768958334
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-127 10 0.67 4365020755895450366
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-128 10 0.67 -5822498221111961254
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-129 10 0.67 6694679840911215104
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-130 10 0.67 -6964738151250118795
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-131 10 0.67 524295939561786609
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-132 10 0.67 1662353153306105731
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-133 10 0.67 5476639062951130618
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-134 10 0.67 -3694381862640230403
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-135 10 0.67 6997283708614739686
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-136 10 0.67 6131918977571600232
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-137 10 0.67 -2327731024511909626
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-138 10 0.67 4019290399378329819
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-139 10 0.67 -704988740283502763
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-140 10 0.67 1450995877820611775
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-141 10 0.67 5664813787064463067
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-142 10 0.67 -7533974763477073450
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-143 10 0.67 -7062948111196382891
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-144 10 0.67 -2680829262868757890
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-145 10 0.67 3861867097295435285
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-146 10 0.67 2602126348068549173
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-147 10 0.67 -4112993446960589529
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-148 10 0.67 6254826758919446367
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-149 10 0.67 -7192114454216001355
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-150 10 0.67 -8116338765931342521
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-151 10 0.67 4675663826739900588
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-152 10 0.67 3946638184810142307
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-153 10 0.67 6938079479132753054
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-154 10 0.67 2899560661541146331
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-155 10 0.67 1655636456993916905
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-156 10 0.67 8851463893623074636
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-157 10 0.67 2797991079349343257
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-158 10 0.67 -2156375313258741816
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-159 10 0.67 3299180376449000842
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-160 10 0.67 -438025675214347487
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-161 10 0.67 -1802320135711594926
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-162 10 0.67 -2502775997247708569
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-163 10 0.67 -8793535963543948451
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-164 10 0.67 1623428252095391918
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-165 10 0.67 -4305619642811873320
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-166 10 0.67 -2119083905349650669
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-167 10 0.67 6212208452056267475
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-168 10 0.67 4857002603489121537
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-169 10 0.67 3694850907331310369
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-170 10 0.67 -367907541820948304
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-171 10 0.67 -6116558127324793470
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-172 10 0.67 391140111556879342
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-173 10 0.67 6093066575014392068
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-174 10 0.67 -1277029830176468702
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-175 10 0.67 -2411304542867903067
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-176 10 0.67 -7670725205123249012
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-177 10 0.67 512036702839390525
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-178 10 0.67 -62669345940265519
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-179 10 0.67 245842764452638362
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-180 10 0.67 2498990462234584502
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-181 10 0.67 8415242074880185068
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-182 10 0.67 -6442277507410176981
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-183 10 0.67 6209137000022525283
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-184 10 0.67 -516064502447007092
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-185 10 0.67 -4536750997606707946
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-186 10 0.67 8166682178351236642
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-187 10 0.67 -2511122665937088218
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-188 10 0.67 9218444574567722735
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-189 10 0.67 1301445620844586787
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-190 10 0.67 6679147156993754794
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-191 10 0.67 -6361180626101607507
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-192 10 0.67 1873255211059287048
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-193 10 0.67 7182776494713868638
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-194 10 0.67 4438165753990733373
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-195 10 0.67 -8793980229017439769
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-196 10 0.67 7336148046884129985
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-197 10 0.67 8253413303629802872
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-198 10 0.67 -3760993027343122601
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-199 10 0.67 -6476600431947738011
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-200 10 0.67 5773339551255388746
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-1 14 0.67 -7688162178539890938
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-2 14 0.67 -1916596798474550535
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-3 14 0.67 4629957808375748574
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-4 14 0.67 -6125867629295261546
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-5 14 0.67 -8574863466397025282
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-6 14 0.67 9187797804333118762
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-7 14 0.67 6605863798631570859
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-8 14 0.67 -5194275179952794917
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-9 14 0.67 915077931684857150
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-10 14 0.67 -9027778347164946063
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-11 14 0.67 -4239463457808642997
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-12 14 0.67 3373694618792024086
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-13 14 0.67 -6329014146014114043
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-14 14 0.67 -9024624961043050659
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-15 14 0.67 -9215925159522234399
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-16 14 0.67 -3387445209399974011
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-17 14 0.67 2320266019692327288
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-18 14 0.67 -2718004256964993283
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-19 14 0.67 6334633402576497329
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-20 14 0.67 -8894252686251856597
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-21 14 0.67 -1533038004118857442
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-22 14 0.67 3805753308288709992
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-23 14 0.67 -5008100584966531674
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-24 14 0.67 5350141270711543375
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-25 14 0.67 7777859954939408229
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-26 14 0.67 -408279419579168457
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-27 14 0.67 -5792383986385342257
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-28 14 0.67 2031186981199627773
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-29 14 0.67 -1942998420659547365
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-30 14 0.67 6985522365240352518
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-31 14 0.67 -7763497270355606562
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-32 14 0.67 -1560512807228266109
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-33 14 0.67 -4302600188065111819
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-34 14 0.67 2493653402277823990
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-35 14 0.67 4366085526673362600
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-36 14 0.67 8482103597993041141
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-37 14 0.67 8471443960894393355
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-38 14 0.67 -722769481398377426
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-39 14 0.67 4753751561142610343
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-40 14 0.67 -4523868275604295765
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-41 14 0.67 -1620393722286930342
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-42 14 0.67 -961089749873175723
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-43 14 0.67 -8209023348649904517
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-44 14 0.67 3184704016577534142
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-45 14 0.67 -3962619544114857663
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-46 14 0.67 -384800291059610342
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-47 14 0.67 -6396035281788149660
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-48 14 0.67 1132898466764450702
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-49 14 0.67 -5648272908784906748
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-50 14 0.67 1986483662077323181
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-51 14 0.67 -2492422809917526838
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-52 14 0.67 -1927439292935775170
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-53 14 0.67 -1793057400284084659
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-54 14 0.67 -7211034989134519741
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-55 14 0.67 4212859842101631926
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-56 14 0.67 -7904536911138073546
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-57 14 0.67 -7104876560774011738
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-58 14 0.67 1288927936639631765
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-59 14 0.67 264910296464005206
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-60 14 0.67 8225596783078839969
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-61 14 0.67 6718253192534959359
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-62 14 0.67 8204705410681388129
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-63 14 0.67 -5936924797640525443
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-64 14 0.67 2001878396055074029
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-65 14 0.67 989499628147295534
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-66 14 0.67 9007549850050820072
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-67 14 0.67 6830461674002567712
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-68 14 0.67 -5798559999203241139
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-69 14 0.67 -2627810921241223830
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-70 14 0.67 6384628797937013871
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-71 14 0.67 -9161559967123025446
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-72 14 0.67 -5966000777845244614
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-73 14 0.67 -8215021114682701616
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-74 14 0.67 6973491349663615422
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-75 14 0.67 7713972235322389865
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-76 14 0.67 -1108118622504826386
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-77 14 0.67 -2742299228968493601
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-78 14 0.67 8792467125193528228
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-79 14 0.67 -1996999896773834962
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-80 14 0.67 8630430912085922023
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-81 14 0.67 -1675085677994182917
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-82 14 0.67 4504402214564916848
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-83 14 0.67 1594768968998170545
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-84 14 0.67 225841190720925290
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-85 14 0.67 -7363600505512817939
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-86 14 0.67 7294464089479619449
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-87 14 0.67 -8254305212197661157
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-88 14 0.67 8491154691894138878
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-89 14 0.67 -314591844696287903
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-90 14 0.67 -6177026880968890984
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-91 14 0.67 1190887648602886331
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-92 14 0.67 1776111192003936493
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-93 14 0.67 1817642551068299110
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-94 14 0.67 5833662985983524265
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-95 14 0.67 7345130668927985026
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-96 14 0.67 -8646197977237696826
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-97 14 0.67 9178961339909781490
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-98 14 0.67 1263655008034899726
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-99 14 0.67 -6739840796653938042
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-100 14 0.67 2495112354783780318
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-101 14 0.67 -3669008910082085796
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-102 14 0.67 -1895333837318947797
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-103 14 0.67 4025933339072288387
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-104 14 0.67 4849288145701541322
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-105 14 0.67 4118110577143517408
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-106 14 0.67 -5756280836466371861
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-107 14 0.67 -3944185640059449003
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-108 14 0.67 7925427473686154726
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-109 14 0.67 3950643140996598047
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-110 14 0.67 3222372747097549114
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-111 14 0.67 -4800159610503523201
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-112 14 0.67 -2495893721731202607
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-113 14 0.67 5329382448931356828
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-114 14 0.67 -1117691483387690616
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-115 14 0.67 -6764034375253374041
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-116 14 0.67 -8411863054376757777
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-117 14 0.67 -6131632215639932096
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-118 14 0.67 -9158017731780800692
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-119 14 0.67 -5187563364619197161
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-120 14 0.67 -2029407835958760474
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-121 14 0.67 -7969718130829040170
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-122 14 0.67 -5447178260605889665
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-123 14 0.67 7453357533882237502
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-124 14 0.67 -3435166657044838623
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-125 14 0.67 -2526620275211075952
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-126 14 0.67 -7032160517284673251
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-127 14 0.67 -789094377343518675
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-128 14 0.67 -6073233844153581232
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-129 14 0.67 6376504747987807616
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-130 14 0.67 4815884919037534632
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-131 14 0.67 -8832347986813149157
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-132 14 0.67 51809792742264550
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-133 14 0.67 472075841125725472
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-134 14 0.67 3324107092085313956
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-135 14 0.67 7198928124306012130
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-136 14 0.67 -6496309475459181670
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-137 14 0.67 -5058488467910663477
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-138 14 0.67 -2864887332701639396
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-139 14 0.67 -8402547516893982081
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-140 14 0.67 -1619913109493889306
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-141 14 0.67 -4757531129796229311
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-142 14 0.67 7641701970867213340
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-143 14 0.67 -6677175435330725739
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-144 14 0.67 393458575164762251
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-145 14 0.67 8913440514652438311
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-146 14 0.67 1599541295829364532
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-147 14 0.67 -123455546321692437
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-148 14 0.67 -156622469966035701
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-149 14 0.67 -3365971284665054332
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-150 14 0.67 -5234473599230460932
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-151 14 0.67 -6147603326162245399
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-152 14 0.67 7337499770547866158
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-153 14 0.67 5900220484148509254
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-154 14 0.67 -3508668340845106806
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-155 14 0.67 5895160564952208671
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-156 14 0.67 4669400658292927358
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-157 14 0.67 -4943975082716684613
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-158 14 0.67 6011896936541635837
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-159 14 0.67 8363008417917297087
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-160 14 0.67 6626106519423948490
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-161 14 0.67 -4968301994802931176
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-162 14 0.67 -1407259471535786506
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-163 14 0.67 -8291230988704982242
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-164 14 0.67 741408861676533927
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-165 14 0.67 -8670153783519546378
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-166 14 0.67 8116598056708819738
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-167 14 0.67 -3713801908419480009
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-168 14 0.67 2405030360754917610
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-169 14 0.67 -1166060197105827121
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-170 14 0.67 7528050333912028817
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-171 14 0.67 6836939886217314599
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-172 14 0.67 8288480589048682287
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-173 14 0.67 4138042294604604549
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-174 14 0.67 6914972711716067978
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-175 14 0.67 -5846617248159865934
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-176 14 0.67 -4250062958633898155
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-177 14 0.67 -7507912720162175268
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-178 14 0.67 -6996588721217387083
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-179 14 0.67 -6228815865365942339
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-180 14 0.67 8460629094465318400
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-181 14 0.67 854750981325881339
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-182 14 0.67 -6596335849196355641
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-183 14 0.67 -3512723468094209582
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-184 14 0.67 -8131827491211776746
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-185 14 0.67 4176570438607124208
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-186 14 0.67 7738771345988290042
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-187 14 0.67 -4146962472672906849
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-188 14 0.67 1144835776320909379
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-189 14 0.67 2301765316384381993
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-190 14 0.67 974840490700035978
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-191 14 0.67 4223837355450290807
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-192 14 0.67 -8834742675349137035
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-193 14 0.67 -7129891916187061765
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-194 14 0.67 -3011078309813456327
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-195 14 0.67 789542679622747087
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-196 14 0.67 -732056134091559584
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-197 14 0.67 7843626628937622814
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-198 14 0.67 3823097134223400651
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-199 14 0.67 3523200122946965954
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/:/usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/swarmops.jar Stairway_fold_training_testing7 stairway/input/Pop_1-200 14 0.67 4312189378441144314
+date
+# Step 2: determine number of break points
+mv -f stairway/input/Pop_1-1.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-2.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-3.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-4.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-5.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-6.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-7.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-8.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-9.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-10.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-11.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-12.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-13.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-14.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-15.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-16.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-17.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-18.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-19.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-20.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-21.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-22.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-23.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-24.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-25.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-26.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-27.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-28.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-29.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-30.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-31.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-32.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-33.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-34.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-35.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-36.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-37.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-38.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-39.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-40.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-41.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-42.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-43.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-44.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-45.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-46.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-47.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-48.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-49.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-50.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-51.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-52.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-53.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-54.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-55.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-56.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-57.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-58.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-59.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-60.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-61.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-62.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-63.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-64.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-65.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-66.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-67.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-68.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-69.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-70.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-71.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-72.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-73.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-74.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-75.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-76.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-77.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-78.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-79.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-80.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-81.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-82.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-83.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-84.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-85.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-86.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-87.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-88.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-89.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-90.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-91.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-92.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-93.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-94.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-95.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-96.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-97.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-98.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-99.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-100.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-101.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-102.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-103.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-104.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-105.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-106.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-107.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-108.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-109.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-110.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-111.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-112.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-113.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-114.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-115.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-116.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-117.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-118.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-119.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-120.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-121.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-122.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-123.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-124.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-125.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-126.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-127.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-128.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-129.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-130.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-131.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-132.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-133.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-134.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-135.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-136.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-137.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-138.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-139.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-140.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-141.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-142.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-143.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-144.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-145.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-146.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-147.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-148.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-149.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-150.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-151.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-152.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-153.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-154.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-155.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-156.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-157.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-158.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-159.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-160.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-161.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-162.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-163.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-164.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-165.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-166.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-167.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-168.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-169.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-170.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-171.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-172.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-173.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-174.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-175.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-176.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-177.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-178.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-179.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-180.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-181.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-182.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-183.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-184.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-185.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-186.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-187.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-188.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-189.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-190.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-191.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-192.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-193.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-194.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-195.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-196.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-197.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-198.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-199.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-200.3_0.67.addTheta stairway/rand3/
+mv -f stairway/input/Pop_1-1.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-2.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-3.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-4.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-5.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-6.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-7.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-8.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-9.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-10.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-11.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-12.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-13.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-14.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-15.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-16.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-17.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-18.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-19.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-20.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-21.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-22.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-23.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-24.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-25.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-26.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-27.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-28.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-29.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-30.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-31.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-32.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-33.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-34.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-35.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-36.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-37.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-38.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-39.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-40.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-41.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-42.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-43.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-44.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-45.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-46.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-47.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-48.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-49.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-50.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-51.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-52.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-53.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-54.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-55.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-56.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-57.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-58.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-59.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-60.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-61.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-62.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-63.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-64.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-65.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-66.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-67.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-68.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-69.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-70.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-71.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-72.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-73.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-74.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-75.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-76.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-77.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-78.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-79.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-80.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-81.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-82.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-83.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-84.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-85.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-86.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-87.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-88.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-89.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-90.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-91.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-92.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-93.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-94.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-95.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-96.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-97.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-98.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-99.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-100.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-101.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-102.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-103.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-104.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-105.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-106.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-107.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-108.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-109.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-110.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-111.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-112.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-113.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-114.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-115.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-116.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-117.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-118.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-119.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-120.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-121.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-122.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-123.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-124.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-125.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-126.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-127.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-128.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-129.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-130.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-131.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-132.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-133.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-134.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-135.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-136.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-137.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-138.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-139.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-140.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-141.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-142.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-143.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-144.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-145.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-146.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-147.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-148.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-149.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-150.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-151.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-152.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-153.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-154.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-155.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-156.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-157.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-158.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-159.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-160.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-161.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-162.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-163.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-164.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-165.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-166.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-167.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-168.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-169.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-170.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-171.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-172.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-173.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-174.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-175.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-176.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-177.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-178.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-179.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-180.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-181.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-182.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-183.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-184.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-185.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-186.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-187.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-188.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-189.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-190.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-191.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-192.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-193.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-194.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-195.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-196.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-197.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-198.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-199.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-200.7_0.67.addTheta stairway/rand7/
+mv -f stairway/input/Pop_1-1.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-2.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-3.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-4.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-5.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-6.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-7.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-8.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-9.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-10.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-11.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-12.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-13.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-14.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-15.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-16.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-17.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-18.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-19.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-20.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-21.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-22.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-23.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-24.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-25.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-26.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-27.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-28.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-29.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-30.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-31.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-32.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-33.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-34.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-35.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-36.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-37.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-38.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-39.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-40.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-41.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-42.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-43.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-44.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-45.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-46.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-47.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-48.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-49.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-50.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-51.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-52.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-53.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-54.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-55.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-56.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-57.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-58.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-59.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-60.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-61.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-62.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-63.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-64.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-65.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-66.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-67.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-68.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-69.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-70.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-71.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-72.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-73.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-74.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-75.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-76.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-77.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-78.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-79.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-80.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-81.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-82.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-83.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-84.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-85.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-86.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-87.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-88.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-89.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-90.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-91.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-92.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-93.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-94.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-95.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-96.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-97.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-98.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-99.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-100.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-101.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-102.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-103.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-104.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-105.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-106.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-107.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-108.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-109.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-110.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-111.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-112.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-113.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-114.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-115.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-116.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-117.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-118.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-119.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-120.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-121.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-122.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-123.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-124.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-125.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-126.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-127.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-128.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-129.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-130.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-131.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-132.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-133.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-134.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-135.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-136.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-137.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-138.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-139.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-140.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-141.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-142.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-143.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-144.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-145.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-146.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-147.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-148.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-149.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-150.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-151.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-152.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-153.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-154.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-155.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-156.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-157.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-158.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-159.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-160.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-161.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-162.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-163.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-164.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-165.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-166.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-167.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-168.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-169.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-170.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-171.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-172.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-173.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-174.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-175.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-176.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-177.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-178.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-179.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-180.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-181.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-182.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-183.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-184.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-185.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-186.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-187.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-188.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-189.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-190.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-191.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-192.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-193.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-194.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-195.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-196.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-197.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-198.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-199.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-200.10_0.67.addTheta stairway/rand10/
+mv -f stairway/input/Pop_1-1.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-2.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-3.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-4.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-5.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-6.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-7.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-8.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-9.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-10.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-11.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-12.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-13.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-14.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-15.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-16.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-17.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-18.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-19.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-20.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-21.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-22.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-23.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-24.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-25.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-26.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-27.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-28.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-29.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-30.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-31.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-32.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-33.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-34.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-35.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-36.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-37.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-38.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-39.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-40.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-41.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-42.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-43.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-44.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-45.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-46.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-47.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-48.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-49.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-50.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-51.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-52.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-53.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-54.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-55.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-56.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-57.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-58.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-59.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-60.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-61.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-62.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-63.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-64.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-65.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-66.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-67.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-68.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-69.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-70.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-71.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-72.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-73.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-74.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-75.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-76.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-77.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-78.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-79.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-80.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-81.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-82.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-83.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-84.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-85.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-86.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-87.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-88.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-89.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-90.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-91.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-92.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-93.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-94.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-95.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-96.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-97.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-98.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-99.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-100.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-101.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-102.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-103.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-104.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-105.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-106.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-107.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-108.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-109.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-110.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-111.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-112.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-113.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-114.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-115.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-116.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-117.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-118.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-119.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-120.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-121.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-122.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-123.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-124.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-125.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-126.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-127.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-128.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-129.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-130.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-131.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-132.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-133.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-134.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-135.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-136.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-137.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-138.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-139.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-140.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-141.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-142.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-143.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-144.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-145.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-146.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-147.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-148.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-149.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-150.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-151.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-152.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-153.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-154.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-155.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-156.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-157.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-158.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-159.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-160.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-161.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-162.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-163.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-164.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-165.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-166.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-167.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-168.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-169.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-170.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-171.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-172.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-173.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-174.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-175.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-176.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-177.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-178.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-179.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-180.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-181.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-182.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-183.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-184.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-185.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-186.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-187.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-188.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-189.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-190.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-191.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-192.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-193.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-194.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-195.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-196.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-197.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-198.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-199.14_0.67.addTheta stairway/rand14/
+mv -f stairway/input/Pop_1-200.14_0.67.addTheta stairway/rand14/
+java -Xmx1g -cp /usr/local/bioinfo/src/stairway_plot/stairway_plot_v2.1.2/stairway_plot_es/ Stairpainter Pop_1_T95.blueprint
+bash Pop_1_T95.blueprint.plot.sh
+date
