@@ -65,7 +65,7 @@ parse_currentNe2 <- function(path) {
     "# Lower bound of the 50% CI:",
     "# Lower 50% limit of the Ne estimate:")
   CI50_hi <- extract_next_num(
-    "# Upper limit of 50% CI:", "# Upper bound of 50% CI:",
+    "# Upper bound of 50% CI:", "# Upper limit of 50% CI:",
     "# Upper bound of the 50% CI:",
     "# Upper 50% limit of the Ne estimate:")
   CI90_lo <- extract_next_num(
