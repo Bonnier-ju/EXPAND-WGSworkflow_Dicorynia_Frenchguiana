@@ -19,8 +19,16 @@
 #   tmin : Minimum temperature (degC)
 #   vpd  : Vapor pressure deficit (kPa)
 #
-# All variables stored as Int16 x scale_factor in NetCDF; GDAL applies
-# scale_factor/add_offset automatically -> gdallocationinfo returns physical units.
+# CORRECTED 2026-08-11 after checking real output: gdallocationinfo -valonly
+# does NOT apply scale_factor/add_offset (contrary to what the inherited
+# 08.0.4 comment claimed, and contrary to -unscale, which this GDAL version
+# does not support) - it returns raw packed Int16 values. Confirmed via
+# gdalinfo on the actual NetCDF files (2026-08-11):
+#   aet, def, pet, ppt, soil : scale_factor=0.1,  add_offset=0
+#   tmax, tmin               : scale_factor=0.01, add_offset=-99
+#   vpd                      : scale_factor=0.01, add_offset=0
+# STEP 5 below applies this correction in post-processing so the output TSV
+# is in physical units, as its filename/downstream scripts assume.
 #
 # Source: https://www.climatologylab.org/terraclimate.html
 #   Files: https://climate.northwestknowledge.net/TERRACLIMATE-DATA/
@@ -192,6 +200,33 @@ fi
 
 EXPECTED_ROWS=$(( N_SITES * N_VARS * (YEAR_END - YEAR_START + 1) + 1 ))
 echo "  Expected ~${EXPECTED_ROWS} rows (19 sites x 8 vars x 31 years + header)" | tee -a "${LOG}"
+
+# -------------------------------------------------------------------
+# STEP 5: Apply scale_factor/add_offset correction (gdallocationinfo
+# -valonly returns raw packed values, not physical units - cf. header note).
+# Keeps a backup of the raw unscaled extraction before overwriting.
+# -------------------------------------------------------------------
+echo "STEP 5: applying scale_factor/add_offset correction ..." | tee -a "${LOG}"
+
+RAW_BACKUP="${DATA_DIR}/terraclimate_raw_monthly_19sites.UNSCALED_backup.tsv"
+cp "${RAW_TSV}" "${RAW_BACKUP}"
+
+awk -F'\t' -v OFS='\t' '
+NR==1 { print; next }
+{
+  var = $4
+  scale = 0.1; offset = 0
+  if (var == "tmax" || var == "tmin") { scale = 0.01; offset = -99 }
+  else if (var == "vpd") { scale = 0.01; offset = 0 }
+  line = $1 OFS $2 OFS $3 OFS $4 OFS $5
+  for (i = 6; i <= 17; i++) {
+    val = $i * scale + offset
+    line = line OFS sprintf("%.3f", val)
+  }
+  print line
+}' "${RAW_BACKUP}" > "${RAW_TSV}"
+
+echo "  Corrected: ${RAW_TSV} (physical units) | backup: ${RAW_BACKUP} (raw packed values)" | tee -a "${LOG}"
 
 echo "DONE $(date -Iseconds) 08.1b.1 TerraClimate monthly extraction" | tee -a "${LOG}"
 echo "Output: ${RAW_TSV}"
